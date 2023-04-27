@@ -21,6 +21,14 @@ module.exports = {
             loader: "css-loader",
           },
           {
+            loader: "postcss-loader",
+            options: {
+              postcssOptions: {
+                plugins: () => [require("autoprefixer")],
+              },
+            },
+          },
+          {
             loader: "sass-loader",
             options: {
               sassOptions: {
@@ -30,6 +38,17 @@ module.exports = {
           },
         ],
       },
+      {
+        test: /\.m?js$/,
+        exclude: /(node_modules|bower_components)/,
+        use: {
+          loader: "babel-loader",
+          options: {
+            presets: ["@babel/preset-env"],
+            plugins: ["@babel/plugin-proposal-object-rest-spread"],
+          },
+        },
+      },
     ],
   },
   resolve: {
@@ -38,8 +57,10 @@ module.exports = {
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
+    publicPath: '/'
   },
   devServer: {
+    historyApiFallback: true,
     static: {
       directory: path.join(__dirname, "dist"),
     },

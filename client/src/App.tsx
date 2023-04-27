@@ -1,12 +1,12 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import React from 'react';
-import Test from './components/Test';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Login from './pages/Login';
 
 function App(): JSX.Element {
   return (
     <Router >
       <Routes>
-        <Route path='/' element={<Test />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
     </Router>
   );
