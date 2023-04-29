@@ -3,16 +3,26 @@
 Teknologi yang digunakan :
 
 All
+
 - Socket.io
-- Jose
+- jsonwebtoken
 
 Client
+
 - React
 - Typescript
 - Webpack
 - Sass
 
 Server
-- Nest js (TS)
-- Mongodb/pocket db/(tergantung gimana nanti)
-- Prisma
+
+- Typescript
+- Express
+- Mongodb
+- Prisma
+
+== Todo ==
+
+- Implementasi Login
+- Implementasi Messaging
+- Implementasi Add friend
