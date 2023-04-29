@@ -1,10 +1,19 @@
 import React from "react"
+import { Helmet, HelmetProvider } from "react-helmet-async"
+
+const FIRST_LOGO = './assets/logo1.png'
+const SECOND_LOGO = './assets/logo2.png'
 
 const Login = () => {
+
     return (
-        <p className="text-3xl font-bold underline">
-            Hello world!
-        </p>
+        <HelmetProvider >
+            <Helmet defer={false}>
+                <link rel="icon" href={`${SECOND_LOGO}`} />
+                <title >Tandichat Web</title>
+            </Helmet>
+            <img src={FIRST_LOGO} alt="manafotonya" />
+        </HelmetProvider>
     )
 }
 

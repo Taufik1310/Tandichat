@@ -1,5 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+
 
 module.exports = {
   entry: './src/index.tsx',
@@ -39,6 +41,20 @@ module.exports = {
         ],
       },
       {
+        test: /\.(jpg|png|svg)$/,
+        use: [
+          {
+            loader: 'url-loader',
+          },
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[path][name].[ext]',
+            },
+          }
+        ],
+      },
+      {
         test: /\.m?js$/,
         exclude: /(node_modules|bower_components)/,
         use: {
@@ -52,24 +68,30 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: [ '.tsx', '.ts', '.js' ],
+    modules: [path.resolve('node_modules'), 'node_modules']
   },
   output: {
     filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, 'build'),
     publicPath: '/'
   },
   devServer: {
     historyApiFallback: true,
     static: {
-      directory: path.join(__dirname, "dist"),
+      directory: path.join(__dirname, "build"),
     },
     port: 3000,
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: "./public/index.html",
-      filename: "index.html",
+      template: './src/index.html'
     }),
+    new CopyWebpackPlugin(
+      {
+        patterns: [
+          { from: './src/assets', to: '../build/assets' }
+        ]
+      }
+    )
   ],
 };
