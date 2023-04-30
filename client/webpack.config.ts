@@ -1,16 +1,15 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const CopyWebpackPlugin = require('copy-webpack-plugin')
-
+const path = require("path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
-  entry: './src/index.tsx',
-  devtool: 'inline-source-map',
+  entry: "./src/index.tsx",
+  devtool: "inline-source-map",
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        use: 'ts-loader',
+        use: "ts-loader",
         exclude: /node_modules/,
       },
       {
@@ -44,14 +43,14 @@ module.exports = {
         test: /\.(jpg|png|svg)$/,
         use: [
           {
-            loader: 'url-loader',
+            loader: "url-loader",
           },
           {
-            loader: 'file-loader',
+            loader: "file-loader",
             options: {
-              name: '[path][name].[ext]',
+              name: "[path][name].[ext]",
             },
-          }
+          },
         ],
       },
       {
@@ -68,12 +67,13 @@ module.exports = {
     ],
   },
   resolve: {
-    modules: [path.resolve('node_modules'), 'node_modules']
+    modules: [path.resolve("node_modules"), "node_modules"],
+    extensions: [".ts", ".tsx", ".js", ".jsx", ".png"],
   },
   output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'build'),
-    publicPath: '/'
+    filename: "bundle.js",
+    path: path.resolve(__dirname, "build"),
+    publicPath: "/",
   },
   devServer: {
     historyApiFallback: true,
@@ -84,14 +84,10 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: './src/index.html'
+      template: "./src/index.html",
     }),
-    new CopyWebpackPlugin(
-      {
-        patterns: [
-          { from: './src/assets', to: '../build/assets' }
-        ]
-      }
-    )
+    new CopyWebpackPlugin({
+      patterns: [{ from: "./src/assets", to: "../build/assets" }],
+    }),
   ],
 };
