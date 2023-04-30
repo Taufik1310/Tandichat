@@ -3,7 +3,6 @@ import { createRoot, hydrateRoot } from 'react-dom/client';
 import './index.css';
 import App from './App';
 
-
 const StrictApp = () => (
   <React.StrictMode>
     <App />
