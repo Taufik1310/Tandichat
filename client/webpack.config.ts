@@ -68,7 +68,7 @@ module.exports = {
   },
   resolve: {
     modules: [path.resolve("node_modules"), "node_modules"],
-    extensions: [".ts", ".tsx", ".js", ".jsx", ".png"],
+    extensions: [".js", ".jsx", ".ts", ".tsx", ".png"],
   },
   output: {
     filename: "bundle.js",
