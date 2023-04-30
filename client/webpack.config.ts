@@ -68,7 +68,8 @@ module.exports = {
     ],
   },
   resolve: {
-    modules: [path.resolve('node_modules'), 'node_modules']
+    modules: [path.resolve('node_modules'), 'node_modules'],
+    extensions: ['.js', '.jsx', '.ts', '.tsx', '.png'],
   },
   output: {
     filename: 'bundle.js',
@@ -86,12 +87,10 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './src/index.html'
     }),
-    new CopyWebpackPlugin(
-      {
+    new CopyWebpackPlugin({
         patterns: [
           { from: './src/assets', to: '../build/assets' }
         ]
-      }
-    )
+    })
   ],
 };

@@ -17,14 +17,14 @@ const AuthForm = ({ authType, authText }: AuthFormProps) => {
             <div className="relative">
                 <input type={isShowPass ? "text" : "password"} name="password" placeholder="Password" className="form-input bg-transparent border-0 border-b w-80 outline-none ps-1 pb-2 focus:ring-0 focus:border-b-blue-600"/>
                 <span className="text-gray-400 absolute end-2 top-2" onClick={() => setIsShowPass(!isShowPass)}>
-                    {isShowPass ?  <FaEye size={20}/> : <FaEyeSlash size={20}/>}
+                    {isShowPass ? <FaEye size={20}/> : <FaEyeSlash size={20}/>}
                 </span>
             </div>
             { authType === "signup" && 
             <div className="relative">
                 <input type={isShowPass ? "text" : "password"} name="confirmPassword" placeholder="Konfirmasi Password" className="form-input bg-transparent border-0 border-b w-80 outline-none ps-1 pb-2 focus:ring-0 focus:border-b-blue-600"/>
                 <span className="text-gray-400 absolute end-2 top-2" onClick={() => setIsShowPass(!isShowPass)}>
-                    {isShowPass ?  <FaEye size={20}/> : <FaEyeSlash size={20}/>}
+                    {isShowPass ? <FaEye size={20}/> : <FaEyeSlash size={20}/>}
                 </span>
             </div>
             }
