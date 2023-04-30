@@ -26,3 +26,5 @@ Server
 - Implementasi Login
 - Implementasi Messaging
 - Implementasi Add friend
+
+- Rewrite backend dengan rust (?)
