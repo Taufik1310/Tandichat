@@ -4,10 +4,9 @@ Techstack :
 
 Client
 
-![React](https://en.wikipedia.org/wiki/React_%28software%29#/media/File:React-icon.svg)
+![React](/img/React-icon.svg.png)
 
 
-<p><img src="https://en.wikipedia.org/wiki/React_%28software%29#/media/File:React-icon.svg" alt="foo" title="title" />React</p>
 
 
 
