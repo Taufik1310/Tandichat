@@ -4,10 +4,10 @@ Techstack :
 
 Client
 
-![React](https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FReact_%2528software%2529&psig=AOvVaw0z0y0ToWatsCD9oFdpxRUF&ust=1683732793475000&source=images&cd=vfe&ved=0CBEQjRxqFwoTCJjQxMrH6P4CFQAAAAAdAAAAABAJ)
+![React](https://en.wikipedia.org/wiki/React_%28software%29#/media/File:React-icon.svg)
 
 
-<p><img src="https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FReact_%2528software%2529&psig=AOvVaw0z0y0ToWatsCD9oFdpxRUF&ust=1683732793475000&source=images&cd=vfe&ved=0CBEQjRxqFwoTCJjQxMrH6P4CFQAAAAAdAAAAABAJ" alt="foo" title="title" />React</p>
+<p><img src="https://en.wikipedia.org/wiki/React_%28software%29#/media/File:React-icon.svg" alt="foo" title="title" />React</p>
 
 
 
