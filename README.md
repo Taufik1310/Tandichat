@@ -5,24 +5,22 @@ Techstack :
 Client
 
 <div style="display: flex;">
-  <img src="/img/React-icon.svg.png" alt="React" style="width: 100px; height: 100px;">
-  <img src="/img/Webpack.svg.png" alt="Webpack" style="width: 100px; height: 100px;">
-  <img src="/img/Typescript.svg.png" alt="Typescript" style="width: 100px; height: 100px;">
+  <img src="/img/React-icon.svg.png" alt="React" style=" height: 100px; margin: 5px">
+  <img src="/img/Webpack.svg.png" alt="Webpack" style="height: 100px;  margin: 5px">
+  <img src="/img/Typescript.svg.png" alt="Typescript" style="height: 100px;  margin: 5px">
+  <img src="/img/Tailwind_CSS_logo.svg.png" alt="Typescript" style="height: 100px;  margin: 5px">
 </div>
 
 
 
-
-- Typescript
-- Webpack
-- Sass
-
 Server
 
-- Typescript
-- Express
-- Mongodb
-- Prisma
+
+
+<div style="display: flex;">
+  <img src="/img/215px-Go_Logo_Blue.svg.png" alt="React" style=" height: 100px; margin: 5px">
+  <img src="/img/Postgresql_elephant.svg.png" alt="Webpack" style="height: 100px;  margin: 5px">
+</div>
 
 == Todo ==
 
