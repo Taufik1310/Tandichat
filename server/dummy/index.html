@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Go WebSocket Tutorial</title>
+  </head>
+  <body>
+    <h2>Hello World</h2>
+
+    <input type="text" id="target" />
+
+    <input type="text" name="msg" id="msg" />
+    <button id="send">"Kirim pesan</button>
+
+    <ul id="msg-buffer"></ul>
+
+    <script>
+      let socket = new WebSocket("ws://127.0.0.1:5050/ws");
+      console.log("Attempting Connection...");
+
+      const msgInput = document.querySelector("#msg");
+      const btnInput = document.querySelector("#send");
+      const msgBuffer = document.querySelector("#msg-buffer");
+      const targetInput = document.querySelector("#target");
+
+      btnInput.addEventListener("click", () => {
+        if (msgInput.value) {
+          socket.send(
+            JSON.stringify({ data: msgInput.value, target: targetInput.value })
+          );
+        }
+      });
+
+      socket.onopen = () => {
+        console.log("Successfully Connected");
+        socket.onmessage = (ev) => {
+          const el = document.createElement("li");
+          el.innerHTML = ev.data;
+          msgBuffer.appendChild(el);
+        };
+      };
+
+      socket.onclose = (event) => {
+        console.log("Socket Closed Connection: ", event);
+        socket.send("Client Closed!");
+      };
+
+      socket.onerror = (error) => {
+        console.log("Socket Error: ", error);
+      };
+    </script>
+  </body>
+</html>
