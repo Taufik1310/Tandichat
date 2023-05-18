@@ -4,35 +4,35 @@ import (
 	"gorm.io/gorm"
 )
 
-type User struct{
+type User struct {
 	gorm.Model
-	Email string `gorm:"unique"`
+	Email    string `gorm:"unique"`
 	Username string
 	Password string
-	Img string
-	About string 
+	Img      string `gorm:"default:"default.png""`
+	About    string `gorm:"default:"Hello im using Tandichat"`
 }
 
-type Room struct{
+type Room struct {
 	gorm.Model
-	User1 User
+	User1   User
 	User1Id int
-	User2 User
+	User2   User
 	User2Id int
 }
 
-type Message struct{
+type Message struct {
 	gorm.Model
-	From User `gorm:"foreignKey:FromID"`
-	To User  `gorm:"foreignKey:ToID"`
+	From   User `gorm:"foreignKey:FromID"`
+	To     User `gorm:"foreignKey:ToID"`
 	FromId int
-	ToID int
-	Room Room 
-	RoomId int 
+	ToID   int
+	Room   Room
+	RoomId int
 }
 
-type Session struct{
+type Session struct {
 	gorm.Model
 	UserId int
-	User User `gorm:"embedded"`
+	User   User `gorm:"embedded"`
 }
