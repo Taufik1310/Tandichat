@@ -2,31 +2,35 @@ package database
 
 import (
 	"errors"
+	"os"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+
+	"andiputraw/Tandchat/src/model"
 )
 
-type DatabaseConnection struct {
-	Conn *gorm.DB
-}
+var DB *gorm.DB
 
-func Connect() (DatabaseConnection, error){
-	dsn := "host=localhost user=gorm password=gorm dbname=realtimeApp port=5432 sslmode=disable TimeZone=Asia/Shanghai"
+
+func Connect() (error){
+	dsn := os.Getenv("DB_URL") 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err != nil {	
-		return DatabaseConnection{}, errors.Join(errors.New("error: Cannot connect to database"), err) 
+		return  errors.Join(errors.New("error: Cannot connect to database"), err) 
 	}
 
-	return DatabaseConnection{Conn: db}, nil
+	model.Setup(db)
+
+	if err != nil {	
+		return  errors.Join(errors.New("error: Error at migration"), err) 
+	}
+
+	DB = db
+
+	return  nil
 }
 
-func (db *DatabaseConnection) InsertMessage(from int, to int, msg string){
 
-}
-
-func (db *DatabaseConnection) getAllMessageFromUser(){
-
-}
 

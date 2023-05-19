@@ -3,20 +3,34 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"github.com/olahol/melody"
 
-	"github.com/andiputraw/Tandichat/server/src/websocket"
+	"andiputraw/Tandchat/src/database"
+	"andiputraw/Tandchat/src/routes"
+	"andiputraw/Tandchat/src/websocket"
 )
 
 type sendedData struct {
-	Data string
+	Data   string
 	Target string
 }
 
-func main(){
+func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("error loading .env files")
+	}
+	err = database.Connect()
+
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
 	r := gin.Default()
 	m := melody.New()
 
@@ -24,26 +38,28 @@ func main(){
 
 	count := 0
 
-	r.GET("/",func(ctx *gin.Context) {
+	r.GET("/", func(ctx *gin.Context) {
 		ctx.JSON(200, gin.H{
-			"Message" : "Pong",
+			"Message": "Pong",
 		})
 	})
 
+	r.POST("/api/register", routes.Register)
+	r.POST("/api/login", routes.Login)
 	r.GET("/ws", func(ctx *gin.Context) {
 		m.HandleRequest(ctx.Writer, ctx.Request)
 	})
 
 	m.HandleConnect(func(s *melody.Session) {
 		wsPool.InsertConnection(strconv.Itoa(count), s)
-		s.Write([]byte(fmt.Sprintf("You are number %d" , count)))
-		count+= 1
+		s.Write([]byte(fmt.Sprintf("You are number %d", count)))
+		count += 1
 	})
 
 	m.HandleMessage(func(s *melody.Session, msg []byte) {
 		var data sendedData
 
-		err := json.Unmarshal(msg,&data)
+		err := json.Unmarshal(msg, &data)
 
 		if err != nil {
 			fmt.Println("Error decoding json")
@@ -52,7 +68,7 @@ func main(){
 
 		fmt.Println(data)
 
-		anotherConnection , err := wsPool.GetConnection(data.Target)
+		anotherConnection, err := wsPool.GetConnection(data.Target)
 
 		if err != nil {
 			return
