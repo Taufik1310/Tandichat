@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"andiputraw/Tandchat/src/config"
 	"andiputraw/Tandchat/src/database"
 	"errors"
 	"os"
@@ -67,5 +68,36 @@ func Login(email string , password string) (string ,error){
 
 
 	return tokenString, nil
+}
+
+func Logout(token string)error{
+	type tokenStructure struct {
+		Id uint `json:"id"`
+		Username string `json:"username"`
+		Email string `json:"email"`
+		jwt.RegisteredClaims
+	}
+
+	result, err := jwt.ParseWithClaims(token,&tokenStructure{}, func(t *jwt.Token) (interface{}, error) {
+		return []byte(config.Config.SECRET_KEY), nil
+	})
+
+	if err != nil {
+		return errors.Join(errors.New("error: Failed to decode JWT"), err)
+	}
+
+	if claims , ok := result.Claims.(*tokenStructure); ok && result.Valid {
+		
+		result := database.DB.Delete(&model.Session{}, claims.Id)
+		if result.RowsAffected == 0 {
+			return errors.New("error: Failed to delete session | Session id not found | Probably already deleted before")
+		}
+		
+		return nil
+	} else {
+		return errors.New("error: Failed to parse JWT")
+	}
+
+
 }
 

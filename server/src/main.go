@@ -10,6 +10,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/olahol/melody"
 
+	"andiputraw/Tandchat/src/config"
 	"andiputraw/Tandchat/src/database"
 	"andiputraw/Tandchat/src/routes"
 	"andiputraw/Tandchat/src/websocket"
@@ -20,8 +21,10 @@ type sendedData struct {
 	Target string
 }
 
+
 func main() {
 	err := godotenv.Load()
+	config.InitConfig()
 	if err != nil {
 		log.Fatal("error loading .env files")
 	}
@@ -38,14 +41,11 @@ func main() {
 
 	count := 0
 
-	r.GET("/", func(ctx *gin.Context) {
-		ctx.JSON(200, gin.H{
-			"Message": "Pong",
-		})
-	})
+	
 
 	r.POST("/api/register", routes.Register)
 	r.POST("/api/login", routes.Login)
+	r.POST("/api/logout", routes.Logout)
 	r.GET("/ws", func(ctx *gin.Context) {
 		m.HandleRequest(ctx.Writer, ctx.Request)
 	})

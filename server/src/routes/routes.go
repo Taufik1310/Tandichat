@@ -54,3 +54,26 @@ func Login(c *gin.Context){
 	response := gin.H{"code": http.StatusOK, "data" : gin.H{"Token": token}}
 	c.JSON(http.StatusOK, response)
 }
+
+func Logout(c *gin.Context){
+	authHeader := c.GetHeader("Authorization")
+	if authHeader == "" {
+		response := NewResponseError(http.StatusBadRequest, "Authorization header not provided", "Please add authorization to the header")
+		c.JSON(http.StatusBadRequest,response)
+		return
+	}
+
+	err := auth.Logout(authHeader)
+
+	if err != nil {
+		response := NewResponseError(http.StatusBadRequest, "Failed to logout", err.Error())
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{})
+}
+
+func NewResponseError(statusCode int, whyError string, detail string) gin.H {
+	return gin.H{"code": statusCode, "data" : nil, "error" : whyError, "details" : detail}
+}
