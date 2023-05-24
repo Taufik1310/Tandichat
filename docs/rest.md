@@ -16,7 +16,8 @@
 - error response :
   - code : number
   - data : null
-  - reason : string
+  - error : string
+  - details : string
 
 Example
 
@@ -51,9 +52,9 @@ console.log(response);
 - error response :
   - code : number
   - data : null
-  - reason : string
-
-example
+  - error : string
+  - details : string
+    example
 
 ```javascript
 const username = "bar";
@@ -89,7 +90,8 @@ console.log(response);
 - error response :
   - code : number
   - data : null
-  - reason : string
+  - error : string
+  - details : string
 
 ```javascript
 const token = "your_jwt_token_here"; // Ganti dengan jwt token yang diterima dari /api/login
