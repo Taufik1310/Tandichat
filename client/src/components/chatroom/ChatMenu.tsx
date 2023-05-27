@@ -4,7 +4,7 @@ import ChatNotif from './ChatNotif'
 
 const ChatMenu = () => {
     const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false)
-    const [isOpenNotif, setIsOpenNotif] = useState<boolean>(false)
+    const [isOpenNotif, setIsOpenNotif] = useState<boolean>(true)
 
     const handleNotif = () => {
         setIsOpenNotif(!isOpenNotif)
