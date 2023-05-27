@@ -9,7 +9,7 @@ const ChatRoom = () => {
             <Helmet>
                 <meta name="description" content="Tandichat ChatRoom" />
             </Helmet>
-            <div className=" max-h-screen w-screen bg-gray-700 text-blue-50 overflow-hidden">
+            <div className=" max-h-screen w-screen bg-black text-blue-50 overflow-hidden">
                 <ChatNavigation />
             </div>
         </HelmetProvider>

@@ -22,6 +22,54 @@ const ChatNotif = ({ onClose }: ChatNotifProps) => {
                 id: 3,
                 username: 'Jeff Scott',
             },
+            {
+                id: 1,
+                username: 'StevenTayler',
+            },
+            {
+                id: 2,
+                username: 'Slash GNR',
+            },
+            {
+                id: 3,
+                username: 'Jeff Scott',
+            },
+            {
+                id: 1,
+                username: 'StevenTayler',
+            },
+            {
+                id: 2,
+                username: 'Slash GNR',
+            },
+            {
+                id: 3,
+                username: 'Jeff Scott',
+            },
+            {
+                id: 1,
+                username: 'StevenTayler',
+            },
+            {
+                id: 2,
+                username: 'Slash GNR',
+            },
+            {
+                id: 3,
+                username: 'Jeff Scott',
+            },
+            {
+                id: 1,
+                username: 'StevenTayler',
+            },
+            {
+                id: 2,
+                username: 'Slash GNR',
+            },
+            {
+                id: 3,
+                username: 'Jeff Scott',
+            },
     ])
 
     const handleNotif = (id: number) => {
@@ -31,12 +79,12 @@ const ChatNotif = ({ onClose }: ChatNotifProps) => {
 
     return (
         <div>
-            <div className="bg-gray-800 absolute top-0 bottom-0 start-0 end-0 overflow-y-auto scrollbar-style">
-                <div className="bg-gray-700 pt-14 pb-4 px-8 flex items-center gap-10 text-xl font-semibold fixed top-0 w-full z-10">
+            <div className="bg-gray-800 absolute top-0 bottom-0 start-0 end-0 overflow-hidden scrollbar-none z-10">
+                <div className="bg-gray-700 pt-14 pb-4 px-8 flex items-center gap-10 text-xl font-semibold sticky top-0 end-0 start-0">
                     <BiArrowBack size={22} className="cursor-pointer" onClick={onClose}/>
                     <p>Notifikasi</p>
                 </div>
-                <ul className="px-6 py-10 mt-20">
+                <ul className="h-screen px-6 py-6 overflow-y-scroll scrollbar-style">
                     { dataExample && 
                         dataExample.map((item) => (
                             <li className="flex justify-between items-center gap-x-6 py-2 mb-4">
