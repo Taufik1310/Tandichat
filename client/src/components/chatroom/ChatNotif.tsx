@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-
 import { BiArrowBack } from 'react-icons/bi'
 
 const DEFAULT_PROFILE = './assets/default-profile.png'
@@ -10,6 +9,114 @@ interface ChatNotifProps {
 
 const ChatNotif = ({ onClose }: ChatNotifProps) => {
     const [dataExample, setDataExample] = useState([
+            {
+                id: 1,
+                username: 'StevenTayler',
+            },
+            {
+                id: 2,
+                username: 'Slash GNR',
+            },
+            {
+                id: 3,
+                username: 'Jeff Scott',
+            },
+            {
+                id: 1,
+                username: 'StevenTayler',
+            },
+            {
+                id: 2,
+                username: 'Slash GNR',
+            },
+            {
+                id: 3,
+                username: 'Jeff Scott',
+            },
+            {
+                id: 1,
+                username: 'StevenTayler',
+            },
+            {
+                id: 2,
+                username: 'Slash GNR',
+            },
+            {
+                id: 3,
+                username: 'Jeff Scott',
+            },
+            {
+                id: 1,
+                username: 'StevenTayler',
+            },
+            {
+                id: 2,
+                username: 'Slash GNR',
+            },
+            {
+                id: 3,
+                username: 'Jeff Scott',
+            },
+            {
+                id: 1,
+                username: 'StevenTayler',
+            },
+            {
+                id: 2,
+                username: 'Slash GNR',
+            },
+            {
+                id: 3,
+                username: 'Jeff Scott',
+            },
+            {
+                id: 1,
+                username: 'StevenTayler',
+            },
+            {
+                id: 2,
+                username: 'Slash GNR',
+            },
+            {
+                id: 3,
+                username: 'Jeff Scott',
+            },
+            {
+                id: 1,
+                username: 'StevenTayler',
+            },
+            {
+                id: 2,
+                username: 'Slash GNR',
+            },
+            {
+                id: 3,
+                username: 'Jeff Scott',
+            },
+            {
+                id: 1,
+                username: 'StevenTayler',
+            },
+            {
+                id: 2,
+                username: 'Slash GNR',
+            },
+            {
+                id: 3,
+                username: 'Jeff Scott',
+            },
+            {
+                id: 1,
+                username: 'StevenTayler',
+            },
+            {
+                id: 2,
+                username: 'Slash GNR',
+            },
+            {
+                id: 3,
+                username: 'Jeff Scott',
+            },
             {
                 id: 1,
                 username: 'StevenTayler',

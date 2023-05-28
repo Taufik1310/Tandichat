@@ -6,11 +6,9 @@ const LOGO = './assets/logo1.png'
 
 const ChatNavigationBar = () => {
     return (
-        <div>
-            <section className="flex justify-between items-center bg-gray-700 px-5 py-2">
-                <ChatProfile />
-                <ChatMenu />
-            </section>
+        <div className="flex justify-between items-center bg-gray-700 px-5 py-2">
+            <ChatProfile />
+            <ChatMenu />
         </div>
     )
 }
