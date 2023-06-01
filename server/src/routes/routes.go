@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Register(c *gin.Context){
+func Register(c *gin.Context) {
 	var requestData struct {
 		Email    string `json:"email"`
 		Username string `json:"username"`
@@ -16,13 +16,13 @@ func Register(c *gin.Context){
 	}
 
 	if err := c.ShouldBindJSON(&requestData); err != nil {
-		response := gin.H{"code": http.StatusBadRequest, "data" : nil, "error":"invalid payload", "details": "Invalid request payload"}
+		response := gin.H{"code": http.StatusBadRequest, "data": nil, "error": "invalid payload", "details": "Invalid request payload"}
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
 
-	err := auth.Register(requestData.Username,requestData.Email,requestData.Password)
-	
+	err := auth.Register(requestData.Username, requestData.Email, requestData.Password)
+
 	if err != nil {
 		response := gin.H{"error": err.Error()}
 		c.JSON(http.StatusInternalServerError, response)
@@ -32,34 +32,34 @@ func Register(c *gin.Context){
 	c.JSON(http.StatusCreated, gin.H{"code": 200})
 }
 
-func Login(c *gin.Context){
+func Login(c *gin.Context) {
 	var requestData struct {
-		Email string `json:"Email"`
+		Email    string `json:"Email"`
 		Password string `json:"Password"`
 	}
 
 	if err := c.ShouldBindJSON(&requestData); err != nil {
-		response := gin.H{"code": http.StatusBadRequest, "data" : nil, "error": "Invalid payload", "details": "Invalid request payload"}
+		response := gin.H{"code": http.StatusBadRequest, "data": nil, "error": "Invalid payload", "details": "Invalid request payload"}
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
 
-	token, err := auth.Login(requestData.Email,requestData.Password)
+	token, err := auth.Login(requestData.Email, requestData.Password)
 
 	if err != nil {
-		response := gin.H{"code": http.StatusBadRequest, "data" : nil, "error": "Failed to login", "details": err.Error() }
+		response := gin.H{"code": http.StatusBadRequest, "data": nil, "error": "Failed to login", "details": err.Error()}
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
-	response := gin.H{"code": http.StatusOK, "data" : gin.H{"Token": token}}
+	response := gin.H{"code": http.StatusOK, "data": gin.H{"Token": token}}
 	c.JSON(http.StatusOK, response)
 }
 
-func Logout(c *gin.Context){
+func Logout(c *gin.Context) {
 	authHeader := c.GetHeader("Authorization")
 	if authHeader == "" {
 		response := NewResponseError(http.StatusBadRequest, "Authorization header not provided", "Please add authorization to the header")
-		c.JSON(http.StatusBadRequest,response)
+		c.JSON(http.StatusBadRequest, response)
 		return
 	}
 
@@ -75,5 +75,5 @@ func Logout(c *gin.Context){
 }
 
 func NewResponseError(statusCode int, whyError string, detail string) gin.H {
-	return gin.H{"code": statusCode, "data" : nil, "error" : whyError, "details" : detail}
+	return gin.H{"code": statusCode, "data": nil, "error": whyError, "details": detail}
 }

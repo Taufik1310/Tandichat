@@ -24,9 +24,6 @@ type sendedData struct {
 	Target string
 }
 
-
-
-
 func main() {
 	err := godotenv.Load()
 	config.InitConfig()
@@ -45,10 +42,8 @@ func main() {
 	wsPool := websocket.NewPool()
 
 	count := 0
-	
-	log := log.Default()
 
-	
+	log := log.Default()
 
 	r.POST("/api/register", routes.Register)
 	r.POST("/api/login", routes.Login)
@@ -59,7 +54,7 @@ func main() {
 	r.StaticFS("/static", http.Dir("./static"))
 	r.GET("/profile", func(c *gin.Context) {
 
-		imageName := c.DefaultQuery("name","default")
+		imageName := c.DefaultQuery("name", "default")
 		safeImageName := SanitizeFilename(imageName)
 		imagePath := "./static/profile/"
 
@@ -108,7 +103,6 @@ func main() {
 
 func SanitizeFilename(filename string) string {
 	safeFilename := strings.ReplaceAll(filename, "..", "")
-
 
 	return safeFilename
 }
