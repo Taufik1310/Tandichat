@@ -13,6 +13,19 @@ hapus nama ".example" dari .env lalu isi setiap barisnya
 DB_URL="host=localhost user=root password=root dbname=tandichat port=5432 sslmode=disable TimeZone=Asia/Shanghai"
 ```
 
+Jika Kamu karena suatu alasan tidak bisa menggunakan docker, kamu bisa menggunakan mysql.
+
+`DB_URL` isi dengan
+```
+DB_URL=user:pass@tcp(127.0.0.1:3306)/namadatabase?charset=utf8mb4&parseTime=True&loc=Local
+```
+
+lalu saat menjalankan server, berikan argument mysql
+
+```bash
+go run src/main.go mysql
+```
+
 Install Docker lalu jalankan 
 ```bash
 $ ./run.sh -docker-build
@@ -30,3 +43,9 @@ jika container sudah berjalan. jalankan
 $ ./run.sh
 ```
 untuk menjalankan aplikasi golangnya saja
+
+atau jika ingin langusung menggunakan golang
+
+```bash
+go run src/main.go
+```

@@ -8,12 +8,12 @@ if [ "$TAG" == "-docker-build" ]; then
   docker build -t realtime-postgres .
 
   # Run the container
-  docker run -d -p 5432:5432 --name tandichat realtime-postgres
+  docker run -d -p 5432:5432 realtime-postgres
 fi
 
 if [ "$TAG" == "-docker-run" ]; then
   # Run the container
-  docker run -d -p 5432:5432 --name tandichat realtime-postgres
+  docker run -d -p 5432:5432 realtime-postgres
 fi
 
 sleep 3
