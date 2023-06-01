@@ -1,29 +1,30 @@
 package model
 
 import (
-	"time"
-
 	"gorm.io/gorm"
 )
 
 type User struct {
-	UUID      string `gorm:"primaryKey"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt `gorm:"index"`
-	Email     string         `gorm:"unique"`
-	Username  string
-	Password  string
+	gorm.Model
+	Email     string  `gorm:"unique"`
+	Username  string `gorm:"type:varchar(100);"`
+	Password  string `gorm:"type:varchar(100);"`
 	Img       string `gorm:"default:default.png"`
 	About     string `gorm:"default:Hello im using tandichat"`
 }
 
+type Session struct {
+	gorm.Model
+	UserID  uint
+	User     User
+}
+
 type Friend struct {
 	gorm.Model
-	UserUUID   string
-	User       User
-	FriendUUID uint
-	Friend     User `gorm:"foreignKey:FriendUUID"`
+	UserID   uint 
+	User       User 
+	FriendID uint 
+	Friend     User `gorm:"foreignKey:FriendID"`
 }
 
 type Room struct {
@@ -32,8 +33,8 @@ type Room struct {
 
 type RoomParticipant struct {
 	gorm.Model
-	UserUUID string
-	User     User
+	UserID string 
+	User     User 	
 	Room     Room
 	RoomID   uint
 }
@@ -41,17 +42,13 @@ type RoomParticipant struct {
 type Message struct {
 	gorm.Model
 	User     User
-	UserUUID string
+	UserID uint
 	Room     Room
 	RoomID   uint
 	Content  string
 }
 
-type Session struct {
-	gorm.Model
-	UserUUID string
-	User     User
-}
+
 
 func Setup(db *gorm.DB) error {
 	err := db.AutoMigrate(&User{}, &Friend{}, &Room{}, &RoomParticipant{}, &Message{}, &Session{})

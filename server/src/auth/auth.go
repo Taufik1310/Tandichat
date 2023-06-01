@@ -25,7 +25,7 @@ func Register(username string, email string, password string) error {
 		Password: string(hashedPassword),
 	}
 
-	if err := database.DB.Create(&user).Error; err != nil {
+	if err := database.InsertUser(&user); err != nil {
 		return err
 	}
 
@@ -44,7 +44,7 @@ func Login(email string, password string) (string, error) {
 	}
 
 	session := model.Session{
-		UserUUID: user.UUID,
+		UserID: user.ID,
 	}
 
 	result := database.DB.Create(&session)
