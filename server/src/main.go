@@ -4,23 +4,25 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
+	"os"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/olahol/melody"
 
-	"andiputraw/Tandchat/src/config"
-	"andiputraw/Tandchat/src/database"
-	"andiputraw/Tandchat/src/routes"
-	"andiputraw/Tandchat/src/websocket"
+	"andiputraw/Tandichat/src/config"
+	"andiputraw/Tandichat/src/database"
+	"andiputraw/Tandichat/src/routes"
+	"andiputraw/Tandichat/src/websocket"
 )
 
 type sendedData struct {
 	Data   string
 	Target string
 }
-
 
 func main() {
 	err := godotenv.Load()
@@ -41,13 +43,32 @@ func main() {
 
 	count := 0
 
-	
+	log := log.Default()
 
 	r.POST("/api/register", routes.Register)
 	r.POST("/api/login", routes.Login)
 	r.POST("/api/logout", routes.Logout)
 	r.GET("/ws", func(ctx *gin.Context) {
 		m.HandleRequest(ctx.Writer, ctx.Request)
+	})
+	r.StaticFS("/static", http.Dir("./static"))
+	r.GET("/profile", func(c *gin.Context) {
+
+		imageName := c.DefaultQuery("name", "default")
+		safeImageName := SanitizeFilename(imageName)
+		imagePath := "./static/profile/"
+
+		log.Println("Incoming to /profile")
+
+		if _, err := os.Stat(imagePath + safeImageName + ".png"); os.IsNotExist(err) {
+			log.Println("Image not found")
+
+			c.AbortWithError(http.StatusNotFound, err)
+			return
+
+		}
+		c.Header("Content-Type", "image/jpeg")
+		c.File(imagePath + safeImageName + ".png")
 	})
 
 	m.HandleConnect(func(s *melody.Session) {
@@ -78,4 +99,10 @@ func main() {
 	})
 
 	r.Run(":5050")
+}
+
+func SanitizeFilename(filename string) string {
+	safeFilename := strings.ReplaceAll(filename, "..", "")
+
+	return safeFilename
 }

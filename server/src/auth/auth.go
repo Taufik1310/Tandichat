@@ -1,21 +1,20 @@
 package auth
 
 import (
-	"andiputraw/Tandchat/src/config"
-	"andiputraw/Tandchat/src/database"
+	"andiputraw/Tandichat/src/config"
+	"andiputraw/Tandichat/src/database"
+	"andiputraw/Tandichat/src/model"
 	"errors"
 	"os"
-
-	"andiputraw/Tandchat/src/model"
 
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
 
-func Register(username string, email string, password string) error{
+func Register(username string, email string, password string) error {
 
-	hashedPassword , err := bcrypt.GenerateFromPassword([]byte(password),bcrypt.DefaultCost) 
-	
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+
 	if err != nil {
 		return err
 	}
@@ -27,13 +26,13 @@ func Register(username string, email string, password string) error{
 	}
 
 	if err := database.DB.Create(&user).Error; err != nil {
-		return  err
+		return err
 	}
 
 	return nil
 }
 
-func Login(email string , password string) (string ,error){
+func Login(email string, password string) (string, error) {
 
 	var user model.User
 	database.DB.Where(&model.User{Email: email}).First(&user)
@@ -45,8 +44,8 @@ func Login(email string , password string) (string ,error){
 	}
 
 	session := model.Session{
-		UserID: uint(user.ID),
-	} 
+		UserUUID: user.UUID,
+	}
 
 	result := database.DB.Create(&session)
 
@@ -54,31 +53,30 @@ func Login(email string , password string) (string ,error){
 		return "", errors.Join(errors.New("error: Error inserting session to database"), result.Error)
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256,jwt.MapClaims{
-		"id" : session.ID,
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"id":       session.ID,
 		"username": user.Username,
-		"email": user.Email,
+		"email":    user.Email,
 	})
 
-	tokenString , err := token.SignedString([]byte(os.Getenv("SECRET_KEY")));
+	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET_KEY")))
 
 	if err != nil {
 		return "", errors.New("error: Failed to sign JWT")
 	}
 
-
 	return tokenString, nil
 }
 
-func Logout(token string)error{
+func Logout(token string) error {
 	type tokenStructure struct {
-		Id uint `json:"id"`
+		Id       uint   `json:"id"`
 		Username string `json:"username"`
-		Email string `json:"email"`
+		Email    string `json:"email"`
 		jwt.RegisteredClaims
 	}
 
-	result, err := jwt.ParseWithClaims(token,&tokenStructure{}, func(t *jwt.Token) (interface{}, error) {
+	result, err := jwt.ParseWithClaims(token, &tokenStructure{}, func(t *jwt.Token) (interface{}, error) {
 		return []byte(config.Config.SECRET_KEY), nil
 	})
 
@@ -86,18 +84,16 @@ func Logout(token string)error{
 		return errors.Join(errors.New("error: Failed to decode JWT"), err)
 	}
 
-	if claims , ok := result.Claims.(*tokenStructure); ok && result.Valid {
-		
+	if claims, ok := result.Claims.(*tokenStructure); ok && result.Valid {
+
 		result := database.DB.Delete(&model.Session{}, claims.Id)
 		if result.RowsAffected == 0 {
 			return errors.New("error: Failed to delete session | Session id not found | Probably already deleted before")
 		}
-		
+
 		return nil
 	} else {
 		return errors.New("error: Failed to parse JWT")
 	}
 
-
 }
-

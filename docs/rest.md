@@ -115,3 +115,51 @@ console.log(response);
 } 
 */
 ```
+
+=== Profile Picture ===
+
+- desc : Rest untuk menambil profile picture
+- url : /api/profile
+- queryParams :
+  - name (optional) : Image name (default jika tidak diberikan : default)
+- method : GET
+- response :
+  - image
+- error response :
+  - code : number
+  - data : null
+  - error : string
+  - details : string
+
+```javascript
+const fetchProfilePicture = async (imageName = "default") => {
+  try {
+    const queryParams = new URLSearchParams({ name: imageName }).toString();
+    const url = `/api/profile?${queryParams}`;
+
+    //Fetch image
+    const response = await fetch(url);
+
+    //Error handling
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error);
+    }
+
+    //Ambil blob nya
+    const imageBlob = await response.blob();
+    //Buat object
+    return URL.createObjectURL(imageBlob);
+  } catch (error) {
+    console.error("Error fetching profile picture:", error.message);
+  }
+};
+
+fetchProfilePicture()
+  .then((imageUrl) => {
+    console.log("Profile picture URL:", imageUrl);
+  })
+  .catch((error) => {
+    console.error("Failed to fetch profile picture:", error);
+  });
+```
