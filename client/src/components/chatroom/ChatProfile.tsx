@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { BiArrowBack, BiCamera, BiPencil } from 'react-icons/bi'
 
-const DEFAULT_PROFILE = './assets/default-profile.png'
+const DEFAULT_AVATAR = './assets/default-avatar.png'
 
 interface IsEnabledEdit {
     username?: boolean,
@@ -15,7 +15,7 @@ interface Value {
 
 const ChatProfile = () => {
     const [isOpenProfile, setIsOpenProfile] = useState<boolean>(false)
-    const [isHoverProfile, setIsHoverProfile] = useState<boolean>(false)
+    const [isHoverAvatar, setIsHoverAvatar] = useState<boolean>(false)
     const [isEnabledEdit, setIsEnabledEdit] = useState<IsEnabledEdit>({
         username: false,
         about: false
@@ -47,8 +47,10 @@ const ChatProfile = () => {
 
     return (
         <div>
-            <div className="w-10 h-10 max-h-10 overflow-hidden rounded-full object-cover cursor-pointer" onClick={() => setIsOpenProfile(!isOpenProfile)}>
-                <img src={DEFAULT_PROFILE} alt="Foto Profil" />
+            <div className="avatar">
+                <div className="w-10 h-10 max-h-10 overflow-hidden rounded-full object-cover cursor-pointer" onClick={() => setIsOpenProfile(!isOpenProfile)}>
+                    <img src={DEFAULT_AVATAR} alt="Foto Profil" />
+                </div>
             </div>
             {isOpenProfile && 
             <div className="bg-gray-800 absolute top-0 bottom-0 start-0 end-0 overflow-y-auto scrollbar-none z-10">
@@ -58,15 +60,17 @@ const ChatProfile = () => {
                 </div>
                 <div className="flex flex-col items-center gap-10 px-6 py-10">
                     <section>
-                        <div className="w-52 h-52 max-h-52 rounded-full overflow-hidden object-cover relative cursor-pointer">
-                            <img src={DEFAULT_PROFILE} alt="Foto Profil" onMouseEnter={() => setIsHoverProfile(!isHoverProfile)} />
-                            {isHoverProfile && 
-                            <div  className="bg-gray-700 absolute top-0 bottom-0 start-0 end-0 bg-opacity-80 flex flex-col items-center justify-center font-semibold" onMouseLeave={() => setIsHoverProfile(!isHoverProfile)}>
-                                <input type="file" name="profilPicture" className="opacity-0 cursor-pointer absolute top-0 bottom-0 start-0 end-0" />
-                                <BiCamera size={30}/>
-                                <p>Ubah Foto Profil</p>
+                        <div className="avatar">
+                            <div className="w-52 h-52 max-h-52 rounded-full overflow-hidden object-cover relative cursor-pointer">
+                                <img src={DEFAULT_AVATAR} alt="Foto Profil" onMouseEnter={() => setIsHoverAvatar(!isHoverAvatar)} />
+                                {isHoverAvatar && 
+                                <div  className="bg-gray-700 absolute top-0 bottom-0 start-0 end-0 bg-opacity-80 flex flex-col items-center justify-center font-semibold" onMouseLeave={() => setIsHoverAvatar(!isHoverAvatar)}>
+                                    <input type="file" name="profilPicture" className="opacity-0 cursor-pointer absolute top-0 bottom-0 start-0 end-0" />
+                                    <BiCamera size={30}/>
+                                    <p>Ubah Foto Profil</p>
+                                </div>
+                                }
                             </div>
-                            }
                         </div>
                     </section>
                     <section className="w-full">

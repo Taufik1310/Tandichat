@@ -1,6 +1,6 @@
 import React from "react"
 
-const DEFAULT_AVATAR = './assets/default-profile.png'
+const DEFAULT_AVATAR = './assets/default-avatar.png'
 
 const ChatMessageHeader = () => {
     return (

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { BiArrowBack } from 'react-icons/bi'
 
-const DEFAULT_PROFILE = './assets/default-profile.png'
+const DEFAULT_AVATAR = './assets/logo1.png'
 
 interface ChatNotifProps {
     onClose: () => void
@@ -196,7 +196,11 @@ const ChatNotif = ({ onClose }: ChatNotifProps) => {
                         dataExample.map((item) => (
                             <li className="flex justify-between items-center gap-x-6 py-2 mb-4">
                                 <div className="flex gap-x-2 items-center">
-                                    <img className="max-h-10 max-w-10 object-cover flex-none rounded-full" src={DEFAULT_PROFILE} alt="Foto Profil" />
+                                    <div className='avatar'>
+                                        <div className='max-h-10 max-w-10 object-cover flex-none rounded-full'>
+                                            <img src={DEFAULT_AVATAR} alt="Foto Profil" />
+                                        </div>
+                                    </div>
                                     <div className="min-w-0 flex-auto">
                                         <p className="text-sm font-semibold">{item.username}</p>
                                         <p className="truncate text-xs text-gray-500">Mengajukan Pertemanan</p>
