@@ -1,13 +1,13 @@
 package database
 
 import (
+	"andiputraw/Tandichat/src/model"
 	"errors"
 	"os"
 
+	"github.com/google/uuid"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-
-	"andiputraw/Tandchat/src/model"
 )
 
 var DB *gorm.DB
@@ -31,6 +31,18 @@ func Connect() (error){
 
 	return  nil
 }
+
+
+func insertUser(user *model.User) error{
+	user.UUID = uuid.New().String() 
+
+	if err := DB.Create(&user).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
 
 
 

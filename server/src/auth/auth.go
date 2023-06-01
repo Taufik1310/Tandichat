@@ -1,12 +1,11 @@
 package auth
 
 import (
-	"andiputraw/Tandchat/src/config"
-	"andiputraw/Tandchat/src/database"
+	"andiputraw/Tandichat/src/config"
+	"andiputraw/Tandichat/src/database"
+	"andiputraw/Tandichat/src/model"
 	"errors"
 	"os"
-
-	"andiputraw/Tandchat/src/model"
 
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
@@ -45,7 +44,7 @@ func Login(email string , password string) (string ,error){
 	}
 
 	session := model.Session{
-		UserID: uint(user.ID),
+		UserUUID: user.UUID,
 	} 
 
 	result := database.DB.Create(&session)

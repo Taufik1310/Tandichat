@@ -1,11 +1,16 @@
 package model
 
 import (
+	"time"
+
 	"gorm.io/gorm"
 )
 
 type User struct{
-	gorm.Model
+	UUID string `gorm:"primaryKey"` 
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt `gorm:"index"`
 	Email string `gorm:"unique"`
 	Username string
 	Password string
@@ -15,10 +20,10 @@ type User struct{
 
 type Friend struct{
 	gorm.Model
-	UserID uint
-	User User
-	FriendID uint
-	Friend User `gorm:"foreignKey:FriendID"`
+	UserUUID string 
+	User User 
+	FriendUUID uint
+	Friend User `gorm:"foreignKey:FriendUUID"`
 }
 
 type Room struct{
@@ -27,7 +32,7 @@ type Room struct{
 
 type RoomParticipant struct {
 	gorm.Model
-	UserID uint
+	UserUUID string
 	User User
 	Room Room
 	RoomID uint
@@ -36,7 +41,7 @@ type RoomParticipant struct {
 type Message struct{
 	gorm.Model
 	User User 
-	UserID uint
+	UserUUID string
 	Room Room 
 	RoomID uint 
 	Content string
@@ -44,7 +49,7 @@ type Message struct{
 
 type Session struct{
 	gorm.Model
-	UserID uint
+	UserUUID string
 	User User 
 }
 

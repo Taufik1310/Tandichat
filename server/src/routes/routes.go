@@ -3,7 +3,7 @@ package routes
 import (
 	"net/http"
 
-	"andiputraw/Tandchat/src/auth"
+	"andiputraw/Tandichat/src/auth"
 
 	"github.com/gin-gonic/gin"
 )
@@ -29,7 +29,7 @@ func Register(c *gin.Context){
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{})
+	c.JSON(http.StatusCreated, gin.H{"code": 200})
 }
 
 func Login(c *gin.Context){
@@ -71,7 +71,7 @@ func Logout(c *gin.Context){
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{})
+	c.JSON(http.StatusOK, gin.H{"code": 200})
 }
 
 func NewResponseError(statusCode int, whyError string, detail string) gin.H {
