@@ -45,6 +45,7 @@ func main() {
 
 	log := log.Default()
 
+	r.Use(routes.Default())
 	r.POST("/api/register", routes.Register)
 	r.POST("/api/login", routes.Login)
 	r.POST("/api/logout", routes.Logout)
