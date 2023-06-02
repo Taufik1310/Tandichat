@@ -5,7 +5,7 @@ import { GiPaperClip } from 'react-icons/gi'
 
 const ChatMessageInput = () => {
     return (
-        <div className="bg-gray-700 h-12 max-h-12 px-5 flex items-center justify-center">
+        <div className="bg-gray-700 h-12 max-h-12 px-3 flex items-center justify-center">
             <div className="flex">
                 <button className="btn btn-sm text-xl border-none bg-gray-700 hover:bg-gray-700"><BiSmile /></button>
                 <button className="btn btn-sm text-lg border-none bg-gray-700 hover:bg-gray-700"><GiPaperClip /></button>

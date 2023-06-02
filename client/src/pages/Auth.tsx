@@ -25,8 +25,8 @@ const Auth = () => {
             <div className="min-h-screen min-w-screen bg-gray-800 text-blue-50 grid place-items-center">
                 <div className="flex flex-col items-center">
                     <AuthHeader authText={authType.text} logo={LOGO}/>
-                    <AuthForm authText={authType.text} authType={authType.type}/>
                     <SwitchAuthType setAuthType={setAuthType} authType={authType.type} authText={authType.text} />
+                    <AuthForm authText={authType.text} authType={authType.type}/>
                 </div>
             </div>
         </HelmetProvider>

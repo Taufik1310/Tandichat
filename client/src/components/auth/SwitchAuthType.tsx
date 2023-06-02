@@ -12,7 +12,7 @@ const SwitchAuthType = ({ setAuthType, authType }: SwitchAuthTypeProps) => {
     }  
 
     return (
-        <div className="mt-16 border border-blue-600 rounded-full text-xs font-bold cursor-pointer">
+        <div className="border border-blue-600 rounded-full text-xs font-bold cursor-pointer">
             <button className={`${ authType === "login" ? "bg-blue-600" : "bg-transparent"} rounded-full px-3 py-1`} onClick={() => handleAuthType("login", "Masuk")}>Masuk</button>
             <button className={`${ authType === "signup" ? "bg-blue-600" : "bg-transparent"} rounded-full px-3 py-1`} onClick={() => handleAuthType("signup", "Daftar")}>Daftar</button>
         </div>

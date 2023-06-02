@@ -143,7 +143,9 @@ const ChatList = () => {
                                 </div>
                             </div>
                             <div className="text-end">
-                                <p className={`text-[10px] ${item.unreadChat.length === 0 ? 'text-gray-400' : 'text-blue-600 fw-bold'}`}>{item.lastDate}</p>
+                                <div>
+                                    <time className={`text-[10px] ${item.unreadChat.length === 0 ? 'text-gray-400' : 'text-blue-600 fw-bold'}`}>{item.lastDate}</time>
+                                </div>
                                 {item.unreadChat.length !== 0 && 
                                     <span className="badge bg-blue-600 text-slate-50 border-0 text-xs">{item.unreadChat.length}</span>
                                 }
