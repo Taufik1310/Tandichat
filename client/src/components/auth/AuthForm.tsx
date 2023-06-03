@@ -1,5 +1,5 @@
-import React, { ReactElement, useEffect, useState } from 'react'
-import { FaEyeSlash, FaEye, FaInfoCircle } from 'react-icons/fa'
+import React, { useEffect, useState } from 'react'
+import { FaEyeSlash, FaEye, FaInfoCircle, FaCheckCircle } from 'react-icons/fa'
 import { register } from '../../Rest'
 
 interface AuthFormProps {
@@ -14,6 +14,7 @@ interface IsValid {
 }
 
 const AuthForm = ({ authType, authText }: AuthFormProps) => {
+    const [registerState, setRegisterState] = useState<number>(0)
     const [isShowPass, setIsShowPass] = useState<boolean>(false)
     const [email, setEmail] = useState<string>('')
     const [username, setUsername] = useState<string>('')
@@ -25,55 +26,110 @@ const AuthForm = ({ authType, authText }: AuthFormProps) => {
         password: true,
         confirmPassword: true,
     })
+    const [isDisabledBtn, setIsDisabledBtn] = useState<boolean>(true)
 
     useEffect(() => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    
-        if (emailRegex.test(email) || email.length === 0) {
-            setIsValid({ ...isValid, email: true })
-        } else {
-            setIsValid({ ...isValid, email: false })
-        }
-    }, [email])
+      
+        setIsValid((prevIsValid) => ({
+          ...prevIsValid,
+          email: emailRegex.test(email) || email.length === 0,
+        }))
+    }, [email])      
     
     useEffect(() => {
         const specialCharsRegex = /[!@#$%^&*(),.?":{}|<>-_=+]/
         const uppercaseRegex = /[A-Z]/
         const lowercaseRegex = /[a-z]/
         const numberRegex = /\d/
-
+      
+        let isValidPassword = true
+        let passState = ''
+      
         if (password.length === 0) {
-            setIsValid({ ...isValid, password: true })
+          isValidPassword = true
         } else if (password.length < 8) {
-            setIsValid({ ...isValid, password: false })
-            setPassState('Minimal panjang 8 karakter')
+          isValidPassword = false
+          passState = 'Minimal panjang 8 karakter'
         } else if (!specialCharsRegex.test(password)) {
-            setIsValid({ ...isValid, password: false })
-            setPassState('Menggunakan setidaknya 1 karakter khusus')
+          isValidPassword = false
+          passState = 'Menggunakan setidaknya 1 karakter khusus'
         } else if (!(uppercaseRegex.test(password) && lowercaseRegex.test(password))) {
-            setIsValid({ ...isValid, password: false })
-            setPassState('Menggunakan setidaknya 1 huruf besar & kecil')
+          isValidPassword = false
+          passState = 'Menggunakan setidaknya 1 huruf besar & kecil'
         } else if (!numberRegex.test(password)) {
-            setIsValid({ ...isValid, password: false })
-            setPassState('Menggunakan setidaknya 1 angka')
+          isValidPassword = false
+          passState = 'Menggunakan setidaknya 1 angka'
         }
-        else {
-            setIsValid({ ...isValid, password: true })
-        }
-    }, [password])
+      
+        setIsValid((prevIsValid) => ({ ...prevIsValid, password: isValidPassword }))
+        setPassState(passState)
+    }, [password])      
     
     useEffect(() => {
-        confirmPassword === password || confirmPassword.length === 0 ? setIsValid({ ...isValid, confirmPassword: true }) : setIsValid({ ...isValid, confirmPassword: false })
-    }, [confirmPassword])
+        const isValidConfirmPassword = confirmPassword === password || confirmPassword.length === 0
+        setIsValid((prevIsValid) => ({ ...prevIsValid, confirmPassword: isValidConfirmPassword }))
+    }, [confirmPassword])      
 
-    const validateForm = (e: React.FormEvent<HTMLFormElement>) => {
+    useEffect(() => {
+        const { email: isValidEmail, password: isValidPassword, confirmPassword: isValidConfirmPassword } = isValid
+        const isEmailValid = isValidEmail && email.length !== 0
+        const isPasswordValid = isValidPassword && password.length !== 0
+        const isUsernameValid =  username.length !== 0
+        const isConfirmPasswordValid = isValidConfirmPassword && confirmPassword.length !== 0
+
+        const isFormValid = isEmailValid && isPasswordValid && isUsernameValid && isConfirmPasswordValid
+
+        setIsDisabledBtn(!isFormValid)
+    }, [isValid, email, username, password, confirmPassword])
+
+    const validateForm = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
+      
+        try {
+          const responseState = await register(email, username, password)
+          setRegisterState(responseState)
+          console.log(responseState)
+      
+          if (responseState === 201) {
+            setEmail('')
+            setUsername('')
+            setPassword('')
+            setConfirmPassword('')
+          } else {
+            setEmail('')
+          }
+        } catch (error) {
+          console.error(error)
+        }
+    }      
 
-        register(email, username, password)
+    const MyRegisterState = ({ state }: { state: number }) => {
+        const isSuccess = state === 201
+        const isEmailExist = state === 500
+      
+        return (
+          <div className={`${isSuccess ? 'bg-green-600' : 'bg-red-400'} text-blue-50 text-xs flex items-center justify-center gap-2 w-3/4 p-1 rounded-xl m-auto`}>
+            {isSuccess && (
+              <>
+                <FaCheckCircle />
+                <p>Berhasil Daftar ke Tandichat</p>
+              </>
+            )}
+            {isEmailExist && (
+              <>
+                <FaInfoCircle />
+                <p>Email sudah tersedia</p>
+              </>
+            )}
+          </div>
+        )
     }
+      
 
     return (
-        <form encType='' className="flex flex-col gap-8 mt-10" onSubmit={validateForm}>
+        <form className="flex flex-col gap-8 mt-10" onSubmit={validateForm}>
+            {registerState === 201 || registerState === 500 ? <MyRegisterState state={registerState} /> : null}
             { authType === "signup" &&
             <div className='relative form-control'>
                 <input 
@@ -81,6 +137,7 @@ const AuthForm = ({ authType, authText }: AuthFormProps) => {
                     name="email" 
                     placeholder="Email" 
                     onChange={(e) => setEmail(e.target.value)}
+                    value={email}
                     className={`form-input bg-transparent border-0 border-b w-80 outline-none rounded ps-1 pb-2 pe-5 focus:ring-0 ${ isValid.email ? 'focus:border-b-blue-600' : 'border-b-red-400 focus:border-b-red-400'}`} 
                     required
                 />
@@ -103,6 +160,7 @@ const AuthForm = ({ authType, authText }: AuthFormProps) => {
                     placeholder="Username" 
                     className="form-input bg-transparent border-0 border-b w-80 outline-none rounded ps-1 pb-2 pe-5 focus:ring-0 focus:border-b-blue-600" 
                     onChange={(e) => setUsername(e.target.value)}
+                    value={username}
                     required
                 />
             </div>
@@ -113,6 +171,7 @@ const AuthForm = ({ authType, authText }: AuthFormProps) => {
                     placeholder="Password" 
                     className={`form-input bg-transparent border-0 border-b w-80 outline-none rounded ps-1 pb-2 pe-10 focus:ring-0 ${ isValid.password ? 'focus:border-b-blue-600' : 'border-b-red-400 focus:border-b-red-400'}`} 
                     onChange={(e) => setPassword(e.target.value)}
+                    value={password}
                     required
                 />
                 <span className={`${ isValid.password ? 'text-gray-400' : 'text-red-400'} absolute end-2 top-2`} onClick={() => setIsShowPass(!isShowPass)}>
@@ -132,6 +191,7 @@ const AuthForm = ({ authType, authText }: AuthFormProps) => {
                     placeholder="Konfirmasi Password" 
                     className={`form-input bg-transparent border-0 border-b w-80 outline-none rounded ps-1 pb-2 pe-10 focus:ring-0 ${ isValid.confirmPassword ? 'focus:border-b-blue-600' : 'border-b-red-400 focus:border-b-red-400'}`} 
                     onChange={(e) => setConfirmPassword(e.target.value)}
+                    value={confirmPassword}
                     required
                 />
                 <span className={`${ isValid.confirmPassword ? 'text-gray-400' : 'text-red-400'} absolute end-2 top-2`} onClick={() => setIsShowPass(!isShowPass)}>
@@ -145,7 +205,11 @@ const AuthForm = ({ authType, authText }: AuthFormProps) => {
             </div>
             }
             <div>
-                <button type="submit" className="bg-blue-600 w-80 py-2 rounded-md hover:bg-blue-700 font-semibold">{authText}</button>
+                <button 
+                    type="submit" 
+                    className={`${isDisabledBtn ? 'bg-gray-700' : 'bg-blue-600 hover:bg-blue-700'} w-80 py-2 rounded-md font-semibold`}
+                    disabled={isDisabledBtn}
+                >{authText}</button>
             </div>
         </form>
     )
