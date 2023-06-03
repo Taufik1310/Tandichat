@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { FaEyeSlash, FaEye, FaInfoCircle, FaCheckCircle } from 'react-icons/fa'
-import { register } from '../../Rest'
+import { FaEyeSlash, FaEye, FaInfoCircle } from 'react-icons/fa'
+import { register, login } from '../../Rest'
+import { AlertLogin, AlertRegister } from '../template/Alert'
 
 interface AuthFormProps {
     authType: string,
-    authText: string
+    authText: string,
+    setAuthType: Function,
+    onLogin: Function
 }
 
 interface IsValid {
@@ -13,8 +16,9 @@ interface IsValid {
     confirmPassword?: boolean,
 }
 
-const AuthForm = ({ authType, authText }: AuthFormProps) => {
-    const [registerState, setRegisterState] = useState<number>(0)
+const AuthForm = ({ authType, authText, setAuthType, onLogin }: AuthFormProps) => {
+    const [registerCode, setRegisterCode] = useState<number>(0)
+    const [loginCode, setLoginCode] = useState<number>(0)
     const [isShowPass, setIsShowPass] = useState<boolean>(false)
     const [email, setEmail] = useState<string>('')
     const [username, setUsername] = useState<string>('')
@@ -78,59 +82,65 @@ const AuthForm = ({ authType, authText }: AuthFormProps) => {
         const isUsernameValid =  username.length !== 0
         const isConfirmPasswordValid = isValidConfirmPassword && confirmPassword.length !== 0
 
-        const isFormValid = isEmailValid && isPasswordValid && isUsernameValid && isConfirmPasswordValid
+        let isFormValid = false
+
+        if (authType === 'register') {
+            isFormValid = isEmailValid && isPasswordValid && isUsernameValid && isConfirmPasswordValid    
+        } else if (authType === 'login') {
+            isFormValid = isEmailValid && isPasswordValid    
+        }
 
         setIsDisabledBtn(!isFormValid)
     }, [isValid, email, username, password, confirmPassword])
 
+    useEffect(() => {
+        clearForm()
+        setRegisterCode(0)
+        setLoginCode(0)
+    }, [authType])
+
+    const clearForm = () => {
+        setEmail('')
+        setUsername('')
+        setPassword('')
+        setConfirmPassword('')
+    }
+
+
     const validateForm = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
       
-        try {
-          const responseState = await register(email, username, password)
-          setRegisterState(responseState)
-          console.log(responseState)
-      
-          if (responseState === 201) {
-            setEmail('')
-            setUsername('')
-            setPassword('')
-            setConfirmPassword('')
-          } else {
-            setEmail('')
-          }
-        } catch (error) {
-          console.error(error)
+        if (authType === 'register') {
+            const response = await register(email, username, password)
+            setRegisterCode(response)
+        
+            if (response === 200) {
+              clearForm()
+              setAuthType({ type: "login", text: "Masuk" })
+            } else {
+              setEmail('')
+            }
+        } 
+        
+        if (authType === 'login') {
+            const response = await login(email, password)
+            setLoginCode(response.code)
+           
+            if (response.code === 200) {
+                clearForm()
+                const token = response.data.Token
+                localStorage.setItem('token', token)
+                onLogin()
+            } else {
+                setPassword('')
+            }
         }
     }      
-
-    const MyRegisterState = ({ state }: { state: number }) => {
-        const isSuccess = state === 201
-        const isEmailExist = state === 500
-      
-        return (
-          <div className={`${isSuccess ? 'bg-green-600' : 'bg-red-400'} text-blue-50 text-xs flex items-center justify-center gap-2 w-3/4 p-1 rounded-xl m-auto`}>
-            {isSuccess && (
-              <>
-                <FaCheckCircle />
-                <p>Berhasil Daftar ke Tandichat</p>
-              </>
-            )}
-            {isEmailExist && (
-              <>
-                <FaInfoCircle />
-                <p>Email sudah tersedia</p>
-              </>
-            )}
-          </div>
-        )
-    }
-      
-
+    
     return (
         <form className="flex flex-col gap-8 mt-10" onSubmit={validateForm}>
-            {registerState === 201 || registerState === 500 ? <MyRegisterState state={registerState} /> : null}
-            { authType === "signup" &&
+            {registerCode === 201 || registerCode === 500 ? <AlertRegister state={registerCode} /> : null}
+            {loginCode === 200 || loginCode === 400 ? <AlertLogin state={loginCode} /> : null}
             <div className='relative form-control'>
                 <input 
                     type="email" 
@@ -152,7 +162,7 @@ const AuthForm = ({ authType, authText }: AuthFormProps) => {
                 </div>
                 }
             </div>
-            }
+            { authType === 'register' && 
             <div>
                 <input 
                     type="text" 
@@ -164,6 +174,7 @@ const AuthForm = ({ authType, authText }: AuthFormProps) => {
                     required
                 />
             </div>
+            }
             <div className="relative form-control">
                 <input 
                     type={isShowPass ? "text" : "password"} 
@@ -183,7 +194,7 @@ const AuthForm = ({ authType, authText }: AuthFormProps) => {
                     </div>
                 }
             </div>
-            { authType === "signup" && 
+            { authType === "register" && 
             <div className="relative">
                 <input 
                     type={isShowPass ? "text" : "password"} 
