@@ -11,6 +11,16 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+type JWTStructure struct {
+	SessionID uint   `json:"id"`
+	UserID    uint   `json:"userID"`
+	Username  string `json:"username"`
+	Email     string `json:"email"`
+	Profile   string
+	About     string
+	jwt.RegisteredClaims
+}
+
 func Register(username string, email string, password string) error {
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
@@ -54,9 +64,12 @@ func Login(email string, password string) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"id":       session.ID,
-		"username": user.Username,
-		"email":    user.Email,
+		"Sessionid": session.ID,
+		"userID":    user.ID,
+		"username":  user.Username,
+		"email":     user.Email,
+		"profile":   user.Img,
+		"about":     user.About,
 	})
 
 	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET_KEY")))
@@ -69,14 +82,8 @@ func Login(email string, password string) (string, error) {
 }
 
 func Logout(token string) error {
-	type tokenStructure struct {
-		Id       uint   `json:"id"`
-		Username string `json:"username"`
-		Email    string `json:"email"`
-		jwt.RegisteredClaims
-	}
 
-	result, err := jwt.ParseWithClaims(token, &tokenStructure{}, func(t *jwt.Token) (interface{}, error) {
+	result, err := jwt.ParseWithClaims(token, &JWTStructure{}, func(t *jwt.Token) (interface{}, error) {
 		return []byte(config.Config.SECRET_KEY), nil
 	})
 
@@ -84,9 +91,9 @@ func Logout(token string) error {
 		return errors.Join(errors.New("error: Failed to decode JWT"), err)
 	}
 
-	if claims, ok := result.Claims.(*tokenStructure); ok && result.Valid {
+	if claims, ok := result.Claims.(*JWTStructure); ok && result.Valid {
 
-		result := database.DB.Delete(&model.Session{}, claims.Id)
+		result := database.DB.Delete(&model.Session{}, claims.SessionID)
 		if result.RowsAffected == 0 {
 			return errors.New("error: Failed to delete session | Session id not found | Probably already deleted before")
 		}
@@ -94,6 +101,24 @@ func Logout(token string) error {
 		return nil
 	} else {
 		return errors.New("error: Failed to parse JWT")
+	}
+
+}
+
+func ParseJWT(token string) (*JWTStructure, error) {
+
+	result, err := jwt.ParseWithClaims(token, &JWTStructure{}, func(t *jwt.Token) (interface{}, error) {
+		return []byte(config.Config.SECRET_KEY), nil
+	})
+
+	if err != nil {
+		return nil, errors.Join(errors.New("error: Failed to decode JWT"), err)
+	}
+
+	if claims, ok := result.Claims.(*JWTStructure); ok && result.Valid {
+		return claims, nil
+	} else {
+		return nil, errors.New("error: Failed to parse JWT")
 	}
 
 }

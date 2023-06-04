@@ -44,7 +44,7 @@ console.log(response);
 - method : POST
 - request body : application/json
 - payload :
-  - username (string) (required)
+  - email (string) (required)
   - Password (string) (required)
 - response :
   - code : number
@@ -54,16 +54,26 @@ console.log(response);
   - data : null
   - error : string
   - details : string
-    example
+- JWT payload :
+  {
+  "Sessionid": number,
+  "about": string,
+  "email": string,
+  "profile": string,
+  "userID": number,
+  "username": string
+  }
+
+Example
 
 ```javascript
-const username = "bar";
+const email = "bar";
 const password = "baz";
 
 const requestOptions = {
   method: "POST",
   headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ username, password }),
+  body: JSON.stringify({ email, password }),
 };
 
 const response = await fetch("/api/login", requestOptions);
@@ -71,7 +81,7 @@ console.log(response);
 /* {
   code: 200,
   data : { 
-    token : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9eyJ1c2VybmFtZSI6ImZvbyIsInNlc3Npb25JZCI6IjY0NGUyMTE0YzU1YjVkNTJjODRiYTk2NSIsImlhdCI6MTY4Mjg0MTg3Nn0.BRW3cIZnIfylve7tACeIPxjUsra5Bvc-0BwZf9L8dAQ
+    token : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJTZXNzaW9uaWQiOjIsImFib3V0IjoiSGVsbG8gaW0gdXNpbmcgdGFuZGljaGF0IiwiZW1haWwiOiJiYXJAZ21haWwuY29tIiwicHJvZmlsZSI6ImQzMDM1OGMzLTMwNmItNGE5YS1hZTIwLWQyM2Y0YWQ1MzQ2OSIsInVzZXJJRCI6MSwidXNlcm5hbWUiOiJmb28ifQ.jBokpV84B6N7SZAF_svkFWvvciHGpPaHDBdR9nWjte0
     }
   }*/
 ```
@@ -116,9 +126,9 @@ console.log(response);
 */
 ```
 
-=== Profile Picture ===
+=== Get Profile Picture ===
 
-- desc : Rest untuk menambil profile picture
+- desc : Rest untuk mengambil profile picture
 - url : /api/profile
 - queryParams :
   - name (optional) : Image name (default jika tidak diberikan : default)
@@ -163,3 +173,26 @@ fetchProfilePicture()
     console.error("Failed to fetch profile picture:", error);
   });
 ```
+
+// TODO : Implement ini, benerin error handlin
+
+== Change Profile Picture ==
+
+- desc : Rest untuk mengubah profile picture
+- url : /api/profile
+- queryParams :
+  - id (required) : jwt
+- method : POST
+- response :
+
+  - "data": {
+    "filename": string
+    },
+  - "message": string,
+  - "status": number
+
+- error response :
+  - code : number
+  - data : null
+  - error : string
+  - details : string
