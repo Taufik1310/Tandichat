@@ -109,7 +109,7 @@ const token = "your_jwt_token_here"; // Ganti dengan jwt token yang diterima dar
 const myHeaders = new Headers();
 
 myHeaders.append("Content-Type", "application/json");
-myHeaders.append("Authorization", token);
+myHeaders.append("Authorization", token)
 
 const requestOptions = {
   method: "POST",

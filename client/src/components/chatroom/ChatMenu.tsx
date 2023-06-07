@@ -1,13 +1,22 @@
 import React, { useState } from 'react'
 import { GoKebabVertical, GoBell, GoSignOut } from 'react-icons/go'
 import ChatNotif from './ChatNotif'
+import { logout } from '../../Rest'
 
-const ChatMenu = () => {
+const ChatMenu = ({ onLogout }: { onLogout: Function }) => {
     const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false)
     const [isOpenNotif, setIsOpenNotif] = useState<boolean>(false)
 
     const handleNotif = () => {
+        setIsOpenMenu(false)
         setIsOpenNotif(!isOpenNotif)
+    }
+
+    const handleLogout = async () => {
+        setIsOpenMenu(false)
+        await logout(localStorage.getItem('token'))
+        localStorage.removeItem('token')
+        onLogout()
     }
 
     return (
@@ -17,18 +26,13 @@ const ChatMenu = () => {
                 {isOpenMenu &&
                 <ul tabIndex={0} className="dropdown-content menu p-2 shadow-2xl shadow-black bg-gray-700 w-52">
                     <li>
-                        <div 
-                            onClick={() => {
-                                setIsOpenNotif(!isOpenNotif)
-                                setIsOpenMenu(!isOpenMenu)
-                            }}
-                        >
+                        <div onClick={handleNotif} >
                             <GoBell />
                             <span>Notifikasi</span>
                         </div>
                     </li>
                     <li>
-                        <div onClick={() => setIsOpenMenu(!isOpenMenu)}>
+                        <div onClick={handleLogout}>
                             <GoSignOut />
                             <span>Keluar</span>
                         </div>
