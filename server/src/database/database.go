@@ -55,11 +55,3 @@ func Connect() error {
 	return nil
 }
 
-func InsertUser(user *model.User) error {
-
-	if err := DB.Create(&user).Error; err != nil {
-		return err
-	}
-
-	return nil
-}

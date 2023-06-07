@@ -10,9 +10,9 @@ import (
 
 func Register(c *gin.Context) {
 	var requestData struct {
-		Email    string `json:"email"`
-		Username string `json:"username"`
-		Password string `json:"password"`
+		Email    string `json:"email" binding:"required"`
+		Username string `json:"username" binding:"required"`
+		Password string `json:"password" binding:"required"`
 	}
 
 	if err := c.ShouldBindJSON(&requestData); err != nil {
@@ -34,8 +34,8 @@ func Register(c *gin.Context) {
 
 func Login(c *gin.Context) {
 	var requestData struct {
-		Email    string `json:"Email"`
-		Password string `json:"Password"`
+		Email    string `json:"Email" binding:"required"`
+		Password string `json:"Password" binding:"required"`
 	}
 
 	if err := c.ShouldBindJSON(&requestData); err != nil {

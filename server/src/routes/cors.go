@@ -42,11 +42,11 @@ func AllowAll() gin.HandlerFunc {
 }
 
 // Default creates a new CORS Gin middleware with default options.
-func Default() gin.HandlerFunc {
+func CorsDefault() gin.HandlerFunc {
 	return corsWrapper{Cors: cors.Default()}.build()
 }
 
 // New creates a new CORS Gin middleware with the provided options.
-func New(options Options) gin.HandlerFunc {
+func CorsNew(options Options) gin.HandlerFunc {
 	return corsWrapper{cors.New(options), options.OptionsPassthrough}.build()
 }
