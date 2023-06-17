@@ -40,8 +40,11 @@ export const logout = async (token: string) => {
 
     try {
         const response = await axios.post("http://localhost:5050/api/logout", null, { headers })
-        console.log(response)
+        return response.data
     } catch (error) {
-        console.error(error)
+        if (error.response) {
+            return error.response.data
+        }
+        throw error
     }
 }

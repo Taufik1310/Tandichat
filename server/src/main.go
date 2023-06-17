@@ -18,7 +18,7 @@ import (
 	
 )
 
-//* PROTOTYPE
+// * PROTOTYPE
 type sendedData struct {
 	Data   string
 	Target string
@@ -44,24 +44,24 @@ func main() {
 	count := 0
 
 	config := cors.DefaultConfig()
-	config.AllowAllOrigins = true
+
+	config.AllowOrigins = []string{"http://localhost:3000"}
+	config.AllowCredentials = true
+	config.AllowHeaders = []string{"Origin", "Content-Length", "Content-Type", "Authorization"}
 
 	r.Use(cors.New(config))
-
 	r.POST("/api/register", routes.Register)
 	r.POST("/api/login", routes.Login)
 	r.POST("/api/logout", routes.Logout)
 	r.GET("/profile", routes.GetProfilePicture)
 	r.POST("/profile", routes.ChangeProfilePicture)
-	
-	
+
 	r.GET("/ws/connect", func(ctx *gin.Context) {
 		m.HandleRequest(ctx.Writer, ctx.Request)
 	})
 
 	//TODO Delete this
 	r.StaticFS("/static", http.Dir("./static"))
-
 
 	//* PROTOTYPE
 	m.HandleConnect(func(s *melody.Session) {
@@ -94,4 +94,3 @@ func main() {
 
 	r.Run(":5050")
 }
-

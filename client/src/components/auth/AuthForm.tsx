@@ -116,7 +116,6 @@ const AuthForm = ({ authType, authText, setAuthType, onLogin }: AuthFormProps) =
         
             if (response === 200) {
               clearForm()
-              setAuthType({ type: "login", text: "Masuk" })
             } else {
               setEmail('')
             }
@@ -139,7 +138,7 @@ const AuthForm = ({ authType, authText, setAuthType, onLogin }: AuthFormProps) =
     
     return (
         <form className="flex flex-col gap-8 mt-10" onSubmit={validateForm}>
-            {registerCode === 201 || registerCode === 500 ? <AlertRegister state={registerCode} /> : null}
+            {registerCode === 200 || registerCode === 500 ? <AlertRegister state={registerCode} /> : null}
             {loginCode === 200 || loginCode === 400 ? <AlertLogin state={loginCode} /> : null}
             <div className='relative form-control'>
                 <input 
