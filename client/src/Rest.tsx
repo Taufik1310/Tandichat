@@ -35,12 +35,13 @@ export const logout = async (token: string) => {
     const headers = {
         "Content-Type": "application/json",
         "Authorization": token,
+        
     }
 
     try {
         const response = await axios.post("http://localhost:5050/api/logout", null, { headers })
         console.log(response)
     } catch (error) {
-        console.error(error.response.data)
+        console.error(error)
     }
 }

@@ -11,9 +11,11 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/olahol/melody"
+	
 )
 
 //* PROTOTYPE
@@ -41,8 +43,11 @@ func main() {
 
 	count := 0
 
+	config := cors.DefaultConfig()
+	config.AllowAllOrigins = true
 
-	r.Use(routes.CorsDefault())
+	r.Use(cors.New(config))
+
 	r.POST("/api/register", routes.Register)
 	r.POST("/api/login", routes.Login)
 	r.POST("/api/logout", routes.Logout)
