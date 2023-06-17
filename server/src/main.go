@@ -54,6 +54,7 @@ func main() {
 	r.POST("/api/logout", routes.Logout)
 	r.GET("/profile", routes.GetProfilePicture)
 	r.POST("/profile", routes.ChangeProfilePicture)
+	r.GET("/api/friends", routes.GetAllFriends)
 
 	r.GET("/ws/connect", func(ctx *gin.Context) {
 		m.HandleRequest(ctx.Writer, ctx.Request)

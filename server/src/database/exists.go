@@ -11,3 +11,14 @@ func IsUserExist(id string) bool {
 
 	return true
 }
+
+func IsSessionExist(id uint) bool {
+	var session model.Session
+
+	if err := DB.Where("id = ?", id).First(&session).Error; err != nil {
+		return false
+	}
+
+	return true
+
+}
