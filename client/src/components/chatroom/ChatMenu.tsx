@@ -14,9 +14,11 @@ const ChatMenu = ({ onLogout }: { onLogout: Function }) => {
 
     const handleLogout = async () => {
         setIsOpenMenu(false)
-        await logout(localStorage.getItem('token'))
-        localStorage.removeItem('token')
-        onLogout()
+        const response = await logout(localStorage.getItem('token'))
+        if (response.code === 200) {
+            localStorage.removeItem('token')
+            onLogout()
+        }
     }
 
     return (
