@@ -388,3 +388,26 @@ fetch("/api/friends/pending", {
     console.error(error);
   });
 ```
+
+=== Ambil data orang yang sedang login
+
+- desc : API untuk mengambil orang yang sedang login
+- url : /api/user
+- Header : {
+  Authorization : jwt
+  }
+- method : GET
+- response :
+  - "message": string,
+  - "status": number,
+  - "data": {
+    "id" number
+    "Email "string
+    "Img" string
+    "About "string
+    }
+- error response :
+  - code : number
+  - data : null
+  - error : string
+  - details : string

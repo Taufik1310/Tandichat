@@ -6,6 +6,24 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func GetCurrentlyLoginUser(c *gin.Context) {
+	session, err := checkIfuserIsLogged(c)
+	if err != nil {
+		return
+	}
+
+	user, err := database.GetUser(session.UserID)
+
+	if err != nil {
+		body := NewResponseError(500, "Failed to get user", err.Error())
+		c.JSON(500, body)
+		return
+	}
+
+	body := gin.H{"code": 200, "message": "Success", "data": user}
+	c.JSON(200, body)
+}
+
 func GetAllFriends(c *gin.Context) {
 	session, err := checkIfuserIsLogged(c)
 

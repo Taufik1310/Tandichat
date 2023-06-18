@@ -54,6 +54,7 @@ func main() {
 	r.POST("/api/login", routes.Login)
 	r.POST("/api/logout", routes.Logout)
 	//* API PROFILE
+	r.GET("/api/user", routes.GetCurrentlyLoginUser)
 	r.GET("/api/profile", routes.GetProfilePicture)
 	r.POST("/api/profile", routes.ChangeProfilePicture)
 	//* API FRIEND
