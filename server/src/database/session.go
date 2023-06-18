@@ -16,3 +16,14 @@ func GetSession(sessionID uint) (*model.Session, error) {
 
 	return &session, nil
 }
+
+func IsSessionExist(id uint) bool {
+	var session model.Session
+
+	if err := DB.Where("id = ?", id).First(&session).Error; err != nil {
+		return false
+	}
+
+	return true
+
+}

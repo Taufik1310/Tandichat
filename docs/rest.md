@@ -109,7 +109,7 @@ const token = "your_jwt_token_here"; // Ganti dengan jwt token yang diterima dar
 const myHeaders = new Headers();
 
 myHeaders.append("Content-Type", "application/json");
-myHeaders.append("Authorization", token)
+myHeaders.append("Authorization", token);
 
 const requestOptions = {
   method: "POST",
@@ -174,7 +174,7 @@ fetchProfilePicture()
   });
 ```
 
-// TODO : Implement ini, benerin error handlin
+// ! NOT IMPLEMENTED
 
 == Change Profile Picture ==
 
@@ -191,6 +191,221 @@ fetchProfilePicture()
   - "message": string,
   - "status": number
 
+- error response :
+  - code : number
+  - data : null
+  - error : string
+  - details : string
+
+== Request Friend ==
+
+- desc : API untuk membuat request kepada user lain
+- url : /api/friends/request
+- Header : {
+  Authorization : jwt
+  }
+- body : {
+  "friendid" : number
+  }
+- method : POST
+- response :
+  - "message": string,
+  - "status": number
+- error response :
+  - code : number
+  - data : null
+  - error : string
+  - details : string
+
+```javascript
+const jwt = "your-jwt-token";
+const friendId = 123;
+
+const url = "/api/friends/request";
+const headers = {
+  Authorization: jwt,
+  "Content-Type": "application/json",
+};
+
+const body = JSON.stringify({
+  friendid: friendId,
+});
+
+fetch(url, {
+  method: "POST",
+  headers: headers,
+  body: body,
+})
+  .then((response) => response.json())
+  .then((data) => {
+    console.log(data);
+  })
+  .catch((error) => {
+    console.error(error);
+  });
+```
+
+== Accepting Friend ==
+
+- desc : API untuk membuat Mengaccept friend request user lain
+- url : /api/friends/accept
+- Header : {
+  Authorization : jwt
+  }
+- body : {
+  "friendid" : number
+  }
+- method : POST
+- response :
+  - "message": string,
+  - "status": number
+- error response :
+  - code : number
+  - data : null
+  - error : string
+  - details : string
+
+```javascript
+const jwtToken = "your_jwt_token_here";
+const friendId = 123;
+
+fetch("/api/friends/accept", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: jwtToken,
+  },
+  body: JSON.stringify({
+    friendid: friendId,
+  }),
+})
+  .then((response) => response.json())
+  .then((data) => {
+    // Handle the response data
+    console.log(data);
+  })
+  .catch((error) => {
+    // Handle any errors
+    console.error(error);
+  });
+```
+
+== Get Accepted Friend ==
+
+- desc : API untuk mengambil semua teman yang sudah berstatus accepted
+- url : /api/friends
+- Header : {
+  Authorization : jwt
+  }
+- method : GET
+- response :
+  - "message": string,
+  - "status": number,
+  - "data": {
+    Id number
+    Username string
+    Email string
+    Img string
+    About string
+    }
+- error response :
+  - code : number
+  - data : null
+  - error : string
+  - details : string
+
+```javascript
+const jwtToken = "your_jwt_token_here";
+
+fetch("/api/friends", {
+  method: "GET",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: jwtToken,
+  },
+})
+  .then((response) => response.json())
+  .then((data) => {
+    // Handle the response data
+    console.log(data);
+  })
+  .catch((error) => {
+    // Handle any errors
+    console.error(error);
+  });
+```
+
+== Get Pending Friend ==
+
+- desc : API untuk mengambil semua teman yang sedang berstatus Pending
+- url : /api/friends/pending
+- Header : {
+  Authorization : jwt
+  }
+- method : GET
+- response :
+  - "message": string,
+  - "status": number,
+  - "data": {
+    recieved : {
+    Id number
+    Username string
+    Email string
+    Img string
+    About string
+    }[]
+    "sended" : {
+    "Id": number
+    "Username": string
+    "Email": string
+    "Img": string
+    "About" : string
+    }[]
+    }
+- error response :
+  - code : number
+  - data : null
+  - error : string
+  - details : string
+
+```javascript
+const jwtToken = "your_jwt_token_here";
+
+fetch("/api/friends/pending", {
+  method: "GET",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: jwtToken,
+  },
+})
+  .then((response) => response.json())
+  .then((data) => {
+    // Handle the response data
+    console.log(data);
+  })
+  .catch((error) => {
+    // Handle any errors
+    console.error(error);
+  });
+```
+
+=== Ambil data orang yang sedang login
+
+- desc : API untuk mengambil orang yang sedang login
+- url : /api/user
+- Header : {
+  Authorization : jwt
+  }
+- method : GET
+- response :
+  - "message": string,
+  - "status": number,
+  - "data": {
+    "id" number
+    "Email "string
+    "Img" string
+    "About "string
+    }
 - error response :
   - code : number
   - data : null

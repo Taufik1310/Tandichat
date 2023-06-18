@@ -122,3 +122,17 @@ func ParseJWT(token string) (*JWTStructure, error) {
 	}
 
 }
+
+func IsConnectedUserIsValid(token string) (*JWTStructure, error) {
+	claims, err := ParseJWT(token)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if !database.IsSessionExist(claims.SessionID) {
+		return nil, errors.New("error: Session not found")
+	}
+
+	return claims, nil
+}

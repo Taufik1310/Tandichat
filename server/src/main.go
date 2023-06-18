@@ -50,11 +50,19 @@ func main() {
 	config.AllowHeaders = []string{"Origin", "Content-Length", "Content-Type", "Authorization"}
 
 	r.Use(cors.New(config))
+	//* API AUTH
 	r.POST("/api/register", routes.Register)
 	r.POST("/api/login", routes.Login)
 	r.POST("/api/logout", routes.Logout)
-	r.GET("/profile", routes.GetProfilePicture)
-	r.POST("/profile", routes.ChangeProfilePicture)
+	//* API PROFILE
+	r.GET("/api/user", routes.GetCurrentlyLoginUser)
+	r.GET("/api/profile", routes.GetProfilePicture)
+	r.POST("/api/profile", routes.ChangeProfilePicture)
+	//* API FRIEND
+	r.GET("/api/friends", routes.GetAllFriends)
+	r.POST("/api/friends/accept", routes.AcceptFriendRequest)
+	r.GET("/api/friends/pending", routes.GetPendingFriendRequests)
+	r.POST("/api/friends/request", routes.RequestAddFriend)
 
 	r.GET("/ws/connect", func(ctx *gin.Context) {
 		m.HandleRequest(ctx.Writer, ctx.Request)
