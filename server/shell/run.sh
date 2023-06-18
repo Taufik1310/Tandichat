@@ -5,9 +5,9 @@ TAG="$1"
 
 if [ "$TAG" == "image" ]; then
   # Build Docker image
-  docker build -t realtime-postgres .
+  docker build -t tandichat .
 
-  docker container create -p 5432:5432 tandichat
+  docker container create --name tandichat -p 5432:5432 tandichat
 
   # Run the container
   docker container start tandichat
@@ -18,7 +18,7 @@ if [ "$TAG" == "container" ]; then
   docker container start tandichat
 fi
 
-sleep 3
+
 
 # Run the Go app
 go run src/main.go

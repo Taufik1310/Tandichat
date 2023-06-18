@@ -3,7 +3,6 @@ package database
 import (
 	"andiputraw/Tandichat/src/model"
 	"errors"
-	"fmt"
 )
 
 func GetSession(sessionID uint) (*model.Session, error) {
@@ -18,12 +17,13 @@ func GetSession(sessionID uint) (*model.Session, error) {
 	return &session, nil
 }
 
-func GetAllFriends(userID uint) ([]model.User, error) {
+func IsSessionExist(id uint) bool {
+	var session model.Session
 
-	friends := []model.User{}
+	if err := DB.Where("id = ?", id).First(&session).Error; err != nil {
+		return false
+	}
 
-	DB.Model(&model.Friend{}).Joins("inner join users on users.id = friends.friend_id").Where("user_id = ?", userID).Find(&model.Friend{})
+	return true
 
-	fmt.Println(friends)
-	return nil, nil
 }

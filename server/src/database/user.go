@@ -5,7 +5,15 @@ import (
 	"errors"
 )
 
-//* User
+func IsUserExist(id string) bool {
+	var user model.User
+
+	if err := DB.Where("id = ?", id).First(&user).Error; err != nil {
+		return false
+	}
+
+	return true
+}
 
 func InsertUser(user *model.User) error {
 
@@ -26,5 +34,3 @@ func ChangeProfilePicture(id string, pictureName string) error {
 
 	return nil
 }
-
-// * Session
