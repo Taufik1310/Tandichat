@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { BiArrowBack, BiCamera, BiPencil } from 'react-icons/bi'
-import { getUserData } from "../../Rest"
+import { getProfilePicture, getUserData } from "../../Rest"
 
 const DEFAULT_AVATAR = './assets/default-avatar.png'
 
@@ -21,6 +21,7 @@ const ChatProfile = () => {
         username: false,
         about: false
     })
+    const [profilePicture, setProfilePicture] = useState<string>("")
     const [value, setValue] = useState<Value>({
         username: '',
         about: '',
@@ -29,16 +30,19 @@ const ChatProfile = () => {
         username: 'auto',
         about: 'auto'
     })
-
+    
     const fetchUserData = async () => {
         const token = localStorage.getItem('token')
         if (token) {
             const responseGetUserData = await getUserData(token)
-            const { Username, About } = responseGetUserData.data
+            const { Username, About, Img } = responseGetUserData.data
             setValue({
                 username: Username,
                 about: About,
             })
+            const removeImgExt = Img.replace(/\.(jpg|png|jpeg)$/, "")
+            const profilePicture = await getProfilePicture(removeImgExt)
+            setProfilePicture(profilePicture)
         }
     }
 
@@ -66,7 +70,7 @@ const ChatProfile = () => {
         <div>
             <div className="avatar">
                 <div className="w-10 h-10 max-h-10 overflow-hidden rounded-full object-cover cursor-pointer" onClick={() => setIsOpenProfile(!isOpenProfile)}>
-                    <img src={DEFAULT_AVATAR} alt="Foto Profil" />
+                    <img src={profilePicture} alt="Foto Profil" />
                 </div>
             </div>
             {isOpenProfile && 
@@ -79,7 +83,7 @@ const ChatProfile = () => {
                     <section>
                         <div className="avatar">
                             <div className="w-52 h-52 max-h-52 rounded-full overflow-hidden object-cover relative cursor-pointer">
-                                <img src={DEFAULT_AVATAR} alt="Foto Profil" onMouseEnter={() => setIsHoverAvatar(!isHoverAvatar)} />
+                                <img src={profilePicture} alt="Foto Profil" onMouseEnter={() => setIsHoverAvatar(!isHoverAvatar)} />
                                 {isHoverAvatar && 
                                 <div  className="bg-gray-700 absolute top-0 bottom-0 start-0 end-0 bg-opacity-80 flex flex-col items-center justify-center font-semibold" onMouseLeave={() => setIsHoverAvatar(!isHoverAvatar)}>
                                     <input type="file" name="profilPicture" className="opacity-0 cursor-pointer absolute top-0 bottom-0 start-0 end-0" />

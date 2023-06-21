@@ -65,3 +65,17 @@ export const getUserData = async (token: string) => {
         throw error
     }
 }
+
+export const getProfilePicture = async ( imageName: string = "default" ) => {
+    try {
+        const queryParams = new URLSearchParams({ name: imageName }).toString()
+        const url = `http://localhost:5050/api/profile?${queryParams}`
+        const response = await axios.get(url, { responseType: 'blob' })
+        const imageBlob = response.data
+        const imageUrl = URL.createObjectURL(imageBlob)
+        return imageUrl
+    } catch (error) {
+        console.error("Error fetching profile picture:", error.message);
+        return undefined;
+    }
+}
