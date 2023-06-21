@@ -31,6 +31,7 @@ const AuthForm = ({ authType, authText, setAuthType, onLogin }: AuthFormProps) =
         confirmPassword: true,
     })
     const [isDisabledBtn, setIsDisabledBtn] = useState<boolean>(true)
+    
 
     useEffect(() => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -106,33 +107,39 @@ const AuthForm = ({ authType, authText, setAuthType, onLogin }: AuthFormProps) =
         setConfirmPassword('')
     }
 
+    const handleRegister = async () => {
+        const response = await register(email, username, password)
+        setRegisterCode(response)
+    
+        if (response === 200) {
+            clearForm()
+        } else {
+            setEmail('')
+        }
+    }
 
-    const validateForm = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleLogin = async () => {
+        const response = await login(email, password)
+        setLoginCode(response.code)
+        
+        if (response.code === 200) {
+            clearForm()
+            const token = response.data.Token
+            localStorage.setItem('token', token)
+            onLogin()
+        } else {
+            setPassword('')
+        }
+    }
+
+    const validateForm = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
       
         if (authType === 'register') {
-            const response = await register(email, username, password)
-            setRegisterCode(response)
-        
-            if (response === 200) {
-              clearForm()
-            } else {
-              setEmail('')
-            }
+            handleRegister()
         } 
-        
         if (authType === 'login') {
-            const response = await login(email, password)
-            setLoginCode(response.code)
-           
-            if (response.code === 200) {
-                clearForm()
-                const token = response.data.Token
-                localStorage.setItem('token', token)
-                onLogin()
-            } else {
-                setPassword('')
-            }
+            handleLogin()
         }
     }      
     

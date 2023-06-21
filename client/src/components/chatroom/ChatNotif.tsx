@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { BiArrowBack } from 'react-icons/bi'
 
-const DEFAULT_AVATAR = './assets/logo1.png'
+const DEFAULT_AVATAR = './assets/default-avatar.png'
 
 interface ChatNotifProps {
     onClose: () => void

@@ -5,22 +5,17 @@ import ChatRoom from "./ChatRoom"
 
 const LOGO = './assets/logo2.png'
 
-interface AuthType {
-    type: string,
-    text: string,
-}
-
 const Main = () => {
-    const [isLoggedIn, setIsLoggedIn] = useState(false)
-
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
+    
     useEffect(() => {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('token')
         if (token) {
-          setIsLoggedIn(true)
+            setIsLoggedIn(true)
         } else {
             setIsLoggedIn(false)
         }
-      }, []);
+    }, [])
 
     const handleLogin = () => {
         setIsLoggedIn(true)

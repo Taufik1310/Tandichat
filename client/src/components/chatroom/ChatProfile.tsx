@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react"
 import { BiArrowBack, BiCamera, BiPencil } from 'react-icons/bi'
+import { getUserData } from "../../Rest"
 
 const DEFAULT_AVATAR = './assets/default-avatar.png'
 
@@ -21,29 +22,45 @@ const ChatProfile = () => {
         about: false
     })
     const [value, setValue] = useState<Value>({
-        username: "Kurt Cobain",
-        about: "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Non accusantium, reprehenderit quam maxime molestiae, quibusdam culpa unde iure, autem voluptas odit tempora aliquid dolor dolorem similique obcaecati aut expedita illo!"
+        username: '',
+        about: '',
     })
     const [textareaHeight, setTextareaHeight] = useState<Value>({
         username: 'auto',
         about: 'auto'
     })
 
+    const fetchUserData = async () => {
+        const token = localStorage.getItem('token')
+        if (token) {
+            const responseGetUserData = await getUserData(token)
+            const { Username, About } = responseGetUserData.data
+            setValue({
+                username: Username,
+                about: About,
+            })
+        }
+    }
+
+    useEffect(() => {
+        fetchUserData()
+    }, [])
+
     useEffect(() => {
         if (isOpenProfile) {
-            const textareaUsername = document.getElementById('profileUsername');
-            const textareaAbout = document.getElementById('profileAbout');
-            textareaUsername.style.height = `auto`;
-            textareaUsername.style.height = `${textareaUsername.scrollHeight}px`;
-            textareaAbout.style.height = `auto`;
-            textareaAbout.style.height = `${textareaAbout.scrollHeight}px`;
+            const textareaUsername = document.getElementById('profileUsername')
+            const textareaAbout = document.getElementById('profileAbout')
+            textareaUsername.style.height = `auto`
+            textareaUsername.style.height = `${textareaUsername.scrollHeight}px`
+            textareaAbout.style.height = `auto`
+            textareaAbout.style.height = `${textareaAbout.scrollHeight}px`
         
             setTextareaHeight({ 
                 username: `${textareaUsername.scrollHeight}px`,  
                 about: `${textareaAbout.scrollHeight}px`
-            });
+            })
         }
-    }, [isOpenProfile, value, isEnabledEdit]);
+    }, [isOpenProfile, value, isEnabledEdit])
 
     return (
         <div>
