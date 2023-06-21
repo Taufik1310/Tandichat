@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { FaEyeSlash, FaEye, FaInfoCircle } from 'react-icons/fa'
 import { register, login } from '../../Rest'
 import { AlertLogin, AlertRegister } from '../template/Alert'
+import { IsLoggedInContex } from '../../Context'
 
 interface AuthFormProps {
     authType: string,
     authText: string,
     setAuthType: Function,
-    onLogin: Function
 }
 
 interface IsValid {
@@ -16,7 +16,8 @@ interface IsValid {
     confirmPassword?: boolean,
 }
 
-const AuthForm = ({ authType, authText, setAuthType, onLogin }: AuthFormProps) => {
+const AuthForm = ({ authType, authText, setAuthType }: AuthFormProps) => {
+    const { onLogin } = useContext(IsLoggedInContex)
     const [registerCode, setRegisterCode] = useState<number>(0)
     const [loginCode, setLoginCode] = useState<number>(0)
     const [isShowPass, setIsShowPass] = useState<boolean>(false)
