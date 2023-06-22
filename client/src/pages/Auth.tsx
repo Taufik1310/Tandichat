@@ -10,7 +10,7 @@ interface AuthType {
     text: string,
 }
 
-const Auth = ({ onLogin }: { onLogin: Function }) => {
+const Auth = () => {
     const [authType, setAuthType] = useState<AuthType>({
         type: "login",
         text: "Masuk",
@@ -21,7 +21,7 @@ const Auth = ({ onLogin }: { onLogin: Function }) => {
             <div className="flex flex-col items-center">
                 <AuthHeader authText={authType.text} logo={LOGO}/>
                 <SwitchAuthType setAuthType={setAuthType} authType={authType.type} authText={authType.text} />
-                <AuthForm authText={authType.text} authType={authType.type} setAuthType={setAuthType} onLogin={onLogin}/>
+                <AuthForm authText={authType.text} authType={authType.type} setAuthType={setAuthType} />
             </div>
         </div> 
     )

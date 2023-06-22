@@ -1,9 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { GoKebabVertical, GoBell, GoSignOut } from 'react-icons/go'
 import ChatNotif from './ChatNotif'
 import { logout } from '../../Rest'
+import { IsLoggedInContex } from '../../Context'
 
-const ChatMenu = ({ onLogout }: { onLogout: Function }) => {
+const ChatMenu = () => {
+    const { onLogout } = useContext(IsLoggedInContex)
     const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false)
     const [isOpenNotif, setIsOpenNotif] = useState<boolean>(false)
 

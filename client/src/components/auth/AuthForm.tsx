@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { FaEyeSlash, FaEye, FaInfoCircle } from 'react-icons/fa'
 import { register, login } from '../../Rest'
 import { AlertLogin, AlertRegister } from '../template/Alert'
+import { IsLoggedInContex } from '../../Context'
 
 interface AuthFormProps {
     authType: string,
     authText: string,
     setAuthType: Function,
-    onLogin: Function
 }
 
 interface IsValid {
@@ -16,7 +16,8 @@ interface IsValid {
     confirmPassword?: boolean,
 }
 
-const AuthForm = ({ authType, authText, setAuthType, onLogin }: AuthFormProps) => {
+const AuthForm = ({ authType, authText, setAuthType }: AuthFormProps) => {
+    const { onLogin } = useContext(IsLoggedInContex)
     const [registerCode, setRegisterCode] = useState<number>(0)
     const [loginCode, setLoginCode] = useState<number>(0)
     const [isShowPass, setIsShowPass] = useState<boolean>(false)
@@ -31,6 +32,7 @@ const AuthForm = ({ authType, authText, setAuthType, onLogin }: AuthFormProps) =
         confirmPassword: true,
     })
     const [isDisabledBtn, setIsDisabledBtn] = useState<boolean>(true)
+    
 
     useEffect(() => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -106,33 +108,39 @@ const AuthForm = ({ authType, authText, setAuthType, onLogin }: AuthFormProps) =
         setConfirmPassword('')
     }
 
+    const handleRegister = async () => {
+        const response = await register(email, username, password)
+        setRegisterCode(response)
+    
+        if (response === 200) {
+            clearForm()
+        } else {
+            setEmail('')
+        }
+    }
 
-    const validateForm = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleLogin = async () => {
+        const response = await login(email, password)
+        setLoginCode(response.code)
+        
+        if (response.code === 200) {
+            clearForm()
+            const token = response.data.Token
+            localStorage.setItem('token', token)
+            onLogin()
+        } else {
+            setPassword('')
+        }
+    }
+
+    const validateForm = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
       
         if (authType === 'register') {
-            const response = await register(email, username, password)
-            setRegisterCode(response)
-        
-            if (response === 200) {
-              clearForm()
-            } else {
-              setEmail('')
-            }
+            handleRegister()
         } 
-        
         if (authType === 'login') {
-            const response = await login(email, password)
-            setLoginCode(response.code)
-           
-            if (response.code === 200) {
-                clearForm()
-                const token = response.data.Token
-                localStorage.setItem('token', token)
-                onLogin()
-            } else {
-                setPassword('')
-            }
+            handleLogin()
         }
     }      
     

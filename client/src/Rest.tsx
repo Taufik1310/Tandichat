@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-export const register = async (email: string, username: string, password: string): Promise<number> => {
+export const register = async (email: string, username: string, password: string) => {
     try {
         const response = await axios.post('http://localhost:5050/api/register', {
             email,
@@ -35,7 +35,6 @@ export const logout = async (token: string) => {
     const headers = {
         "Content-Type": "application/json",
         "Authorization": token,
-        
     }
 
     try {
@@ -46,5 +45,37 @@ export const logout = async (token: string) => {
             return error.response.data
         }
         throw error
+    }
+}
+
+
+export const getUserData = async (token: string) => {
+    const headers = {
+        "Content-Type": "application/json",
+        "Authorization": token,
+    }
+
+    try {
+        const response = await axios.get("http://localhost:5050/api/user", { headers })
+        return response.data
+    } catch (error) {
+        if (error.response) {
+            return error.response.data
+        }
+        throw error
+    }
+}
+
+export const getProfilePicture = async ( imageName: string = "default" ) => {
+    try {
+        const queryParams = new URLSearchParams({ name: imageName }).toString()
+        const url = `http://localhost:5050/api/profile?${queryParams}`
+        const response = await axios.get(url, { responseType: 'blob' })
+        const imageBlob = response.data
+        const imageUrl = URL.createObjectURL(imageBlob)
+        return imageUrl
+    } catch (error) {
+        console.error("Error fetching profile picture:", error.message);
+        return undefined;
     }
 }
