@@ -6,10 +6,10 @@ import (
 
 type User struct {
 	gorm.Model
-	Email    string `gorm:"unique"`
+	Email    string `gorm:"uniqueIndex:idx_email"`
 	Username string `gorm:"type:varchar(100);"`
 	Password string `gorm:"type:varchar(100);"`
-	Img      string `gorm:"default:default.png"`
+	Avatar   string `gorm:"default:default.png"`
 	About    string `gorm:"default:Hello im using tandichat"`
 }
 

@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 	"strings"
@@ -14,7 +13,7 @@ import (
 
 const imagePath = "./static/profile/"
 
-func GetProfilePicture(c *gin.Context) {
+func GetAvatar(c *gin.Context) {
 	imageName := c.DefaultQuery("name", "default")
 	safeImageName := sanitizeFilename(imageName)
 
@@ -28,20 +27,15 @@ func GetProfilePicture(c *gin.Context) {
 	c.File(imagePath + safeImageName + ".png")
 }
 
-func ChangeProfilePicture(c *gin.Context) {
-	file, err := c.FormFile("file")
-	id := c.Query("id")
+func ChangeAvatar(c *gin.Context) {
 
-	if id == "" {
-		c.AbortWithStatusJSON(400, gin.H{"error": "id is required"})
+	session, err := checkIfuserIsLogged(c)
+
+	if err != nil {
 		return
 	}
 
-	if !database.IsUserExist(id) {
-		c.AbortWithStatusJSON(400, gin.H{"error": "User Does not exist"})
-		return
-	}
-	fmt.Println(err)
+	file, err := c.FormFile("avatar")
 
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -55,11 +49,9 @@ func ChangeProfilePicture(c *gin.Context) {
 
 	filename := uuid.New().String()
 
-	fmt.Println(filename)
-
 	c.SaveUploadedFile(file, imagePath+filename+".png")
 
-	if err := database.ChangeProfilePicture(id, filename); err != nil {
+	if err := database.ChangeProfilePicture(session.ID, filename); err != nil {
 		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}

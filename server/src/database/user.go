@@ -20,15 +20,22 @@ type user struct {
 	ID       uint
 	Username string
 	Email    string
-	Img      string
+	Avatar   string
 	About    string
 }
 
-func GetUser(id uint) (*user, error) {
+type userid interface {
+	uint | string
+}
+
+func GetUser[T userid](id T) (*user, error) {
 	var user *user
 
-	if err := DB.Model(&user).Select("id, username, email, img, about").Where("id = ?", id).Scan(&user).Error; err != nil {
+	if err := DB.Model(&user).Select("id, username, email, avatar, about").Where("id = ?", id).Scan(&user).Error; err != nil {
 		return user, err
+	}
+	if user.ID == 0 {
+		return user, errors.New("error : user not found")
 	}
 	return user, nil
 }
@@ -42,12 +49,42 @@ func InsertUser(user *model.User) error {
 	return nil
 }
 
-func ChangeProfilePicture(id string, pictureName string) error {
+func updateUser[T userid](id T, collumn string, value interface{}) error {
 	var user model.User
-	user.Img = pictureName
 
-	if err := DB.Model(&user).Where("id = ?", id).Updates(user).Error; err != nil {
-		return errors.New("error: Error at updating profile picture")
+	result := DB.Model(&user).Where("id = ?", id).Update(collumn, value)
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return errors.New("error : userid not found")
+	}
+
+	return nil
+}
+
+func ChangeUsername[T userid](id T, username string) error {
+	if err := updateUser(id, "username", username); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func ChangeAbout[T userid](id T, about string) error {
+
+	if err := updateUser(id, "about", about); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func ChangeProfilePicture(id string, pictureName string) error {
+	if err := updateUser(id, "avatar", pictureName); err != nil {
+		return err
 	}
 
 	return nil
