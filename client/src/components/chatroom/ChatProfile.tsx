@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react"
 import { BiArrowBack, BiCamera, BiPencil } from 'react-icons/bi'
 import { getProfilePicture, getUserData } from "../../Rest"
 
-const DEFAULT_AVATAR = './assets/default-avatar.png'
 
 interface IsEnabledEdit {
     username?: boolean,
@@ -69,7 +68,7 @@ const ChatProfile = () => {
     return (
         <div>
             <div className="avatar">
-                <div className="w-10 h-10 max-h-10 overflow-hidden rounded-full object-cover cursor-pointer" onClick={() => setIsOpenProfile(!isOpenProfile)}>
+                <div className="w-8 h-8 max-h-8 overflow-hidden rounded-full object-cover cursor-pointer" onClick={() => setIsOpenProfile(!isOpenProfile)}>
                     <img src={profilePicture} alt="Foto Profil" />
                 </div>
             </div>
