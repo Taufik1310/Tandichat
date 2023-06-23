@@ -15,7 +15,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/olahol/melody"
-	
 )
 
 // * PROTOTYPE
@@ -54,15 +53,22 @@ func main() {
 	r.POST("/api/register", routes.Register)
 	r.POST("/api/login", routes.Login)
 	r.POST("/api/logout", routes.Logout)
-	//* API PROFILE
-	r.GET("/api/user", routes.GetCurrentlyLoginUser)
-	r.GET("/api/profile", routes.GetProfilePicture)
-	r.POST("/api/profile", routes.ChangeProfilePicture)
+
+	//* API AVATAR
+	r.GET("/api/avatar", routes.GetAvatar)
+	r.POST("/api/avatar", routes.ChangeAvatar)
+
 	//* API FRIEND
 	r.GET("/api/friends", routes.GetAllFriends)
 	r.POST("/api/friends/accept", routes.AcceptFriendRequest)
 	r.GET("/api/friends/pending", routes.GetPendingFriendRequests)
 	r.POST("/api/friends/request", routes.RequestAddFriend)
+
+	//* API USER
+	r.GET("/api/user", routes.GetCurrentlyLoginUser)
+	r.GET("/api/user/:id", routes.GetUser)
+	r.PATCH("/api/user/username", routes.ChangeUsername)
+	r.PATCH("/api/user/about", routes.ChangeAbout)
 
 	r.GET("/ws/connect", func(ctx *gin.Context) {
 		m.HandleRequest(ctx.Writer, ctx.Request)

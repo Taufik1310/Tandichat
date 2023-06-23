@@ -24,98 +24,90 @@ func GetCurrentlyLoginUser(c *gin.Context) {
 	c.JSON(200, body)
 }
 
-func GetAllFriends(c *gin.Context) {
-	session, err := checkIfuserIsLogged(c)
-
+func GetUser(c *gin.Context) {
+	_, err := checkIfuserIsLogged(c)
 	if err != nil {
 		return
 	}
 
-	friends, err := database.GetAllFriends(session.UserID)
+	userID := c.Param("id")
 
-	if err != nil {
-		body := NewResponseError(500, "Failed to get friend requests", err.Error())
-		c.JSON(500, body)
-		return
-	}
-
-	response := gin.H{"code": 200, "message": "Success", "data": friends}
-
-	c.JSON(200, response)
-
-}
-
-func GetPendingFriendRequests(c *gin.Context) {
-	session, err := checkIfuserIsLogged(c)
-
-	if err != nil {
-		return
-	}
-
-	friends, recieved, err := database.GetPendingRequest(session.UserID)
-
-	if err != nil {
-		body := NewResponseError(500, "Failed to get pending friend requests", err.Error())
-		c.JSON(500, body)
-		return
-	}
-
-	response := gin.H{"code": 200, "message": "Success", "data": gin.H{"sended": friends, "recieved": recieved}}
-
-	c.JSON(200, response)
-
-}
-
-func RequestAddFriend(c *gin.Context) {
-	sessions, err := checkIfuserIsLogged(c)
-
-	if err != nil {
-		return
-	}
-
-	var requestData struct {
-		Friendid uint `json:"friendid" binding:"required"`
-	}
-
-	if err := c.ShouldBindJSON(&requestData); err != nil {
-		body := NewResponseError(400, "Bad Request", err.Error())
+	if userID == "" {
+		body := NewResponseError(400, "Bad Request", "User ID is required")
 		c.JSON(400, body)
 		return
 	}
 
-	if err := database.RequestAddFriend(sessions.UserID, requestData.Friendid); err != nil {
-		body := NewResponseError(500, "Failed to add friend", err.Error())
+	user, err := database.GetUser(userID)
+
+	if err != nil {
+		body := NewResponseError(500, "Failed to get user", err.Error())
 		c.JSON(500, body)
 		return
 	}
 
-	c.JSON(200, gin.H{"code": "200", "message": "Success"})
-
+	body := gin.H{"code": 200, "message": "Success", "data": user}
+	c.JSON(200, body)
 }
 
-func AcceptFriendRequest(c *gin.Context) {
-	sessions, err := checkIfuserIsLogged(c)
-
+func ChangeUsername(c *gin.Context) {
+	session, err := checkIfuserIsLogged(c)
 	if err != nil {
 		return
 	}
 
-	var requestData struct {
-		Friendid uint `json:"friendid" binding:"required"`
+	var req_body struct {
+		New_username string `json:"new_username" binding:"required"`
 	}
-
-	if err := c.ShouldBindJSON(&requestData); err != nil {
-		body := NewResponseError(400, "Bad Request", err.Error())
-		c.JSON(400, body)
+	if err := c.ShouldBindJSON(&req_body); err != nil {
+		req_body := NewResponseError(400, "Bad Request", err.Error())
+		c.JSON(400, req_body)
 		return
 	}
 
-	if err := database.AcceptFriendRequest(sessions.UserID, requestData.Friendid); err != nil {
-		body := NewResponseError(500, "Failed to accept friend", err.Error())
-		c.JSON(500, body)
+	if req_body.New_username == "" {
+		req_body := NewResponseError(400, "Bad Request", "Username cannot be empty")
+		c.JSON(400, req_body)
 		return
 	}
 
-	c.JSON(200, gin.H{"code": "200", "message": "Success"})
+	if err := database.ChangeUsername(session.UserID, req_body.New_username); err != nil {
+		req_body := NewResponseError(500, "Failed to change username", err.Error())
+		c.JSON(500, req_body)
+		return
+	}
 
+	body := gin.H{"code": 200, "message": "Success"}
+	c.JSON(200, body)
+}
+
+func ChangeAbout(c *gin.Context) {
+	session, err := checkIfuserIsLogged(c)
+	if err != nil {
+		return
+	}
+
+	var req_body struct {
+		New_about string `json:"new_about" binding:"required"`
+	}
+	if err := c.ShouldBindJSON(&req_body); err != nil {
+		req_body := NewResponseError(400, "Bad Request", err.Error())
+		c.JSON(400, req_body)
+		return
+	}
+
+	if req_body.New_about == "" {
+		req_body := NewResponseError(400, "Bad Request", "Username cannot be empty")
+		c.JSON(400, req_body)
+		return
+	}
+
+	if err := database.ChangeAbout(session.UserID, req_body.New_about); err != nil {
+		req_body := NewResponseError(500, "Failed to change username", err.Error())
+		c.JSON(500, req_body)
+		return
+	}
+
+	body := gin.H{"code": 200, "message": "Success"}
+	c.JSON(200, body)
 }

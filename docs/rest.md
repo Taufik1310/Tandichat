@@ -174,14 +174,16 @@ fetchProfilePicture()
   });
 ```
 
-// ! NOT IMPLEMENTED
-
 == Change Profile Picture ==
 
 - desc : Rest untuk mengubah profile picture
-- url : /api/profile
-- queryParams :
-  - id (required) : jwt
+- url : /api/avatar
+- Header : {
+  Authorization : jwt
+  }
+- Form Data{
+  avatar : blob(?)
+  }
 - method : POST
 - response :
 
@@ -196,6 +198,30 @@ fetchProfilePicture()
   - data : null
   - error : string
   - details : string
+
+```javascript
+const fileInput = document.getElementById("file-input"); // Assuming you have an input element of type "file" with id "file-input"
+
+const formData = new FormData();
+formData.append("avatar", fileInput.files[0]); // Assuming you want to send the first selected file
+
+fetch("/api/avatar", {
+  method: "POST",
+  headers: {
+    Authorization: "jwt", // Replace 'jwt' with the actual JWT token
+  },
+  body: formData,
+})
+  .then((response) => response.json())
+  .then((data) => {
+    // Handle the response data
+    console.log(data);
+  })
+  .catch((error) => {
+    // Handle any errors
+    console.error(error);
+  });
+```
 
 == Request Friend ==
 
@@ -389,7 +415,7 @@ fetch("/api/friends/pending", {
   });
 ```
 
-=== Ambil data orang yang sedang login
+== Ambil data orang yang sedang login ==
 
 - desc : API untuk mengambil orang yang sedang login
 - url : /api/user
@@ -406,6 +432,69 @@ fetch("/api/friends/pending", {
     "Img" string
     "About "string
     }
+- error response :
+  - code : number
+  - data : null
+  - error : string
+  - details : string
+
+== Ambil data orang lain ==
+
+- desc : API untuk mengambil orang lain
+- url : /api/user/{id}
+- Header : {
+  Authorization : jwt
+  }
+- method : GET
+- response :
+  - "message": string,
+  - "status": number,
+  - "data": {
+    "id" number
+    "Email "string
+    "Img" string
+    "About "string
+    }
+- error response :
+  - code : number
+  - data : null
+  - error : string
+  - details : string
+
+== Ubah username ==
+
+- desc : API untuk mengubah username orang yang sedang login
+- url : /api/user/username
+- Header : {
+  Authorization : jwt
+  }
+- body : {
+  "new_username" : string
+  }
+- method : PATCH
+- response :
+  - "message": string,
+  - "status": number
+- error response :
+  - code : number
+  - data : null
+  - error : string
+  - details : string
+
+== Ubah about ==
+
+- desc : API untuk mengubah about orang yang sedang login
+- url : /api/user/about
+- Header : {
+  Authorization : jwt
+  }
+- body : {
+  "new_about" : string
+  }
+- method : PATCH
+- response :
+  - "message": string,
+  - "status": number
 - error response :
   - code : number
   - data : null

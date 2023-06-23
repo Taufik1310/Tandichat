@@ -15,11 +15,11 @@ var DB *gorm.DB
 
 func Connect() error {
 	dsn := os.Getenv("DB_URL")
-	
+
 	var DBMS string
 	if len(os.Args) < 2 {
 		DBMS = "postgres"
-	}else {
+	} else {
 		DBMS = os.Args[1]
 	}
 
@@ -28,17 +28,16 @@ func Connect() error {
 
 	if DBMS == "postgres" {
 		db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	}else if DBMS == "mysql" {
+	} else if DBMS == "mysql" {
 		db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	
-	}else {
+
+	} else {
 		fmt.Println("Error: Database provider not supported")
 		fmt.Println("Supported DBMS :")
 		fmt.Println("mysql | postgres")
 
 		os.Exit(1)
 	}
-
 
 	if err != nil {
 		return errors.Join(errors.New("error: Cannot connect to database"), err)
@@ -54,4 +53,3 @@ func Connect() error {
 
 	return nil
 }
-

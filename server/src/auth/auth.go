@@ -16,8 +16,8 @@ type JWTStructure struct {
 	UserID    uint   `json:"userID"`
 	Username  string `json:"username"`
 	Email     string `json:"email"`
-	Profile   string
-	About     string
+	Avatar    string `json:"avatar"`
+	About     string `json:"About"`
 	jwt.RegisteredClaims
 }
 
@@ -68,7 +68,7 @@ func Login(email string, password string) (string, error) {
 		"userID":    user.ID,
 		"username":  user.Username,
 		"email":     user.Email,
-		"profile":   user.Img,
+		"avatar":    user.Avatar,
 		"about":     user.About,
 	})
 
