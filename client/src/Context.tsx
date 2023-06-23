@@ -9,3 +9,5 @@ export const IsLoggedInContex = createContext<IsLoggedInContextype>({
     onLogin: () => {},
     onLogout: () => {}
 })
+
+export const TokenContext = createContext<string>('')

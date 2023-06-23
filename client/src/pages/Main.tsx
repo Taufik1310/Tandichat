@@ -2,15 +2,15 @@ import React, { useState, useEffect } from "react"
 import { Helmet, HelmetProvider } from "react-helmet-async"
 import Auth from "./Auth"
 import ChatRoom from "./ChatRoom"
-import { IsLoggedInContex } from "../Context"
+import { IsLoggedInContex, TokenContext } from "../Context"
 
 const LOGO = './assets/logo2.png'
 
 const Main = () => {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
+    const token = localStorage.getItem('token')
     
     useEffect(() => {
-        const token = localStorage.getItem('token')
         if (token) {
             setIsLoggedIn(true)
         } else {
@@ -34,9 +34,11 @@ const Main = () => {
                     <title>Tandichat Web</title>
                 </Helmet>
                 <main>
-                    <IsLoggedInContex.Provider value={{ onLogin: handleLogin, onLogout: handleLogout }}>
-                        { isLoggedIn ? <ChatRoom /> : <Auth /> }
-                    </IsLoggedInContex.Provider>
+                    <TokenContext.Provider value={token}>
+                        <IsLoggedInContex.Provider value={{ onLogin: handleLogin, onLogout: handleLogout }}>
+                            { isLoggedIn ? <ChatRoom /> : <Auth /> }
+                        </IsLoggedInContex.Provider>
+                    </TokenContext.Provider>
                 </main>
             </HelmetProvider>
        
