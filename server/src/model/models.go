@@ -19,6 +19,12 @@ type Session struct {
 	User   User
 }
 
+// TODO : Use redis
+type WebsocketSessionCache struct {
+	gorm.Model
+	Uuid string
+}
+
 type Friend struct {
 	gorm.Model
 	UserID   uint `gorm:"uniqueIndex:idx_friend"`

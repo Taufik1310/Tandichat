@@ -16,7 +16,7 @@ func IsUserExist(id string) bool {
 	return true
 }
 
-type user struct {
+type User struct {
 	ID       uint
 	Username string
 	Email    string
@@ -28,10 +28,22 @@ type userid interface {
 	uint | string
 }
 
-func GetUser[T userid](id T) (*user, error) {
-	var user *user
+func GetUser[T userid](id T) (*User, error) {
+	var user *User
 
 	if err := DB.Model(&user).Select("id, username, email, avatar, about").Where("id = ?", id).Scan(&user).Error; err != nil {
+		return user, err
+	}
+	if user.ID == 0 {
+		return user, errors.New("error : user not found")
+	}
+	return user, nil
+}
+
+func GetUserByEmail(email string) (*User, error) {
+	var user *User
+
+	if err := DB.Model(&user).Select("id, username, email, avatar, about").Where("email = ?", email).Scan(&user).Error; err != nil {
 		return user, err
 	}
 	if user.ID == 0 {
@@ -82,7 +94,7 @@ func ChangeAbout[T userid](id T, about string) error {
 	return nil
 }
 
-func ChangeProfilePicture(id string, pictureName string) error {
+func ChangeProfilePicture[T userid](id T, pictureName string) error {
 	if err := updateUser(id, "avatar", pictureName); err != nil {
 		return err
 	}

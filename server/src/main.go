@@ -56,7 +56,7 @@ func main() {
 
 	//* API AVATAR
 	r.GET("/api/avatar", routes.GetAvatar)
-	r.POST("/api/avatar", routes.ChangeAvatar)
+	r.PATCH("/api/avatar", routes.ChangeAvatar)
 
 	//* API FRIEND
 	r.GET("/api/friends", routes.GetAllFriends)
@@ -65,8 +65,7 @@ func main() {
 	r.POST("/api/friends/request", routes.RequestAddFriend)
 
 	//* API USER
-	r.GET("/api/user", routes.GetCurrentlyLoginUser)
-	r.GET("/api/user/:id", routes.GetUser)
+	r.GET("/api/user", routes.GetUser)
 	r.PATCH("/api/user/username", routes.ChangeUsername)
 	r.PATCH("/api/user/about", routes.ChangeAbout)
 

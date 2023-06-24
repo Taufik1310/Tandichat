@@ -14,10 +14,7 @@ import (
 type JWTStructure struct {
 	SessionID uint   `json:"Sessionid"`
 	UserID    uint   `json:"userID"`
-	Username  string `json:"username"`
 	Email     string `json:"email"`
-	Avatar    string `json:"avatar"`
-	About     string `json:"About"`
 	jwt.RegisteredClaims
 }
 
@@ -66,10 +63,7 @@ func Login(email string, password string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"SessionID": session.ID,
 		"userID":    user.ID,
-		"username":  user.Username,
 		"email":     user.Email,
-		"avatar":    user.Avatar,
-		"about":     user.About,
 	})
 
 	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET_KEY")))

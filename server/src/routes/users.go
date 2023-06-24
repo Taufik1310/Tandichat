@@ -25,20 +25,22 @@ func GetCurrentlyLoginUser(c *gin.Context) {
 }
 
 func GetUser(c *gin.Context) {
-	_, err := checkIfuserIsLogged(c)
+	session, err := checkIfuserIsLogged(c)
 	if err != nil {
 		return
 	}
 
-	userID := c.Param("id")
+	userID := c.Query("id")
+	email := c.Query("email")
+	var user *database.User
 
-	if userID == "" {
-		body := NewResponseError(400, "Bad Request", "User ID is required")
-		c.JSON(400, body)
-		return
+	if userID != "" {
+		user, err = database.GetUser(userID)
+	} else if email != "" {
+		user, err = database.GetUserByEmail(email)
+	} else {
+		user, err = database.GetUser(session.UserID)
 	}
-
-	user, err := database.GetUser(userID)
 
 	if err != nil {
 		body := NewResponseError(500, "Failed to get user", err.Error())
