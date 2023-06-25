@@ -5,11 +5,8 @@ import (
 	"andiputraw/Tandichat/src/database"
 	"andiputraw/Tandichat/src/routes"
 	"andiputraw/Tandichat/src/websocket"
-	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
-	"strconv"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -17,7 +14,7 @@ import (
 	"github.com/olahol/melody"
 )
 
-// * PROTOTYPE
+// * PROTOTYPE>
 type sendedData struct {
 	Data   string
 	Target string
@@ -38,13 +35,9 @@ func main() {
 	r := gin.Default()
 	m := melody.New()
 
-	wsPool := websocket.NewPool()
-
-	count := 0
-
 	config := cors.DefaultConfig()
 
-	config.AllowOrigins = []string{"http://localhost:3000"}
+	config.AllowOrigins = []string{"*"}
 	config.AllowCredentials = true
 	config.AllowHeaders = []string{"Origin", "Content-Length", "Content-Type", "Authorization"}
 
@@ -69,41 +62,17 @@ func main() {
 	r.PATCH("/api/user/username", routes.ChangeUsername)
 	r.PATCH("/api/user/about", routes.ChangeAbout)
 
-	r.GET("/ws/connect", func(ctx *gin.Context) {
-		m.HandleRequest(ctx.Writer, ctx.Request)
-	})
+	r.GET("/ws/auth", routes.GenerateWebsocketAuthCode)
+	r.GET("/ws/connect", routes.ConnectWebSocket(m))
+
+	//* API MESSAGE
+	r.GET("/api/message", routes.GetMessage)
 
 	//TODO Delete this
 	r.StaticFS("/static", http.Dir("./static"))
 
-	//* PROTOTYPE
-	m.HandleConnect(func(s *melody.Session) {
-		wsPool.InsertConnection(strconv.Itoa(count), s)
-		s.Write([]byte(fmt.Sprintf("You are number %d", count)))
-		count += 1
-	})
-
-	//* PROTOTYPE
-	m.HandleMessage(func(s *melody.Session, msg []byte) {
-		var data sendedData
-
-		err := json.Unmarshal(msg, &data)
-
-		if err != nil {
-			fmt.Println("Error decoding json")
-			return
-		}
-
-		fmt.Println(data)
-
-		anotherConnection, err := wsPool.GetConnection(data.Target)
-
-		if err != nil {
-			return
-		}
-
-		anotherConnection.Write([]byte(data.Data))
-	})
+	m.HandleConnect(websocket.HandleConnect)
+	m.HandleMessage(websocket.HandleMessage(m))
 
 	r.Run(":5050")
 }

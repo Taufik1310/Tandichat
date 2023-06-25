@@ -40,7 +40,7 @@ type Room struct {
 
 type RoomParticipant struct {
 	gorm.Model
-	UserID string
+	UserID uint
 	User   User
 	Room   Room
 	RoomID uint
@@ -56,7 +56,7 @@ type Message struct {
 }
 
 func Setup(db *gorm.DB) error {
-	err := db.AutoMigrate(&User{}, &Friend{}, &Room{}, &RoomParticipant{}, &Message{}, &Session{})
+	err := db.AutoMigrate(&User{}, &Friend{}, &Room{}, &RoomParticipant{}, &Message{}, &Session{}, &WebsocketSessionCache{})
 
 	if err != nil {
 		return err

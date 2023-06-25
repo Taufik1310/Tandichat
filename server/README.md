@@ -49,3 +49,12 @@ atau jika ingin langusung menggunakan golang
 ```bash
 go run src/main.go
 ```
+
+
+# Some Notes
+
+## Websocket Authentication
+
+Untuk sekarang authentikasi websocket dengan mengirimkan credentials melewati URI, yang mana ini adalah cara yang paling tidak secure https://websockets.readthedocs.io/en/stable/topics/authentication.html. walaupun credential hanya dapat digunakan 1x dan hanya berisi UUID dan UserID.
+
+Dari tulisan diatas. cara yang terbaik adalah dengan mengirimkan credentials langusng melewati webscoket. jika pesan pertama adalah credentials yang tidak valid, server langsung memutus hubungan dengan client

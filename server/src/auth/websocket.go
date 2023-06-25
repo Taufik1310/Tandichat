@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"andiputraw/Tandichat/src/config"
 	"errors"
 	"os"
 
@@ -8,9 +9,9 @@ import (
 )
 
 type websocketAuthStructure struct {
-	AuthID string
+	AuthID string `json:"authID"`
 	//Session ID harusnya dipake buat cek SEKALI LAGI apakah user masih login atau belum
-	SessionID string
+	UserID uint `json:"userID"`
 	jwt.RegisteredClaims
 }
 
@@ -28,8 +29,8 @@ func CreateJWT(payload jwt.MapClaims) (string, error) {
 // TODO Disini harusnya pake generic, cuman saya tidak tahu cara pakainya
 func ParseWebsocketAuthJWT(tokenString string) (*websocketAuthStructure, error) {
 
-	result, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return []byte(os.Getenv("SECRET_KEY")), nil
+	result, err := jwt.ParseWithClaims(tokenString, &websocketAuthStructure{}, func(t *jwt.Token) (interface{}, error) {
+		return []byte(config.Config.SECRET_KEY), nil
 	})
 
 	if err != nil {
