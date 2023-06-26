@@ -9,7 +9,7 @@ type friend struct {
 	Id       uint
 	Username string
 	Email    string
-	Img      string
+	Avatar   string
 	About    string
 }
 
@@ -18,7 +18,7 @@ func GetAllFriends(userid uint) ([]friend, error) {
 
 	friends := []friend{}
 
-	db := DB.Table("friends").Select("users.id, users.email, users.img, users.about, users.username").Joins("inner join users on users.id = friends.friend_id").Where("(user_id = ? OR friend_id = ?) AND status = ?", userid, userid, "accepted").Scan(&friends)
+	db := DB.Table("friends").Select("users.id, users.email, users.avatar, users.about, users.username").Joins("inner join users on users.id = friends.friend_id").Where("(user_id = ? OR friend_id = ?) AND status = ?", userid, userid, "accepted").Scan(&friends)
 
 	if db.Error != nil {
 		return friends, nil
@@ -31,13 +31,13 @@ func GetPendingRequest(userid uint) ([]friend, []friend, error) {
 	friends := []friend{}
 	recieved := []friend{}
 
-	db := DB.Table("friends").Select("users.id, users.email, users.img, users.about, users.username").Joins("inner join users on users.id = friends.friend_id").Where("user_id = ? AND status = ?", userid, "pending").Scan(&friends)
+	db := DB.Table("friends").Select("users.id, users.email, users.avatar, users.about, users.username").Joins("inner join users on users.id = friends.friend_id").Where("user_id = ? AND status = ?", userid, "pending").Scan(&friends)
 
 	if db.Error != nil {
 		return nil, nil, db.Error
 	}
 
-	db = DB.Table("friends").Select("users.id, users.email, users.img, users.about, users.username").Joins("inner join users on users.id = friends.user_id").Where("friend_id = ? AND status = ?", userid, "pending").Scan(&recieved)
+	db = DB.Table("friends").Select("users.id, users.email, users.avatar, users.about, users.username").Joins("inner join users on users.id = friends.user_id").Where("friend_id = ? AND status = ?", userid, "pending").Scan(&recieved)
 
 	if db.Error != nil {
 		return nil, nil, db.Error
