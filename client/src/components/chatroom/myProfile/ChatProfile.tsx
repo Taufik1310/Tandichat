@@ -1,30 +1,27 @@
 import React, { useState, useEffect, useContext } from "react"
-import { BiArrowBack, BiCamera } from 'react-icons/bi'
-import { getAvatar, getUserData } from "../../Rest"
-import { TokenContext } from "../../Context"
+import { BiArrowBack } from 'react-icons/bi'
+import { getAvatar, getUserData } from "../../../Rest"
+import { TokenContext } from "../../../Context"
 import ChatProfileUsername from "./ChatProfileUsername"
 import ChatProfileAbout from "./ChatProfileAbout"
+import ChatProfileAvatar from "./ChatProfileAvatar"
 
 const ChatProfile = () => {
     const token = useContext(TokenContext)
     const [isOpenProfile, setIsOpenProfile] = useState<boolean>(false)
-    const [isHoverAvatar, setIsHoverAvatar] = useState<boolean>(false)
     const [avatar, setAvatar] = useState<string>("")
     
-    const fetchUserData = async () => {
-        if (token) {
-            const responseGetUserData = await getUserData(token)
-            const { Avatar } = responseGetUserData.data
-            const removeImgExt = Avatar.replace(/\.(jpg|png|jpeg)$/, "")
-            const avatar = await getAvatar(removeImgExt)
-            setAvatar(avatar)
-        }
+    const fetchAvatar = async () => {
+        const response = await getUserData(token)
+        const { Avatar } = response.data
+        const avatarWithoutExt = Avatar.replace(/\.(jpg|png|jpeg)$/, "")
+        const avatarUrl = await getAvatar(avatarWithoutExt)
+        setAvatar(avatarUrl)
     }
 
     useEffect(() => {
-        fetchUserData()
+        fetchAvatar()
     }, [])
-
 
     return (
         <div>
@@ -41,18 +38,7 @@ const ChatProfile = () => {
                 </div>
                 <div className="flex flex-col items-center gap-10 px-6 py-10">
                     <section>
-                        <div className="avatar">
-                            <div className="w-52 h-52 max-h-52 rounded-full overflow-hidden object-cover relative cursor-pointer">
-                                <img src={avatar} alt="Foto Profil" onMouseEnter={() => setIsHoverAvatar(!isHoverAvatar)} />
-                                {isHoverAvatar && 
-                                <div  className="bg-gray-700 absolute top-0 bottom-0 start-0 end-0 bg-opacity-80 flex flex-col items-center justify-center font-semibold" onMouseLeave={() => setIsHoverAvatar(!isHoverAvatar)}>
-                                    <input type="file" name="profilPicture" className="opacity-0 cursor-pointer absolute top-0 bottom-0 start-0 end-0" />
-                                    <BiCamera size={30}/>
-                                    <p>Ubah Foto Profil</p>
-                                </div>
-                                }
-                            </div>
-                        </div>
+                        <ChatProfileAvatar setAvatar={fetchAvatar} avatar={avatar}/>
                     </section>
                     <section className="w-full">
                         <form>

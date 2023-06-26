@@ -1,11 +1,11 @@
 import { createContext } from 'react'
 
-interface IsLoggedInContextype {
+interface AuthContext {
     onLogin: Function, 
     onLogout: Function 
 }
 
-export const IsLoggedInContex = createContext<IsLoggedInContextype>({
+export const AuthContext = createContext<AuthContext>({
     onLogin: () => {},
     onLogout: () => {}
 })

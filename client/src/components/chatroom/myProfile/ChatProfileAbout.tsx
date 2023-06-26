@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react"
-import { changeAbout, getUserData } from "../../Rest"
-import { TokenContext } from "../../Context"
+import { changeAbout, getUserData } from "../../../Rest"
+import { TokenContext } from "../../../Context"
 import { BiPencil } from 'react-icons/bi'
 
 const ChatProfileAbout = ({ isOpenProfile }: { isOpenProfile: boolean }) => {

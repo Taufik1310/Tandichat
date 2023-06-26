@@ -1,6 +1,6 @@
 import React from "react";
-import ChatNavigation from "../components/chatroom/ChatNavigation";
-import ChatMessage from "../components/chatroom/ChatMessage";
+import ChatNavigation from "../components/chatroom/navigation/ChatNavigation";
+import ChatMessage from "../components/chatroom/chatMessage/ChatMessage";
 
 const ChatRoom = () => {
 

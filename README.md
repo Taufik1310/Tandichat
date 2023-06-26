@@ -22,10 +22,4 @@ Server
   <img src="/img/Postgresql_elephant.svg.png" alt="Webpack" style="height: 50px;  margin: 5px">
 </div>
 
-== Todo ==
 
-- Implementasi Login
-- Implementasi Messaging
-- Implementasi Add friend
-
-- Rewrite backend dengan rust (?)

@@ -1,11 +1,12 @@
 import React, { useState, useContext } from 'react'
-import { GoKebabVertical, GoBell, GoSignOut } from 'react-icons/go'
-import ChatNotif from './ChatNotif'
-import { logout } from '../../Rest'
-import { IsLoggedInContex } from '../../Context'
+import { GoKebabVertical, GoPerson, GoSignOut } from 'react-icons/go'
+import ChatFriendRequest from '../friendRequest/ChatFriendRequest'
+import { logout } from '../../../Rest'
+import { AuthContext, TokenContext } from '../../../Context'
 
 const ChatMenu = () => {
-    const { onLogout } = useContext(IsLoggedInContex)
+    const { onLogout } = useContext(AuthContext)
+    const token = useContext(TokenContext)
     const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false)
     const [isOpenNotif, setIsOpenNotif] = useState<boolean>(false)
 
@@ -16,7 +17,7 @@ const ChatMenu = () => {
 
     const handleLogout = async () => {
         setIsOpenMenu(false)
-        const response = await logout(localStorage.getItem('token'))
+        const response = await logout(token)
         if (response.code === 200) {
             localStorage.removeItem('token')
             onLogout()
@@ -31,8 +32,8 @@ const ChatMenu = () => {
                 <ul tabIndex={0} className="dropdown-content menu p-2 shadow-2xl shadow-black bg-gray-700 w-52">
                     <li>
                         <div onClick={handleNotif} >
-                            <GoBell />
-                            <span>Notifikasi</span>
+                            <GoPerson />
+                            <span className='text-xs'>Permintaan Pertemanan</span>
                         </div>
                     </li>
                     <li>
@@ -44,7 +45,7 @@ const ChatMenu = () => {
                 </ul>
                 }
             </div>
-            {isOpenNotif && <ChatNotif onClose={handleNotif} />}
+            {isOpenNotif && <ChatFriendRequest onClose={handleNotif} />}
         </>
     )
 }

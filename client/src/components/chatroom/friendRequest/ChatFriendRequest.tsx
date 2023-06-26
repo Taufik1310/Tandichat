@@ -3,11 +3,11 @@ import { BiArrowBack } from 'react-icons/bi'
 
 const DEFAULT_AVATAR = './assets/default-avatar.png'
 
-interface ChatNotifProps {
+interface ChatFriendRequest {
     onClose: () => void
 }
 
-const ChatNotif = ({ onClose }: ChatNotifProps) => {
+const ChatFriendRequest = ({ onClose }: ChatFriendRequest) => {
     const [dataExample, setDataExample] = useState([
             {
                 id: 1,
@@ -189,7 +189,7 @@ const ChatNotif = ({ onClose }: ChatNotifProps) => {
             <div className="bg-gray-800 absolute top-0 bottom-0 start-0 end-0 overflow-hidden scrollbar-none z-10">
                 <div className="bg-gray-700 pt-14 pb-4 px-8 flex items-center gap-10 text-xl font-semibold sticky top-0 end-0 start-0">
                     <BiArrowBack size={22} className="cursor-pointer" onClick={onClose}/>
-                    <p>Notifikasi</p>
+                    <p>Permintaan Pertemanan</p>
                 </div>
                 <ul className="h-screen px-6 py-6 overflow-y-scroll scrollbar-style">
                     { dataExample && 
@@ -216,4 +216,4 @@ const ChatNotif = ({ onClose }: ChatNotifProps) => {
     )
 }
 
-export default ChatNotif
+export default ChatFriendRequest

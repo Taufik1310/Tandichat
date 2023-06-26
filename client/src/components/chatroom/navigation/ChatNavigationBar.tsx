@@ -1,6 +1,6 @@
 import React from "react";
 import ChatMenu from "./ChatMenu";
-import ChatProfile from "./ChatProfile";
+import ChatProfile from "../myProfile/ChatProfile";
 
 const LOGO = './assets/logo1.png'
 
