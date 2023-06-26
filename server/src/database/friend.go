@@ -47,9 +47,21 @@ func GetPendingRequest(userid uint) ([]friend, []friend, error) {
 }
 
 func AcceptFriendRequest(userid uint, friendid uint) error {
+
+	tx := DB.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Error; err != nil {
+		return err
+	}
+
 	var friend model.Friend
 
-	result := DB.Model(&friend).Where("user_id = ? AND friend_id = ? ", friendid, userid).Update("status", "accepted")
+	result := tx.Model(&friend).Where("user_id = ? AND friend_id = ? ", friendid, userid).Update("status", "accepted")
 
 	if result.Error != nil {
 		return result.Error
@@ -59,7 +71,21 @@ func AcceptFriendRequest(userid uint, friendid uint) error {
 		return errors.New("error : Friend request not found")
 	}
 
-	return nil
+	room := model.Room{}
+
+	if err := tx.Create(&room).Error; err != nil {
+		return err
+	}
+
+	if err := tx.Create(&model.RoomParticipant{UserID: userid, RoomID: room.ID}).Error; err != nil {
+		return err
+	}
+
+	if err := tx.Create(&model.RoomParticipant{UserID: friendid, RoomID: room.ID}).Error; err != nil {
+		return err
+	}
+
+	return tx.Commit().Error
 }
 
 func DeclineFriendRequest(userid uint, friendid uint) error {

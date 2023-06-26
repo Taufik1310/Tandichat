@@ -16,15 +16,23 @@ const imagePath = "./static/profile/"
 func GetAvatar(c *gin.Context) {
 	imageName := c.DefaultQuery("name", "default")
 	safeImageName := sanitizeFilename(imageName)
+	extension := ".png"
 
-	if _, err := os.Stat(imagePath + safeImageName + ".png"); os.IsNotExist(err) {
+	_, err_png := os.Stat(imagePath + safeImageName + ".png")
 
-		c.AbortWithError(http.StatusNotFound, err)
-		return
+	_, err_gif := os.Stat(imagePath + safeImageName + ".gif")
 
+	if os.IsNotExist(err_png) {
+		if os.IsNotExist(err_gif) {
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "file is not found"})
+			return
+		} else {
+			extension = ".gif"
+		}
 	}
+
 	c.Header("Content-Type", "image/jpeg")
-	c.File(imagePath + safeImageName + ".png")
+	c.File(imagePath + safeImageName + extension)
 }
 
 func ChangeAvatar(c *gin.Context) {
@@ -42,16 +50,20 @@ func ChangeAvatar(c *gin.Context) {
 		return
 	}
 
-	if !isPng(file.Filename) {
-		c.AbortWithStatusJSON(400, gin.H{"error": "file is not png"})
+	if !isPng(file.Filename) && !isGif(file.Filename) {
+		c.AbortWithStatusJSON(400, gin.H{"error": "file should be png or gif"})
 		return
 	}
 
 	filename := uuid.New().String()
 
-	c.SaveUploadedFile(file, imagePath+filename+".png")
+	if isPng(file.Filename) {
+		c.SaveUploadedFile(file, imagePath+filename+".png")
+	} else {
+		c.SaveUploadedFile(file, imagePath+filename+".gif")
+	}
 
-	if err := database.ChangeProfilePicture(session.ID, filename); err != nil {
+	if err := database.ChangeProfilePicture(session.UserID, filename); err != nil {
 		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
@@ -67,4 +79,8 @@ func sanitizeFilename(filename string) string {
 
 func isPng(filename string) bool {
 	return strings.HasSuffix(filename, ".png")
+}
+
+func isGif(filename string) bool {
+	return strings.HasSuffix(filename, ".gif")
 }

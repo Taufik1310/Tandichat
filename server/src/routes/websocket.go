@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 	"time"
@@ -14,35 +15,18 @@ import (
 	"andiputraw/Tandichat/src/database"
 )
 
-var authCodeCache map[string]time.Time
-
 func GenerateWebsocketAuthCode(c *gin.Context) {
 
-	var payload struct {
-		Jwt string `json:"jwt" binding:"required"`
-	}
-
-	c.ShouldBindJSON(&payload)
-
-	result, err := auth.ParseJWT(payload.Jwt)
-
+	session, err := checkIfuserIsLogged(c)
 	if err != nil {
-		responseBody := NewResponseError(400, "failed to parse jwt", "Failed to parse JWT")
-		c.JSON(http.StatusInternalServerError, responseBody)
-	}
-
-	session, err := database.GetSession(result.SessionID)
-
-	if err != nil {
-		responseBody := NewResponseError(400, "Session not found", "Session not found. probably expired?")
-		c.JSON(http.StatusInternalServerError, responseBody)
+		return
 	}
 
 	authID := uuid.NewString()
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"authID":    authID,
-		"sessionID": session.UserID,
+		"authID": authID,
+		"userID": session.UserID,
 	})
 
 	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET_KEY")))
@@ -52,33 +36,52 @@ func GenerateWebsocketAuthCode(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, responseBody)
 	}
 
-	authCodeCache[authID] = time.Now().Add(time.Minute * 5)
+	err = database.InsertWebsocketCache(authID)
+
+	if err != nil {
+		body := NewResponseError(500, "Failed insert cache", "Failed to insert cache")
+		c.JSON(http.StatusInternalServerError, body)
+		return
+	}
 
 	c.JSON(http.StatusCreated, gin.H{"code": 200, "data": gin.H{"websocketAuthCode": tokenString}})
 }
 
-func ConnectWebSocket(c *gin.Context, m *melody.Melody) {
-	token := c.Query("websocketAuthCode")
+func ConnectWebSocket(m *melody.Melody) func(c *gin.Context) {
+	return func(c *gin.Context) {
 
-	if token == "" {
-		responseBody := NewResponseError(400, "JWT is required", "JWT is required")
-		c.JSON(http.StatusBadRequest, responseBody)
-		return
+		token := c.Query("auth")
+
+		if token == "" {
+			responseBody := NewResponseError(400, "JWT is required", "JWT is required")
+			c.JSON(http.StatusBadRequest, responseBody)
+			return
+		}
+
+		//parse jwt
+		result, err := auth.ParseWebsocketAuthJWT(token)
+
+		if err != nil {
+			responseBody := NewResponseError(400, "JWT is invalid", err.Error())
+			c.JSON(http.StatusBadRequest, responseBody)
+			fmt.Println(responseBody)
+			return
+		}
+		createdSessionTime, err := database.GetWebsocketCache(result.AuthID)
+
+		if err != nil {
+			body := NewResponseError(500, "Failed get cache", err.Error())
+			c.JSON(http.StatusInternalServerError, body)
+		}
+
+		createdSessionTime = createdSessionTime.Add(time.Minute * 5)
+
+		if createdSessionTime.Before(time.Now()) {
+			responseBody := NewResponseError(400, "JWT is expired", "JWT is expired")
+			c.JSON(http.StatusBadRequest, responseBody)
+		}
+
+		m.HandleRequest(c.Writer, c.Request)
 	}
-
-	//parse jwt
-	result, err := auth.ParseWebsocketAuthJWT(token)
-
-	if err != nil {
-		responseBody := NewResponseError(400, "JWT is invalid", err.Error())
-		c.JSON(http.StatusBadRequest, responseBody)
-	}
-
-	if authCodeCache[result.AuthID].Before(time.Now()) {
-		responseBody := NewResponseError(400, "JWT is expired", "JWT is expired")
-		c.JSON(http.StatusBadRequest, responseBody)
-	}
-
-	m.HandleRequest(c.Writer, c.Request)
 
 }
