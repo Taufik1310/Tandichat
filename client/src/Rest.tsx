@@ -80,6 +80,20 @@ export const getAvatar = async ( imageName: string = "default" ) => {
     }
 }
 
+export const changeAvatar = async (token: string, formData: FormData) => {
+    const headers = {
+        'Content-Type': 'multipart/form-data',
+        "Authorization": token,
+    }
+
+    try {
+        const response = await axios.patch("http://localhost:5050/api/avatar", formData, { headers })
+        return response.data
+    } catch (error) {
+        console.error(error)
+    }
+}
+
 export const changeUsername = async (token: string, newUsername: string) => {
     const headers = {
         "Content-Type": "application/json",

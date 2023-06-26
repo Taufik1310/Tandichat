@@ -26,7 +26,7 @@ const ChatProfile = () => {
     return (
         <div>
             <div className="avatar">
-                <div className="w-8 h-8 max-h-8 overflow-hidden rounded-full object-cover cursor-pointer" onClick={() => setIsOpenProfile(!isOpenProfile)}>
+                <div className="w-10 h-10 max-h-10 overflow-hidden rounded-full object-cover cursor-pointer" onClick={() => setIsOpenProfile(!isOpenProfile)}>
                     <img src={avatar} alt="Foto Profil" />
                 </div>
             </div>
@@ -38,7 +38,7 @@ const ChatProfile = () => {
                 </div>
                 <div className="flex flex-col items-center gap-10 px-6 py-10">
                     <section>
-                        <ChatProfileAvatar setAvatar={fetchAvatar} avatar={avatar}/>
+                        <ChatProfileAvatar setNewAvatar={fetchAvatar} avatar={avatar}/>
                     </section>
                     <section className="w-full">
                         <form>
