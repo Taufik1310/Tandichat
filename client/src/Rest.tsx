@@ -1,8 +1,10 @@
 import axios from 'axios'
 
+const BASE_URL = 'http://localhost:5050/api'
+
 export const register = async (email: string, username: string, password: string) => {
     try {
-        const response = await axios.post('http://localhost:5050/api/register', {
+        const response = await axios.post(`${BASE_URL}/register`, {
             email,
             username,
             password
@@ -18,7 +20,7 @@ export const register = async (email: string, username: string, password: string
 
 export const login = async (email: string, password: string) => {
     try {
-        const response = await axios.post('http://localhost:5050/api/login', {
+        const response = await axios.post(`${BASE_URL}/login`, {
             email,
             password
         })
@@ -38,7 +40,7 @@ export const logout = async (token: string) => {
     }
 
     try {
-        const response = await axios.post("http://localhost:5050/api/logout", null, { headers })
+        const response = await axios.post(`${BASE_URL}/logout`, null, { headers })
         return response.data
     } catch (error) {
         if (error.response) {
@@ -49,14 +51,17 @@ export const logout = async (token: string) => {
 }
 
 
-export const getUserData = async (token: string) => {
+export const getUserData = async (token: string, email?: string) => {
+    const queryParams = new URLSearchParams({ email: email }).toString()
+    const url = email ? `${BASE_URL}/user?${queryParams}` : `${BASE_URL}/user`
     const headers = {
         "Content-Type": "application/json",
         "Authorization": token,
     }
 
+
     try {
-        const response = await axios.get("http://localhost:5050/api/user", { headers })
+        const response = await axios.get(url, { headers })
         return response.data
     } catch (error) {
         if (error.response) {
@@ -66,31 +71,34 @@ export const getUserData = async (token: string) => {
     }
 }
 
-export const getAvatar = async ( imageName: string = "default" ) => {
-    try {
-        const queryParams = new URLSearchParams({ name: imageName }).toString()
-        const url = `http://localhost:5050/api/avatar?${queryParams}`
-        const response = await axios.get(url, { responseType: 'blob' })
-        const imageBlob = response.data
-        const imageUrl = URL.createObjectURL(imageBlob)
-        return imageUrl
-    } catch (error) {
-        console.error("Error fetching profile picture:", error.message);
-        return undefined;
-    }
-}
+// export const getAvatar = async ( imageName: string = `default` ) => {
+//     try {
+//         const queryParams = new URLSearchParams({ name: imageName }).toString()
+//         const url = `${BASE_URL}/avatar?${queryParams}`
+//         const response = await axios.get(url, { responseType: `blob` })
+//         const imageBlob = response.data
+//         const imageUrl = URL.createObjectURL(imageBlob)
+//         return imageUrl
+//     } catch (error) {
+//         console.error(`Error fetching profile picture:`, error.message);
+//         return undefined;
+//     }
+// }
 
 export const changeAvatar = async (token: string, formData: FormData) => {
     const headers = {
-        'Content-Type': 'multipart/form-data',
+        "Content-Type": `multipart/form-data`,
         "Authorization": token,
     }
 
     try {
-        const response = await axios.patch("http://localhost:5050/api/avatar", formData, { headers })
+        const response = await axios.patch(`${BASE_URL}/avatar`, formData, { headers })
         return response.data
     } catch (error) {
-        console.error(error)
+        if (error.response) {
+            return error.response.data
+        }
+        throw error
     }
 }
 
@@ -101,13 +109,13 @@ export const changeUsername = async (token: string, newUsername: string) => {
     }
 
     try {
-        const response = await axios.patch("http://localhost:5050/api/user/username", {
+        const response = await axios.patch(`${BASE_URL}/user/username`, {
             new_username: newUsername 
         } , { headers })
         return response.data
     } catch (error) {
         if (error.response) {
-            return error.response.status
+            return error.response.data
         }
         throw error
     }
@@ -120,9 +128,45 @@ export const changeAbout = async (token: string, newAabout: string) => {
     }
 
     try {
-        const response = await axios.patch("http://localhost:5050/api/user/about", {
+        const response = await axios.patch(`${BASE_URL}/user/about`, {
             new_about: newAabout 
         } , { headers })
+        return response.data
+    } catch (error) {
+        if (error.response) {
+            return error.response.data
+        }
+        throw error
+    }
+}
+
+export const addFriendRequest = async (token: string, friendId: number) => {
+    const headers = {
+        "Content-Type": "application/json",
+        "Authorization": token,
+    }
+
+    try {
+        const response = await axios.post(`${BASE_URL}/friends/request`, { 
+            friend_id: friendId 
+        }, { headers })
+        return response.data
+    } catch (error) {
+        if (error.response) {
+            return error.response.data
+        }
+        throw error
+    }
+}
+
+export const getFriendPending = async (token: string) => {
+    const headers = {
+        "Content-Type": "application/json",
+        "Authorization": token,
+    }
+
+    try {
+        const response = await axios.get(`${BASE_URL}/friends/pending`, { headers })
         return response.data
     } catch (error) {
         if (error.response) {

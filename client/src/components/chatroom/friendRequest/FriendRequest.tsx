@@ -3,11 +3,11 @@ import { BiArrowBack } from 'react-icons/bi'
 
 const DEFAULT_AVATAR = './assets/default-avatar.png'
 
-interface ChatFriendRequest {
+interface FriendRequest {
     onClose: () => void
 }
 
-const ChatFriendRequest = ({ onClose }: ChatFriendRequest) => {
+const FriendRequest = ({ onClose }: FriendRequest) => {
     const [dataExample, setDataExample] = useState([
             {
                 id: 1,
@@ -216,4 +216,4 @@ const ChatFriendRequest = ({ onClose }: ChatFriendRequest) => {
     )
 }
 
-export default ChatFriendRequest
+export default FriendRequest
