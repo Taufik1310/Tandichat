@@ -10,6 +10,7 @@ const AddFriendInput = ({ onSubmit }: { onSubmit: () => void }) => {
     const [isAlertDuplicateOpen, setIsAlertDuplicateOpen] = useState<boolean>(false)
     const [isAlertYourselfOpen, setIsAlertYourselfOpen] = useState<boolean>(false)
     const [isAlertNotFoundOpen, setIsAlertNotFoundOpen] = useState<boolean>(false)
+    const [isAlertSuccessOpen, setIsAlertSuccessOpen] = useState<boolean>(false)
 
     const handleSubmitForm = async (e: { preventDefault: () => void }) => {
         e.preventDefault()
@@ -28,6 +29,7 @@ const AddFriendInput = ({ onSubmit }: { onSubmit: () => void }) => {
             setIsAlertYourselfOpen(true)
             return
         }
+        setIsAlertSuccessOpen(true)
         setEmail("")
         onSubmit()
     }
@@ -61,6 +63,9 @@ const AddFriendInput = ({ onSubmit }: { onSubmit: () => void }) => {
                 className={`bg-blue-600 hover:bg-blue-700 w-full py-1 rounded-lg font-semibold text-sm`}
                 >Ajukan Pertemanan</button>
             </div>
+            { isAlertSuccessOpen &&    
+                <AlertInfo type="success" status="successFriendRequest" onClose={() => setIsAlertSuccessOpen(false)} />
+            }
             { isAlertDuplicateOpen &&    
                 <AlertInfo type="danger" status="duplicateFriendRequest" onClose={() => setIsAlertDuplicateOpen(false)} email={email} />
             }

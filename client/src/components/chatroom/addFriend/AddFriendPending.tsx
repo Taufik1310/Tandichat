@@ -1,23 +1,33 @@
 import React, { useState, useEffect, useContext } from "react"
-import { getFriendPending } from "../../../Rest"
+import { cancelFriendRequest, getFriendPending } from "../../../Rest"
 import { TokenContext, BaseAvatarURLContext } from "../../../Context"
 
-const AddFriendPending = ({ isSubmitForm }: { isSubmitForm: boolean}) => {
+const AddFriendPending = ({ isSubmitForm, onSubmit }: { 
+    isSubmitForm: boolean, 
+    onSubmit: () => void 
+}) => {
     const BASE_AVATAR_URL = useContext(BaseAvatarURLContext)
     const token = useContext(TokenContext)
     const [friendPending, setFriendPending] = useState([])
+
     const fetchFriendPending = async () => {
         const response = await getFriendPending(token)
         setFriendPending(response.data.sended)
     }
 
-   useEffect(() => {
+    const handleClickedButton = (id: number) => {
+        cancelFriendRequest(token, id)
         fetchFriendPending()
-   }, [])
+    }
 
-   useEffect(() => {
+    useEffect(() => {
         fetchFriendPending()
-   }, [isSubmitForm])
+    }, [])
+
+    useEffect(() => {
+        onSubmit()
+        fetchFriendPending()
+    }, [isSubmitForm])
 
     return (
         <div>
@@ -42,7 +52,10 @@ const AddFriendPending = ({ isSubmitForm }: { isSubmitForm: boolean}) => {
                                         </div>
                                     </div>
                                     <div>
-                                        <button className="text-xs border border-blue-600 rounded-full px-3 p-1 font-semibold hover:bg-blue-600">Batal</button>
+                                        <button 
+                                            className="text-xs border border-blue-600 rounded-full px-3 p-1 font-semibold hover:bg-blue-600"
+                                            onClick={() => handleClickedButton(item.Id)}
+                                        >Batal</button>
                                     </div>
                                 </li>
                             ))

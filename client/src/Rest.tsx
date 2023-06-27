@@ -159,6 +159,25 @@ export const addFriendRequest = async (token: string, friendId: number) => {
     }
 }
 
+export const cancelFriendRequest = async (token: string, friendId: number) => {
+    const headers = {
+        "Content-Type": "application/json",
+        "Authorization": token,
+    }
+
+    try {
+        const response = await axios.post(`${BASE_URL}/friends/cancel`, { 
+            friend_id: friendId 
+        }, { headers })
+        return response.data
+    } catch (error) {
+        if (error.response) {
+            return error.response.data
+        }
+        throw error
+    }
+}
+
 export const getFriendPending = async (token: string) => {
     const headers = {
         "Content-Type": "application/json",

@@ -1,6 +1,6 @@
 import React from "react"
 import { FaInfoCircle, FaCheckCircle } from 'react-icons/fa'
-import { BsPersonFillExclamation } from 'react-icons/bs'
+import { BsPersonFillExclamation, BsPersonFillCheck } from 'react-icons/bs'
 
 
 export const AlertRegister = ({ state }: { state: number }) => {
@@ -68,10 +68,14 @@ export const AlertInfo = ({ type, status, onClose, email }: AlertInfo) => {
             {`${ type === 'success' ? 'bg-green-600' : 
                   type === 'danger' ? 'bg-red-500' :
                   'bg-blue-600'
-            } 
-            h-full flex flex-col items-center justify-center gap-5 px-4 rounded-2xl text-gray-300`}
+            } h-full flex flex-col items-center justify-center gap-5 px-4 rounded-2xl text-gray-300`}
           >
-            <BsPersonFillExclamation size={80} />
+            { 
+              type === 'success' ? 
+              <BsPersonFillCheck size={80} />
+              :
+              <BsPersonFillExclamation size={80} />
+            }
             { 
               status === 'invalidExtensionAvatar' ? 
               <p className="font-semibold text-center  text-sm">Ekstensi file tidak valid.<br />Hanya file <strong>PNG</strong> dan <strong>GIF</strong> yang diperbolehkan</p>
@@ -84,6 +88,9 @@ export const AlertInfo = ({ type, status, onClose, email }: AlertInfo) => {
               :
               status === 'userNotFound' ?
               <p className="font-semibold text-center  text-sm">Pengguna dengan email: <span className="font-bold italic">{email}</span> tidak ditemukan !!!</p>
+              :
+              status === 'successFriendRequest' ?
+              <p className="font-semibold text-center text-base">Berhasil Mengajukan Pertemanan</p>
               :
               null
             }

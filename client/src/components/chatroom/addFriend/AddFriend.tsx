@@ -18,7 +18,7 @@ const AddFriend = ({ onClose }: { onClose: () => void }) => {
                         <AddFriendInput onSubmit={() => setIsSubmitForm(true)}/>
                     </section>
                     <section>
-                        <AddFriendPending isSubmitForm={isSubmitForm} />
+                        <AddFriendPending isSubmitForm={isSubmitForm} onSubmit={() => setIsSubmitForm(false)}/>
                     </section>
                 </div>
             </div>

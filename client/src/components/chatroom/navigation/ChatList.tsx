@@ -127,7 +127,7 @@ const ChatList = () => {
 
     return (
         <div className="mt-3">
-            <ul className="px-3 h-[calc(100vh-8rem)] overflow-y-scroll scrollbar-style">
+            <ul className="px-2 h-[calc(100vh-8rem)] overflow-y-scroll scrollbar-style">
                 { dataExample && 
                     dataExample.map((item) => (
                         <li className="flex justify-between items-start gap-x-3 px-2 py-3 rounded-md hover:bg-gray-700">
