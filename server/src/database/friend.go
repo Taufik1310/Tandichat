@@ -3,6 +3,9 @@ package database
 import (
 	"andiputraw/Tandichat/src/model"
 	"errors"
+	"fmt"
+
+	"gorm.io/gorm"
 )
 
 type friend struct {
@@ -127,7 +130,13 @@ func RequestAddFriend(userid uint, friendid uint) error {
 }
 
 func deleteFriendRequest(userid uint, friendid uint) error {
-	result := DB.Where("user_id = ? AND friend_id = ? ", userid, friendid).Delete(&model.Friend{})
+	result := DB.Unscoped().Where("user_id = ? AND friend_id = ? ", userid, friendid).Delete(&model.Friend{})
+
+	query := DB.Explain(DB.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Unscoped().Where("user_id = ? AND friend_id = ? ", userid, friendid).Delete(&model.Friend{})
+	}))
+
+	fmt.Println(query)
 
 	if result.Error != nil {
 		return result.Error

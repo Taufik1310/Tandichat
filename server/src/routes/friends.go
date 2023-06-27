@@ -147,7 +147,7 @@ func CancelFriendRequest(c *gin.Context) {
 		return
 	}
 
-	if err := database.DeclineFriendRequest(session.UserID, requestData.Friend_id); err != nil {
+	if err := database.CancelFriendRequest(session.UserID, requestData.Friend_id); err != nil {
 		body := NewResponseError(500, "Failed to decline friend", err.Error())
 		c.JSON(500, body)
 		return
