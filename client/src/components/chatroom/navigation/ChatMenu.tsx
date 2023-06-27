@@ -11,7 +11,7 @@ const ChatMenu = () => {
     const token = useContext(TokenContext)
     const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false)
     const [isOpenFriendRequest, setIsOpenFriendRequest] = useState<boolean>(false)
-    const [isOpenAddFriend, setIsOpenAddFriend] = useState<boolean>(true)
+    const [isOpenAddFriend, setIsOpenAddFriend] = useState<boolean>(false)
 
     const handleFriendRequest = () => {
         setIsOpenMenu(false)
