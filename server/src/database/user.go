@@ -28,10 +28,41 @@ type userid interface {
 	uint | string
 }
 
-func GetUser[T userid](id T) (*User, error) {
+func UnBlockUser(UserId uint, blockedUserID uint) error {
+	result := DB.Where("user_id = ? AND blocked_user_id = ?", UserId, blockedUserID).Delete(&model.BlockedUser{})
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return errors.New("error : user not found")
+	}
+
+	return nil
+}
+
+func BlockUser(UserId uint, blockedUserID uint) error {
+
+	var block model.BlockedUser
+
+	block.BlockedUserID = blockedUserID
+	block.UserID = UserId
+
+	if err := DB.Create(&block).Error; err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
+func GetUser[T userid](userId uint, id T) (*User, error) {
 	var user *User
 
-	if err := DB.Model(&user).Select("id, username, email, avatar, about").Where("id = ?", id).Scan(&user).Error; err != nil {
+	innerQuery := DB.Table("blocked_users").Where("user_id = ?", userId).Select("blocked_user_id")
+
+	if err := DB.Model(&user).Select("id, username, email, avatar, about").Where("id = ? AND id NOT in (?)", id, innerQuery).Scan(&user).Error; err != nil {
 		return user, err
 	}
 	if user.ID == 0 {
@@ -40,10 +71,12 @@ func GetUser[T userid](id T) (*User, error) {
 	return user, nil
 }
 
-func GetUserByEmail(email string) (*User, error) {
+func GetUserByEmail(email string, id uint) (*User, error) {
 	var user *User
 
-	if err := DB.Model(&user).Select("id, username, email, avatar, about").Where("email = ?", email).Scan(&user).Error; err != nil {
+	innerQuery := DB.Table("blocked_users").Where("user_id = ?", id).Select("blocked_user_id")
+
+	if err := DB.Model(&user).Select("id, username, email, avatar, about").Where("email = ? AND id NOT in (?)", email, innerQuery).Scan(&user).Error; err != nil {
 		return user, err
 	}
 	if user.ID == 0 {

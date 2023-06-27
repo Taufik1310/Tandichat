@@ -8,6 +8,7 @@ import (
 )
 
 func sendMessage(from uint, message *MessageData, m *melody.Melody) ([]byte, bool) {
+
 	err := database.SendMessage(from, message.To, message.Message)
 	if err != nil {
 		return websocketError(err.Error()), false

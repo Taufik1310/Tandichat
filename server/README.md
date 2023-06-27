@@ -53,6 +53,14 @@ go run src/main.go
 
 # Some Notes
 
+## Authentication Method
+
+Untuk sekarang. authentikasi per request menggunakan JWT yang di simpan di header via authorization header. Cara yang lebih baik adalah dengan menggunakan cookie (httpOnly) 
+
+https://security.stackexchange.com/questions/130548/should-jwt-token-be-stored-in-a-cookie-header-or-body
+
+lebih baik lagi jika menggunakan refresh token untuk tetap menjaga user tetap login
+
 ## Websocket Authentication
 
 Untuk sekarang authentikasi websocket dengan mengirimkan credentials melewati URI, yang mana ini adalah cara yang paling tidak secure https://websockets.readthedocs.io/en/stable/topics/authentication.html. walaupun credential hanya dapat digunakan 1x dan hanya berisi UUID dan UserID.

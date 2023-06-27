@@ -11,7 +11,9 @@ import (
 func getRoom(from uint, to uint) (uint, error) {
 	var room []model.RoomParticipant
 
-	subQuery := DB.Select("room_id").Where("user_id IN ?", []uint{from, to}).Group("room_id").Having("COUNT(DISTINCT user_id) = 2").Table("room_participants")
+	subQuery2 := DB.Table("blocked_users").Where("user_id = ? AND blocked_user_id = ?", from, to).Select("blocked_user_id")
+
+	subQuery := DB.Select("room_id").Where("user_id IN ? AND user_id NOT in (?)", []uint{from, to}, subQuery2).Group("room_id").Having("COUNT(DISTINCT user_id) = 2").Table("room_participants")
 
 	DB.Select("*").Where("user_id IN ? AND room_id IN (?)", []uint{from, to}, subQuery).Find(&room)
 
@@ -45,10 +47,13 @@ func GetMessage(from uint, to uint, cursor uint) ([]MessageForUser, uint, error)
 		DB.Table("messages").Where("room_id = ? AND id <= ?", room_id, cursor).Order(clause.OrderByColumn{Column: clause.Column{Name: "id"}, Desc: true}).Limit(100).Scan(&messages)
 	}
 
-	if len(messages) > 0 {
-		last_message := messages[len(messages)-1]
+	if len(messages) > 1 {
+		last_message := messages[0]
 		next_cursor = last_message.ID
-		messages = messages[:len(messages)-1]
+		messages = messages[1:]
+	} else if len(messages) == 1 {
+		last_message := messages[0]
+		next_cursor = last_message.ID
 	}
 
 	return messages, next_cursor, nil
@@ -59,7 +64,6 @@ func SendMessage(from uint, to uint, message string) error {
 	var messageData model.Message
 
 	room_id, err := getRoom(from, to)
-
 	if err != nil {
 		return err
 	}
