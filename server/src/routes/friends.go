@@ -56,7 +56,7 @@ func RequestAddFriend(c *gin.Context) {
 	}
 
 	var requestData struct {
-		Friendid uint `json:"friendid" binding:"required"`
+		Friend_id uint `json:"friend_id" binding:"required"`
 	}
 
 	if err := c.ShouldBindJSON(&requestData); err != nil {
@@ -65,7 +65,7 @@ func RequestAddFriend(c *gin.Context) {
 		return
 	}
 
-	if err := database.RequestAddFriend(sessions.UserID, requestData.Friendid); err != nil {
+	if err := database.RequestAddFriend(sessions.UserID, requestData.Friend_id); err != nil {
 		body := NewResponseError(500, "Failed to add friend", err.Error())
 		c.JSON(500, body)
 		return
@@ -110,7 +110,7 @@ func RejectFriendRequest(c *gin.Context) {
 	}
 
 	var requestData struct {
-		User_id uint `json:"user_id" binding:"required"`
+		Friend_id uint `json:"friend_id" binding:"required"`
 	}
 
 	if err := c.ShouldBindJSON(&requestData); err != nil {
@@ -119,7 +119,7 @@ func RejectFriendRequest(c *gin.Context) {
 		return
 	}
 
-	if err := database.DeclineFriendRequest(sessions.UserID, requestData.User_id); err != nil {
+	if err := database.DeclineFriendRequest(sessions.UserID, requestData.Friend_id); err != nil {
 		body := NewResponseError(500, "Failed to decline friend", err.Error())
 		c.JSON(500, body)
 		return
