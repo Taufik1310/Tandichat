@@ -125,4 +125,34 @@ func RejectFriendRequest(c *gin.Context) {
 		return
 	}
 
+	body := gin.H{"code": "200", "message": "Success"}
+	c.JSON(200, body)
+
+}
+
+func CancelFriendRequest(c *gin.Context) {
+	session, err := checkIfuserIsLogged(c)
+
+	if err != nil {
+		return
+	}
+
+	var requestData struct {
+		Friend_id uint `json:"friend_id" binding:"required"`
+	}
+
+	if err := c.ShouldBindJSON(&requestData); err != nil {
+		body := NewResponseError(400, "Bad Request", err.Error())
+		c.JSON(400, body)
+		return
+	}
+
+	if err := database.DeclineFriendRequest(session.UserID, requestData.Friend_id); err != nil {
+		body := NewResponseError(500, "Failed to decline friend", err.Error())
+		c.JSON(500, body)
+		return
+	}
+
+	body := gin.H{"code": "200", "message": "Success"}
+	c.JSON(200, body)
 }

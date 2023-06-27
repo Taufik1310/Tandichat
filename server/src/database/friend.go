@@ -88,16 +88,17 @@ func AcceptFriendRequest(userid uint, friendid uint) error {
 }
 
 func DeclineFriendRequest(userid uint, friendid uint) error {
-	result := DB.Where("user_id = ? AND friend_id = ? ", friendid, userid).Delete(&model.Friend{})
-
-	if result.Error != nil {
-		return result.Error
+	if err := deleteFriendRequest(friendid, userid); err != nil {
+		return err
 	}
 
-	if result.RowsAffected == 0 {
-		return errors.New("error : Friend request not found")
-	}
+	return nil
+}
 
+func CancelFriendRequest(userid uint, friendid uint) error {
+	if err := deleteFriendRequest(userid, friendid); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -120,6 +121,20 @@ func RequestAddFriend(userid uint, friendid uint) error {
 
 	if err := DB.Create(&friend).Error; err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func deleteFriendRequest(userid uint, friendid uint) error {
+	result := DB.Where("user_id = ? AND friend_id = ? ", userid, friendid).Delete(&model.Friend{})
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return errors.New("error : Friend request not found")
 	}
 
 	return nil
