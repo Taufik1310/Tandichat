@@ -52,9 +52,10 @@ func main() {
 
 	//* API FRIEND
 	r.GET("/api/friends", routes.GetAllFriends)
-	r.POST("/api/friends/accept", routes.AcceptFriendRequest)
-	r.GET("/api/friends/pending", routes.GetPendingFriendRequests)
 	r.POST("/api/friends/request", routes.RequestAddFriend)
+	r.POST("/api/friends/accept", routes.AcceptFriendRequest)
+	r.POST("/api/friends/decline", routes.RejectFriendRequest)
+	r.GET("/api/friends/pending", routes.GetPendingFriendRequests)
 
 	//* API USER
 	r.GET("/api/user", routes.GetUser)
