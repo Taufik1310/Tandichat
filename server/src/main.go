@@ -48,7 +48,6 @@ func main() {
 	r.POST("/api/logout", routes.Logout)
 
 	//* API AVATAR
-	r.GET("/api/avatar", routes.GetAvatar)
 	r.PATCH("/api/avatar", routes.ChangeAvatar)
 
 	//* API FRIEND
@@ -61,6 +60,7 @@ func main() {
 	r.GET("/api/user", routes.GetUser)
 	r.PATCH("/api/user/username", routes.ChangeUsername)
 	r.PATCH("/api/user/about", routes.ChangeAbout)
+	r.POST("/api/user/block", routes.BlockUser)
 
 	r.GET("/ws/auth", routes.GenerateWebsocketAuthCode)
 	r.GET("/ws/connect", routes.ConnectWebSocket(m))
@@ -68,8 +68,7 @@ func main() {
 	//* API MESSAGE
 	r.GET("/api/message", routes.GetMessage)
 
-	//TODO Delete this
-	r.StaticFS("/static", http.Dir("./static"))
+	r.StaticFS("/static", http.Dir("static"))
 
 	m.HandleConnect(websocket.HandleConnect)
 	m.HandleMessage(websocket.HandleMessage(m))

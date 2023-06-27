@@ -13,7 +13,6 @@ type friend struct {
 	About    string
 }
 
-// TODO
 func GetAllFriends(userid uint) ([]friend, error) {
 
 	friends := []friend{}
@@ -113,7 +112,9 @@ func RequestAddFriend(userid uint, friendid uint) error {
 	friend.FriendID = friendid
 	friend.Status = "pending"
 
-	if err := DB.Where("id = ?", friendid).First(&model.User{}).Error; err != nil {
+	innerQuery := DB.Table("blocked_users").Where("user_id = ?", userid).Select("blocked_user_id")
+
+	if err := DB.Where("id = ? AND id not in (?)", friendid, innerQuery).First(&model.User{}).Error; err != nil {
 		return errors.New("error : User not found")
 	}
 

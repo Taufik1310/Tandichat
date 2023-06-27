@@ -13,10 +13,19 @@ type User struct {
 	About    string `gorm:"default:Hello im using tandichat"`
 }
 
+// TODO Use Redis
 type Session struct {
 	gorm.Model
 	UserID uint
 	User   User
+}
+
+type BlockedUser struct {
+	gorm.Model
+	UserID        uint
+	User          User
+	BlockedUserID uint
+	BlockedUser   User
 }
 
 // TODO : Use redis
@@ -56,7 +65,7 @@ type Message struct {
 }
 
 func Setup(db *gorm.DB) error {
-	err := db.AutoMigrate(&User{}, &Friend{}, &Room{}, &RoomParticipant{}, &Message{}, &Session{}, &WebsocketSessionCache{})
+	err := db.AutoMigrate(&User{}, &Friend{}, &Room{}, &RoomParticipant{}, &Message{}, &Session{}, &WebsocketSessionCache{}, &BlockedUser{})
 
 	if err != nil {
 		return err
