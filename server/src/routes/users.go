@@ -122,3 +122,30 @@ func BlockUser(c *gin.Context) {
 	body := gin.H{"code": 200, "message": "Success"}
 	c.JSON(200, body)
 }
+
+func UnBlockUser(c *gin.Context) {
+	session, err := checkIfuserIsLogged(c)
+
+	if err != nil {
+		return
+	}
+
+	var req_body struct {
+		Blocked_user_id uint `json:"blocked_user_id" binding:"required"`
+	}
+
+	if err := c.ShouldBindJSON(&req_body); err != nil {
+		body := NewResponseError(400, "Bad Request", err.Error())
+		c.JSON(404, body)
+		return
+	}
+
+	if err := database.UnBlockUser(session.UserID, req_body.Blocked_user_id); err != nil {
+		body := NewResponseError(404, "Failed to block user", err.Error())
+		c.JSON(404, body)
+		return
+	}
+
+	body := gin.H{"code": 200, "message": "Success"}
+	c.JSON(200, body)
+}

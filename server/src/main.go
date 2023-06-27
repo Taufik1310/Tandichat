@@ -61,6 +61,7 @@ func main() {
 	r.PATCH("/api/user/username", routes.ChangeUsername)
 	r.PATCH("/api/user/about", routes.ChangeAbout)
 	r.POST("/api/user/block", routes.BlockUser)
+	r.DELETE("/api/user/block", routes.UnBlockUser)
 
 	r.GET("/ws/auth", routes.GenerateWebsocketAuthCode)
 	r.GET("/ws/connect", routes.ConnectWebSocket(m))

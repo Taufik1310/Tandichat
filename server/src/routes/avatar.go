@@ -15,6 +15,7 @@ const imagePath = "./static/profile/"
 func ChangeAvatar(c *gin.Context) {
 
 	session, err := checkIfuserIsLogged(c)
+	extension := ".png"
 
 	if err != nil {
 		return
@@ -37,15 +38,16 @@ func ChangeAvatar(c *gin.Context) {
 	if isPng(file.Filename) {
 		c.SaveUploadedFile(file, imagePath+filename+".png")
 	} else {
+		extension = ".gif"
 		c.SaveUploadedFile(file, imagePath+filename+".gif")
 	}
 
-	if err := database.ChangeProfilePicture(session.UserID, filename); err != nil {
+	if err := database.ChangeProfilePicture(session.UserID, filename+extension); err != nil {
 		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 
-	c.JSON(200, gin.H{"status": "200", "message": "success", "data": gin.H{"filename": filename}})
+	c.JSON(200, gin.H{"status": "200", "message": "success", "data": gin.H{"filename": filename + extension}})
 }
 
 func sanitizeFilename(filename string) string {

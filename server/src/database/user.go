@@ -28,6 +28,20 @@ type userid interface {
 	uint | string
 }
 
+func UnBlockUser(UserId uint, blockedUserID uint) error {
+	result := DB.Where("user_id = ? AND blocked_user_id = ?", UserId, blockedUserID).Delete(&model.BlockedUser{})
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return errors.New("error : user not found")
+	}
+
+	return nil
+}
+
 func BlockUser(UserId uint, blockedUserID uint) error {
 
 	var block model.BlockedUser
