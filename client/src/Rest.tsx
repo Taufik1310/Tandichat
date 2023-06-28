@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 const BASE_URL = 'http://localhost:5050/api'
+export const BASE_AVATAR_URL = 'http://localhost:5050/static/profile'
 
 export const register = async (email: string, username: string, password: string) => {
     try {
