@@ -35,3 +35,14 @@ func checkIfuserIsLogged(c *gin.Context) (*auth.JWTStructure, error) {
 	}
 	return session, nil
 }
+
+func bindJSON[T any](c *gin.Context) (*T, error) {
+	var data T
+	if err := c.ShouldBindJSON(&data); err != nil {
+		req_body := NewResponseError(400, "Bad Request", err.Error())
+		c.JSON(400, req_body)
+		return &data, err
+	}
+
+	return &data, nil
+}

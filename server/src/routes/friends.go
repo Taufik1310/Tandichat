@@ -34,7 +34,7 @@ func GetPendingFriendRequests(c *gin.Context) {
 		return
 	}
 
-	friends, recieved, err := database.GetPendingRequest(session.UserID)
+	friends, received, err := database.GetPendingRequest(session.UserID)
 
 	if err != nil {
 		body := NewResponseError(500, "Failed to get pending friend requests", err.Error())
@@ -42,7 +42,7 @@ func GetPendingFriendRequests(c *gin.Context) {
 		return
 	}
 
-	response := gin.H{"code": 200, "message": "Success", "data": gin.H{"sended": friends, "recieved": recieved}}
+	response := gin.H{"code": 200, "message": "Success", "data": gin.H{"sended": friends, "received": received}}
 
 	c.JSON(200, response)
 
@@ -127,6 +127,32 @@ func RejectFriendRequest(c *gin.Context) {
 
 	body := gin.H{"code": "200", "message": "Success"}
 	c.JSON(200, body)
+
+}
+
+func DeleteFriend(c *gin.Context) {
+	session, err := checkIfuserIsLogged(c)
+
+	if err != nil {
+		return
+	}
+
+	type Data struct {
+		Friend_id uint `json:"friend_id" binding:"required"`
+	}
+
+	data, err := bindJSON[Data](c)
+	if err != nil {
+		return
+	}
+
+	if err := database.DeleteFriend(session.UserID, data.Friend_id); err != nil {
+		body := NewResponseError(500, "Failed to delete friend", err.Error())
+		c.JSON(500, body)
+		return
+	}
+
+	c.JSON(200, gin.H{"code": "200", "message": "Success"})
 
 }
 

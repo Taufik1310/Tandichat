@@ -3,7 +3,6 @@ package database
 import (
 	"andiputraw/Tandichat/src/model"
 	"errors"
-	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -20,7 +19,15 @@ func GetAllFriends(userid uint) ([]friend, error) {
 
 	friends := []friend{}
 
-	db := DB.Table("friends").Select("users.id, users.email, users.avatar, users.about, users.username").Joins("inner join users on users.id = friends.friend_id").Where("(user_id = ? OR friend_id = ?) AND status = ?", userid, userid, "accepted").Scan(&friends)
+	/* SELECT user.id user.email user.avatar FROM user
+	WHERE user.id IN (SELECT friend_id FROM friends WHERE user_id = 1)
+	OR user.id IN (SELECT user_id FROM friends WHERE friend_id = 1)
+	*/
+
+	sub_query_1 := DB.Table("friends").Select("friend_id").Where("user_id = ? AND status = ?", userid, "accepted")
+	sub_query_2 := DB.Table("friends").Select("user_id").Where("friend_id = ? AND status = ?", userid, "accepted")
+
+	db := DB.Table("users").Select("users.id, users.email, users.avatar, users.about, users.username").Where("users.id IN (?) OR users.id IN (?) ", sub_query_1, sub_query_2).Scan(&friends)
 
 	if db.Error != nil {
 		return friends, nil
@@ -31,7 +38,7 @@ func GetAllFriends(userid uint) ([]friend, error) {
 
 func GetPendingRequest(userid uint) ([]friend, []friend, error) {
 	friends := []friend{}
-	recieved := []friend{}
+	received := []friend{}
 
 	db := DB.Table("friends").Select("users.id, users.email, users.avatar, users.about, users.username").Joins("inner join users on users.id = friends.friend_id").Where("user_id = ? AND status = ?", userid, "pending").Scan(&friends)
 
@@ -39,55 +46,54 @@ func GetPendingRequest(userid uint) ([]friend, []friend, error) {
 		return nil, nil, db.Error
 	}
 
-	db = DB.Table("friends").Select("users.id, users.email, users.avatar, users.about, users.username").Joins("inner join users on users.id = friends.user_id").Where("friend_id = ? AND status = ?", userid, "pending").Scan(&recieved)
+	db = DB.Table("friends").Select("users.id, users.email, users.avatar, users.about, users.username").Joins("inner join users on users.id = friends.user_id").Where("friend_id = ? AND status = ?", userid, "pending").Scan(&received)
 
 	if db.Error != nil {
 		return nil, nil, db.Error
 	}
 
-	return friends, recieved, nil
+	return friends, received, nil
 }
 
 func AcceptFriendRequest(userid uint, friendid uint) error {
 
-	tx := DB.Begin()
-	defer func() {
-		if r := recover(); r != nil {
-			tx.Rollback()
+	err := DB.Transaction(func(tx *gorm.DB) error {
+
+		var friend model.Friend
+
+		result := tx.Model(&friend).Where("user_id = ? AND friend_id = ? ", friendid, userid).Update("status", "accepted")
+
+		if result.Error != nil {
+			return result.Error
 		}
-	}()
 
-	if err := tx.Error; err != nil {
+		if result.RowsAffected == 0 {
+			return errors.New("error : Friend request not found")
+		}
+
+		room := model.Room{}
+
+		if err := tx.Create(&room).Error; err != nil {
+			return err
+		}
+
+		if err := tx.Create(&model.RoomParticipant{UserID: userid, RoomID: room.ID}).Error; err != nil {
+			return err
+		}
+
+		if err := tx.Create(&model.RoomParticipant{UserID: friendid, RoomID: room.ID}).Error; err != nil {
+			return err
+		}
+
+		return nil
+
+	})
+
+	if err != nil {
 		return err
 	}
 
-	var friend model.Friend
-
-	result := tx.Model(&friend).Where("user_id = ? AND friend_id = ? ", friendid, userid).Update("status", "accepted")
-
-	if result.Error != nil {
-		return result.Error
-	}
-
-	if result.RowsAffected == 0 {
-		return errors.New("error : Friend request not found")
-	}
-
-	room := model.Room{}
-
-	if err := tx.Create(&room).Error; err != nil {
-		return err
-	}
-
-	if err := tx.Create(&model.RoomParticipant{UserID: userid, RoomID: room.ID}).Error; err != nil {
-		return err
-	}
-
-	if err := tx.Create(&model.RoomParticipant{UserID: friendid, RoomID: room.ID}).Error; err != nil {
-		return err
-	}
-
-	return tx.Commit().Error
+	return nil
 }
 
 func DeclineFriendRequest(userid uint, friendid uint) error {
@@ -129,14 +135,22 @@ func RequestAddFriend(userid uint, friendid uint) error {
 	return nil
 }
 
+func DeleteFriend(userid uint, friendid uint) error {
+	result := DB.Unscoped().Where("(user_id = ? AND friend_id = ?) OR (user_id = ? AND friend_id = ?)", userid, friendid, friendid, userid).Delete(&model.Friend{})
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return errors.New("error : Friend not found")
+	}
+
+	return nil
+
+}
 func deleteFriendRequest(userid uint, friendid uint) error {
 	result := DB.Unscoped().Where("user_id = ? AND friend_id = ? ", userid, friendid).Delete(&model.Friend{})
-
-	query := DB.Explain(DB.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Unscoped().Where("user_id = ? AND friend_id = ? ", userid, friendid).Delete(&model.Friend{})
-	}))
-
-	fmt.Println(query)
 
 	if result.Error != nil {
 		return result.Error
