@@ -63,7 +63,7 @@ export const AlertInfo = ({ type, status, onClose, email }: AlertInfo) => {
   return (
     <>
       <button 
-          className="bg-gray-700 opacity-60 fixed z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-screen h-screen" 
+          className="bg-gray-900 opacity-60 fixed z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-screen h-screen" 
           onClick={onClose}
       > </button>
       <div className="fixed z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-2/5 w-1/2 sm:w-1/2 md:w-2/5 lg:w-1/4">
@@ -124,12 +124,12 @@ export const AlertUserInfo = ({ item, onClose }: AlertUserInfo) => {
   return (
     <>
       <button 
-          className="bg-gray-700 opacity-60 fixed z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-screen h-screen" 
+          className="bg-gray-900 opacity-60 fixed z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-screen h-screen" 
           onClick={onClose}
       > </button>
       <div className="fixed z-50 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2/3 h-3/4 sm:w-2/4 md:w-1/3 lg:w-1/4">
           <div 
-            className={`bg-gray-600 h-full flex flex-col gap-5 py-3 px-5 rounded-2xl`}
+            className={`bg-gray-700 h-full flex flex-col gap-5 py-3 px-5 rounded-2xl`}
           >
             <div className="flex items-center justify-between text-base font-medium mb-8">
                 <p>Informasi Pengguna</p>

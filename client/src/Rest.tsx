@@ -195,3 +195,4 @@ export const getFriendPending = async (token: string) => {
         throw error
     }
 }
+
