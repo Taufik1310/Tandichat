@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type friend struct {
@@ -61,7 +62,7 @@ func AcceptFriendRequest(userid uint, friendid uint) error {
 
 		var friend model.Friend
 
-		result := tx.Model(&friend).Where("user_id = ? AND friend_id = ? ", friendid, userid).Update("status", "accepted")
+		result := tx.Model(&friend).Where("user_id = ? AND friend_id = ? AND status = ? ", friendid, userid, "pending").Update("status", "accepted")
 
 		if result.Error != nil {
 			return result.Error
@@ -136,20 +137,60 @@ func RequestAddFriend(userid uint, friendid uint) error {
 }
 
 func DeleteFriend(userid uint, friendid uint) error {
-	result := DB.Unscoped().Where("(user_id = ? AND friend_id = ?) OR (user_id = ? AND friend_id = ?)", userid, friendid, friendid, userid).Delete(&model.Friend{})
 
-	if result.Error != nil {
-		return result.Error
-	}
+	err := DB.Transaction(func(tx *gorm.DB) error {
+		result := tx.Unscoped().Where("(user_id = ? AND friend_id = ?) OR (user_id = ? AND friend_id = ?)", userid, friendid, friendid, userid).Delete(&model.Friend{})
 
-	if result.RowsAffected == 0 {
-		return errors.New("error : Friend not found")
+		if result.Error != nil {
+			return result.Error
+		}
+
+		var room_participants []model.RoomParticipant
+
+		if result.RowsAffected == 0 {
+			return errors.New("error : Friend request not found")
+		}
+
+		subQuery := DB.Select("room_id").Where("user_id IN ?", []uint{userid, friendid}).Group("room_id").Having("COUNT(DISTINCT user_id) = 2").Table("room_participants")
+
+		result = tx.Unscoped().Clauses(clause.Returning{}).Where("user_id IN ? AND room_id IN (?)", []uint{userid, friendid}, subQuery).Delete(&room_participants)
+
+		if result.Error != nil {
+			return result.Error
+		}
+
+		if result.RowsAffected == 0 {
+			return errors.New("error : Room participant not found")
+		}
+
+		room_id := uint(0)
+
+		if len(room_participants) > 0 {
+			room_id = room_participants[0].RoomID
+		}
+
+		result = tx.Unscoped().Where("id = (?)", room_id).Delete(&model.Room{})
+
+		if result.Error != nil {
+			return result.Error
+		}
+
+		if result.RowsAffected == 0 {
+			return errors.New("error : Failed to delete room")
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return err
 	}
 
 	return nil
 
 }
 func deleteFriendRequest(userid uint, friendid uint) error {
+
 	result := DB.Unscoped().Where("user_id = ? AND friend_id = ? ", userid, friendid).Delete(&model.Friend{})
 
 	if result.Error != nil {
