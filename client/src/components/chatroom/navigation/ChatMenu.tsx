@@ -1,18 +1,26 @@
 import React, { useState, useContext } from 'react'
-import { GoKebabVertical, GoPerson, GoSignOut } from 'react-icons/go'
-import ChatFriendRequest from '../friendRequest/ChatFriendRequest'
+import { GoKebabVertical, GoSignOut } from 'react-icons/go'
+import { BsPersonPlusFill, BsPersonFillUp } from 'react-icons/bs'
 import { logout } from '../../../Rest'
 import { AuthContext, TokenContext } from '../../../Context'
+import FriendRequest from '../friendRequest/FriendRequest'
+import AddFriend from '../addFriend/AddFriend'
 
 const ChatMenu = () => {
     const { onLogout } = useContext(AuthContext)
     const token = useContext(TokenContext)
     const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false)
-    const [isOpenNotif, setIsOpenNotif] = useState<boolean>(false)
+    const [isOpenFriendRequest, setIsOpenFriendRequest] = useState<boolean>(true)
+    const [isOpenAddFriend, setIsOpenAddFriend] = useState<boolean>(false)
 
-    const handleNotif = () => {
+    const handleFriendRequest = () => {
         setIsOpenMenu(false)
-        setIsOpenNotif(!isOpenNotif)
+        setIsOpenFriendRequest(!isOpenFriendRequest)
+    }
+
+    const handleAddFriend = () => {
+        setIsOpenMenu(false)
+        setIsOpenAddFriend(!isOpenAddFriend)
     }
 
     const handleLogout = async () => {
@@ -31,21 +39,28 @@ const ChatMenu = () => {
                 {isOpenMenu &&
                 <ul tabIndex={0} className="dropdown-content menu p-2 shadow-2xl shadow-black bg-gray-700 w-52">
                     <li>
-                        <div onClick={handleNotif} >
-                            <GoPerson />
+                        <div onClick={handleAddFriend} >
+                            <BsPersonPlusFill />
+                            <span className='text-xs'>Tambah Teman</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div onClick={handleFriendRequest} >
+                            <BsPersonFillUp />
                             <span className='text-xs'>Permintaan Pertemanan</span>
                         </div>
                     </li>
                     <li>
                         <div onClick={handleLogout}>
                             <GoSignOut />
-                            <span>Keluar</span>
+                            <span className='text-xs'>Keluar</span>
                         </div>
                     </li> 
                 </ul>
                 }
             </div>
-            {isOpenNotif && <ChatFriendRequest onClose={handleNotif} />}
+            {isOpenFriendRequest && <FriendRequest onClose={handleFriendRequest} />}
+            {isOpenAddFriend && <AddFriend onClose={handleAddFriend} />}
         </>
     )
 }

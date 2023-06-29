@@ -1,22 +1,21 @@
 import React, { useState, useEffect, useContext } from "react"
 import { BiArrowBack } from 'react-icons/bi'
-import { getAvatar, getUserData } from "../../../Rest"
-import { TokenContext } from "../../../Context"
+import { getUserData } from "../../../Rest"
+import { BaseAvatarURLContext, TokenContext } from "../../../Context"
 import ChatProfileUsername from "./ChatProfileUsername"
 import ChatProfileAbout from "./ChatProfileAbout"
 import ChatProfileAvatar from "./ChatProfileAvatar"
 
 const ChatProfile = () => {
     const token = useContext(TokenContext)
+    const BASE_AVATAR_URL = useContext(BaseAvatarURLContext)
     const [isOpenProfile, setIsOpenProfile] = useState<boolean>(false)
     const [avatar, setAvatar] = useState<string>("")
     
     const fetchAvatar = async () => {
         const response = await getUserData(token)
         const { Avatar } = response.data
-        const avatarWithoutExt = Avatar.replace(/\.(jpg|png|jpeg)$/, "")
-        const avatarUrl = await getAvatar(avatarWithoutExt)
-        setAvatar(avatarUrl)
+        setAvatar(Avatar)
     }
 
     useEffect(() => {
@@ -27,7 +26,7 @@ const ChatProfile = () => {
         <div>
             <div className="avatar">
                 <div className="w-10 h-10 max-h-10 overflow-hidden rounded-full object-cover cursor-pointer" onClick={() => setIsOpenProfile(!isOpenProfile)}>
-                    <img src={avatar} alt="Foto Profil" />
+                    <img src={`${BASE_AVATAR_URL}/${avatar}`} alt="Foto Profil" />
                 </div>
             </div>
             {isOpenProfile && 
