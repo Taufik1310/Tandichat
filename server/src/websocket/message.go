@@ -17,7 +17,6 @@ func sendMessage(from uint, message *MessageData, m *melody.Melody) ([]byte, boo
 	incomingMessage := Message{
 		Type: TYPE_INCOMING_MESSAGE,
 		Data: IncomingMessageData{
-			To:      message.To,
 			From:    from,
 			Message: message.Message,
 		},

@@ -24,7 +24,6 @@ type MessageData struct {
 
 type IncomingMessageData struct {
 	From    uint   `json:"from"`
-	To      uint   `json:"to"`
 	Message string `json:"message"`
 }
 
