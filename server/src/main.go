@@ -52,6 +52,7 @@ func main() {
 
 	//* API FRIEND
 	r.GET("/api/friends", routes.GetAllFriends)
+	r.DELETE("/api/friends", routes.DeleteFriend)
 	r.POST("/api/friends/request", routes.RequestAddFriend)
 	r.POST("/api/friends/accept", routes.AcceptFriendRequest)
 	r.POST("/api/friends/cancel", routes.CancelFriendRequest)
