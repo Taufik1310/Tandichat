@@ -82,16 +82,16 @@ export const AlertInfo = ({ type, status, onClose, email }: AlertInfo) => {
             }
             { 
               status === 'invalidExtensionAvatar' ? 
-              <p className="font-semibold text-center  text-sm">Ekstensi file tidak valid.<br />Hanya file <strong>PNG</strong> dan <strong>GIF</strong> yang diperbolehkan</p>
+              <p className="font-semibold text-center text-sm">Ekstensi file tidak valid.<br />Hanya file <strong>PNG</strong> dan <strong>GIF</strong> yang diperbolehkan</p>
               :
               status === 'duplicateFriendRequest' ?
-              <p className="font-semibold text-center  text-sm">Kamu sudah mengajukan pertemanan pada <span className="font-bold italic">{email}</span>.<br />Cek daftar pengajuan tertunda.</p>
+              <p className="font-semibold text-center text-sm">Kamu sudah mengajukan pertemanan pada <span className="font-bold italic">{email}</span>.<br />Cek daftar pengajuan tertunda.</p>
               :
               status === 'cannotAddYourself' ?
-              <p className="font-semibold text-center  text-sm">Tidak dapat mengajukan pertemanan pada diri sendiri !!!</p>
+              <p className="font-semibold text-center text-sm">Tidak dapat mengajukan pertemanan pada diri sendiri !!!</p>
               :
               status === 'userNotFound' ?
-              <p className="font-semibold text-center  text-sm">Pengguna dengan email: <span className="font-bold italic">{email}</span> tidak ditemukan !!!</p>
+              <p className="font-semibold text-center text-sm">Pengguna dengan email: <span className="font-bold italic">{email}</span> tidak ditemukan !!!</p>
               :
               status === 'successFriendRequest' ?
               <p className="font-semibold text-center text-base">Berhasil Mengajukan Pertemanan</p>

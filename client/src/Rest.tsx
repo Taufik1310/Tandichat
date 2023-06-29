@@ -179,6 +179,44 @@ export const cancelFriendRequest = async (token: string, friendId: number) => {
     }
 }
 
+export const acceptFriendRequest = async (token: string, friendId: number) => {
+    const headers = {
+        "Content-Type": "application/json",
+        "Authorization": token,
+    }
+
+    try {
+        const response = await axios.post(`${BASE_URL}/friends/accept`, { 
+            friend_id: friendId 
+        }, { headers })
+        return response.data
+    } catch (error) {
+        if (error.response) {
+            return error.response.data
+        }
+        throw error
+    }
+}
+
+export const declineFriendRequest = async (token: string, friendId: number) => {
+    const headers = {
+        "Content-Type": "application/json",
+        "Authorization": token,
+    }
+
+    try {
+        const response = await axios.post(`${BASE_URL}/friends/decline`, { 
+            friend_id: friendId 
+        }, { headers })
+        return response.data
+    } catch (error) {
+        if (error.response) {
+            return error.response.data
+        }
+        throw error
+    }
+}
+
 export const getFriendPending = async (token: string) => {
     const headers = {
         "Content-Type": "application/json",
@@ -195,4 +233,3 @@ export const getFriendPending = async (token: string) => {
         throw error
     }
 }
-
