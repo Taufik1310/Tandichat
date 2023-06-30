@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useContext } from "react"
 import { BiArrowBack } from 'react-icons/bi'
-import { getUserData } from "../../../Rest"
-import { BaseAvatarURLContext, TokenContext } from "../../../Context"
+import { BASE_AVATAR_URL, getUserData } from "../../../Rest"
+import { TokenContext } from "../../../Context"
 import ChatProfileUsername from "./ChatProfileUsername"
 import ChatProfileAbout from "./ChatProfileAbout"
 import ChatProfileAvatar from "./ChatProfileAvatar"
 
 const ChatProfile = () => {
     const token = useContext(TokenContext)
-    const BASE_AVATAR_URL = useContext(BaseAvatarURLContext)
     const [isOpenProfile, setIsOpenProfile] = useState<boolean>(false)
     const [avatar, setAvatar] = useState<string>("")
     

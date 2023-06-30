@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const BASE_URL = 'http://localhost:5050/api'
-export const BASE_AVATAR_URL = 'http://localhost:5050/static/profile'
+export const BASE_AVATAR_URL = 'http://localhost:5050/static/avatar'
 
 export const register = async (email: string, username: string, password: string) => {
     try {
@@ -225,6 +225,23 @@ export const getFriendPending = async (token: string) => {
 
     try {
         const response = await axios.get(`${BASE_URL}/friends/pending`, { headers })
+        return response.data
+    } catch (error) {
+        if (error.response) {
+            return error.response.status
+        }
+        throw error
+    }
+}
+
+export const getAllFriend = async (token: string) => {
+    const headers = {
+        "Content-Type": "application/json",
+        "Authorization": token,
+    }
+
+    try {
+        const response = await axios.get(`${BASE_URL}/friends`, { headers })
         return response.data
     } catch (error) {
         if (error.response) {

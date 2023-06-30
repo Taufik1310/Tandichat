@@ -3,10 +3,11 @@ import ChatMessageHeader from "./ChatMessageHeader"
 import ChatMessageInput from "./ChatMessageInput"
 import ChatMessageBody from "./ChatMessageBody"
 
-const ChatMessage = () => {
+const ChatMessage = ({ data }: { data: object}) => {
+
     return (
-        <div className="relative h-screen w-screen sm:w-7/12 lg:w-8/12 flex flex-col justify-between">
-            <ChatMessageHeader />
+        <div className="flex flex-col justify-between w-full h-full">
+            <ChatMessageHeader data={data}/>
             <ChatMessageBody />
             <ChatMessageInput />
         </div>

@@ -12,4 +12,8 @@ export const AuthContext = createContext<AuthContext>({
 
 export const TokenContext = createContext<string>('')
 
-export const BaseAvatarURLContext = createContext<string>('')
+// export const BaseAvatarURLContext = createContext<string>('')
+
+export const ChatClickedContext = createContext({
+    onClick: (data: any) => {}
+})

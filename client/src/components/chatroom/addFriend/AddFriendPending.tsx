@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useContext } from "react"
-import { cancelFriendRequest, getFriendPending } from "../../../Rest"
-import { TokenContext, BaseAvatarURLContext } from "../../../Context"
+import { BASE_AVATAR_URL, cancelFriendRequest, getFriendPending } from "../../../Rest"
+import { TokenContext } from "../../../Context"
 import { AlertUserInfo } from "../../template/Alert"
 
 const AddFriendPending = ({ isSubmitForm, onSubmit }: { 
     isSubmitForm: boolean, 
     onSubmit: () => void 
 }) => {
-    const BASE_AVATAR_URL = useContext(BaseAvatarURLContext)
     const token = useContext(TokenContext)
     const [friendPending, setFriendPending] = useState([])
     const [isAlertUserInfoOpen, setIsAlertUserInfoOpen] = useState<boolean>(false)
