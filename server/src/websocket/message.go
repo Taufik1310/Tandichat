@@ -3,6 +3,7 @@ package websocket
 import (
 	"andiputraw/Tandichat/src/database"
 	"encoding/json"
+	"time"
 
 	"github.com/olahol/melody"
 )
@@ -18,6 +19,7 @@ func sendMessage(from uint, message *MessageData, m *melody.Melody) ([]byte, boo
 		Type: TYPE_INCOMING_MESSAGE,
 		Data: IncomingMessageData{
 			From:    from,
+			Date:    time.Now(),
 			Message: message.Message,
 		},
 	}

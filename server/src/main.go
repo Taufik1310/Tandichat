@@ -53,7 +53,7 @@ func main() {
 	//* API FRIEND
 	r.GET("/api/friends", routes.GetAllFriends)
 	r.DELETE("/api/friends", routes.DeleteFriend)
-	r.POST("/api/friends/request", routes.RequestAddFriend)
+	r.POST("/api/friends/request", routes.RequestAddFriend(m))
 	r.POST("/api/friends/accept", routes.AcceptFriendRequest)
 	r.POST("/api/friends/cancel", routes.CancelFriendRequest)
 	r.POST("/api/friends/decline", routes.RejectFriendRequest)
@@ -65,6 +65,7 @@ func main() {
 	r.PATCH("/api/user/about", routes.ChangeAbout)
 	r.POST("/api/user/block", routes.BlockUser)
 	r.DELETE("/api/user/block", routes.UnBlockUser)
+	r.GET("/api/user/block", routes.GetBlockedUsers)
 
 	r.GET("/ws/auth", routes.GenerateWebsocketAuthCode)
 	r.GET("/ws/connect", routes.ConnectWebSocket(m))

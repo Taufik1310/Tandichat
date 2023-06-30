@@ -149,3 +149,22 @@ func UnBlockUser(c *gin.Context) {
 	body := gin.H{"code": 200, "message": "Success"}
 	c.JSON(200, body)
 }
+
+func GetBlockedUsers(c *gin.Context) {
+	sessions, err := checkIfuserIsLogged(c)
+
+	if err != nil {
+		return
+	}
+
+	blockedUser, err := database.GetBlockedUser(sessions.UserID)
+
+	if err != nil {
+		body := NewResponseError(404, "Failed to get blocked users", err.Error())
+		c.JSON(404, body)
+		return
+	}
+
+	body := gin.H{"code": 200, "message": "success", "data": blockedUser}
+	c.JSON(200, body)
+}

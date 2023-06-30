@@ -3,6 +3,9 @@ package database
 import (
 	"andiputraw/Tandichat/src/model"
 	"errors"
+	"log"
+
+	"gorm.io/gorm"
 )
 
 // TODO DELETE THIS
@@ -28,8 +31,16 @@ type userid interface {
 	uint | string
 }
 
+func GetBlockedUser(UserId uint) ([]User, error) {
+	var blockedUsers []User
+
+	DB.Table("blocked_users").Joins("inner join users on users.id = blocked_users.blocked_user_id").Select("users.id, users.username, users.email, users.avatar, users.about").Where("user_id = ?", UserId).Scan(&blockedUsers)
+
+	return blockedUsers, nil
+}
+
 func UnBlockUser(UserId uint, blockedUserID uint) error {
-	result := DB.Where("user_id = ? AND blocked_user_id = ?", UserId, blockedUserID).Delete(&model.BlockedUser{})
+	result := DB.Unscoped().Where("user_id = ? AND blocked_user_id = ?", UserId, blockedUserID).Delete(&model.BlockedUser{})
 
 	if result.Error != nil {
 		return result.Error
@@ -49,12 +60,19 @@ func BlockUser(UserId uint, blockedUserID uint) error {
 	block.BlockedUserID = blockedUserID
 	block.UserID = UserId
 
-	if err := DB.Create(&block).Error; err != nil {
-		return err
-	}
+	err := DB.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Create(&block).Error; err != nil {
+			return err
+		}
 
-	return nil
+		if err := DeleteFriend(UserId, blockedUserID); err != nil {
+			log.Println("INFO: This user ", blockedUserID, " is not friend with", UserId)
+		}
 
+		return nil
+	})
+
+	return err
 }
 
 func GetUser[T userid](userId uint, id T) (*User, error) {
