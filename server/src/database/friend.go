@@ -169,7 +169,13 @@ func DeleteFriend(userid uint, friendid uint) error {
 			room_id = room_participants[0].RoomID
 		}
 
-		result = tx.Unscoped().Where("id = (?)", room_id).Delete(&model.Room{})
+		result = tx.Unscoped().Where("room_id = ?", room_id).Delete(&model.Message{})
+
+		if result.Error != nil {
+			return result.Error
+		}
+
+		result = tx.Unscoped().Where("id = ?", room_id).Delete(&model.Room{})
 
 		if result.Error != nil {
 			return result.Error

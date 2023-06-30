@@ -2,8 +2,10 @@ package routes
 
 import (
 	"andiputraw/Tandichat/src/database"
+	"andiputraw/Tandichat/src/websocket"
 
 	"github.com/gin-gonic/gin"
+	"github.com/olahol/melody"
 )
 
 func GetAllFriends(c *gin.Context) {
@@ -48,30 +50,35 @@ func GetPendingFriendRequests(c *gin.Context) {
 
 }
 
-func RequestAddFriend(c *gin.Context) {
-	sessions, err := checkIfuserIsLogged(c)
+func RequestAddFriend(m *melody.Melody) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		sessions, err := checkIfuserIsLogged(c)
 
-	if err != nil {
-		return
+		if err != nil {
+			return
+		}
+
+		var requestData struct {
+			Friend_id uint `json:"friend_id" binding:"required"`
+		}
+
+		if err := c.ShouldBindJSON(&requestData); err != nil {
+			body := NewResponseError(400, "Bad Request", err.Error())
+			c.JSON(400, body)
+			return
+		}
+
+		if err := database.RequestAddFriend(sessions.UserID, requestData.Friend_id); err != nil {
+			body := NewResponseError(500, "Failed to add friend", err.Error())
+			c.JSON(500, body)
+			return
+		}
+
+		websocket.NewFriendRequest(sessions.UserID, requestData.Friend_id, m)
+
+		c.JSON(200, gin.H{"code": "200", "message": "Success"})
+
 	}
-
-	var requestData struct {
-		Friend_id uint `json:"friend_id" binding:"required"`
-	}
-
-	if err := c.ShouldBindJSON(&requestData); err != nil {
-		body := NewResponseError(400, "Bad Request", err.Error())
-		c.JSON(400, body)
-		return
-	}
-
-	if err := database.RequestAddFriend(sessions.UserID, requestData.Friend_id); err != nil {
-		body := NewResponseError(500, "Failed to add friend", err.Error())
-		c.JSON(500, body)
-		return
-	}
-
-	c.JSON(200, gin.H{"code": "200", "message": "Success"})
 
 }
 
