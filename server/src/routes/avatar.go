@@ -10,7 +10,7 @@ import (
 	"andiputraw/Tandichat/src/database"
 )
 
-const imagePath = "./static/profile/"
+const imagePath = "./static/avatar/"
 
 func ChangeAvatar(c *gin.Context) {
 
