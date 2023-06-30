@@ -2,11 +2,11 @@ import React, { useState, useEffect, useContext } from "react"
 import { BiArrowBack } from 'react-icons/bi'
 import { BASE_AVATAR_URL, getUserData } from "../../../Rest"
 import { TokenContext } from "../../../Context"
-import ChatProfileUsername from "./ChatProfileUsername"
-import ChatProfileAbout from "./ChatProfileAbout"
-import ChatProfileAvatar from "./ChatProfileAvatar"
+import MyProfileUsername from "./MyProfileUsername"
+import MyProfileAbout from "./MyProfileAbout"
+import MyProfileAvatar from "./MyProfileAvatar"
 
-const ChatProfile = () => {
+const MyProfile = () => {
     const token = useContext(TokenContext)
     const [isOpenProfile, setIsOpenProfile] = useState<boolean>(false)
     const [avatar, setAvatar] = useState<string>("")
@@ -36,12 +36,12 @@ const ChatProfile = () => {
                 </div>
                 <div className="flex flex-col items-center gap-10 px-6 py-10">
                     <section>
-                        <ChatProfileAvatar setNewAvatar={fetchAvatar} avatar={avatar}/>
+                        <MyProfileAvatar setNewAvatar={fetchAvatar} avatar={avatar}/>
                     </section>
                     <section className="w-full">
                         <form>
-                            <ChatProfileUsername isOpenProfile={isOpenProfile} />
-                            <ChatProfileAbout isOpenProfile={isOpenProfile} />
+                            <MyProfileUsername isOpenProfile={isOpenProfile} />
+                            <MyProfileAbout isOpenProfile={isOpenProfile} />
                         </form>
                     </section>
                 </div>
@@ -51,4 +51,4 @@ const ChatProfile = () => {
     )
 }
 
-export default ChatProfile
+export default MyProfile

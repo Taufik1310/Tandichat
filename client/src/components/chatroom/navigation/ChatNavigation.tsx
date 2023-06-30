@@ -1,14 +1,23 @@
-import React from "react";
-import ChatNavigationBar from "./ChatNavigationBar";
-import ChatSearchbox from "./ChatSearchbox";
-import ListFriend from "./listFriend";
+import React from "react"
+import ChatNavigationBar from "./ChatNavigationBar"
+import ChatSearchbox from "./ChatSearchbox"
+import ListFriend from "./ListFriend"
+import UserInfo from "../userInfo/UserInfo"
 
-const ChatNavigation = () => {
+const ChatNavigation = ({ isUserInfoOpen, userData }: { isUserInfoOpen: boolean, userData?: any }) => {
+    
+
     return (
         <>
-            <ChatNavigationBar/>
-            <ChatSearchbox />
-            <ListFriend />
+            { isUserInfoOpen ?
+                <UserInfo data={userData} />
+                :
+                <>
+                    <ChatNavigationBar/>
+                    <ChatSearchbox />
+                    <ListFriend />
+                </>
+            }
         </>
     )
 }

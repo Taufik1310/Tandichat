@@ -1,10 +1,6 @@
 import React from "react"
 import { FaInfoCircle, FaCheckCircle } from 'react-icons/fa'
-import { BsPersonFillExclamation, BsPersonFillCheck, BsInfoCircle } from 'react-icons/bs'
-import { IoMdClose } from 'react-icons/io'
-import { MdAlternateEmail } from 'react-icons/md'
-import { CgBlock } from 'react-icons/cg'
-import { BASE_AVATAR_URL } from "../../Rest"
+import { BsPersonFillExclamation, BsPersonFillCheck } from 'react-icons/bs'
 
 
 export const AlertRegister = ({ state }: { state: number }) => {
@@ -116,57 +112,4 @@ interface AlertUserInfo {
     about: string,
   }
   onClose: () => void
-}
-
-export const AlertUserInfo = ({ item, onClose }: AlertUserInfo) => {
-  const { avatar, username, email, about } = item
-
-  return (
-    <>
-      <button 
-          className="bg-gray-900 opacity-60 fixed z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-screen h-screen" 
-          onClick={onClose}
-      > </button>
-      <div className="fixed z-50 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2/3 h-3/4 sm:w-2/4 md:w-1/3 lg:w-1/4">
-          <div 
-            className={`bg-gray-700 h-full flex flex-col gap-5 py-3 px-5 rounded-2xl`}
-          >
-            <div className="flex items-center justify-between text-base font-medium mb-8">
-                <p>Informasi Pengguna</p>
-                <IoMdClose size={22} className="cursor-pointer text-gray-300" onClick={onClose}/>
-            </div>
-            <div className="flex items-center gap-5 mb-10">
-              <div className="avatar">
-                  <div className="w-20 h-20 max-h-20 overflow-hidden rounded-full object-cover cursor-pointer">
-                      <img src={`${BASE_AVATAR_URL}/${avatar}`} alt="Foto Profil" />
-                  </div>
-              </div>
-              <p className="text-base font-medium truncate">{username}</p>
-            </div>
-            <ul className="flex flex-col gap-8">
-              <li className="flex gap-5">
-                <MdAlternateEmail size={24} className="w-1/12"/>
-                <div className="w-10/12 h-16 overflow-scroll scrollbar-none">
-                  <span className="text-xs text-gray-400">Email</span>
-                  <p className="text-xs font-semibold">{email}</p>
-                </div>
-              </li>
-              <li className="flex gap-5">
-                <BsInfoCircle size={20} className="w-1/12"/>
-                <div className="w-10/12 h-16 overflow-scroll scrollbar-none">
-                  <span className="text-xs text-gray-400">Tentang</span>
-                  <p className="text-xs font-semibold">{about}</p>
-                </div>
-              </li>
-              <li className="flex items-center gap-5 text-red-400 cursor-pointer">
-                <CgBlock size={30} className="w-1/12"/>
-                <div className="w-10/12">
-                  <p className="truncate text-sm font-semibold">Blokir</p>
-                </div>
-              </li>
-            </ul>
-          </div>
-      </div>
-    </>
-  )
 }

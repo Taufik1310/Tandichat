@@ -3,7 +3,7 @@ import { changeAbout, getUserData } from "../../../Rest"
 import { TokenContext } from "../../../Context"
 import { BiPencil } from 'react-icons/bi'
 
-const ChatProfileAbout = ({ isOpenProfile }: { isOpenProfile: boolean }) => {
+const MyProfileAbout = ({ isOpenProfile }: { isOpenProfile: boolean }) => {
     const token = useContext(TokenContext)
     const defaultAbout = `.`
     const [about, setAbout] = useState<string>('')
@@ -73,4 +73,4 @@ const ChatProfileAbout = ({ isOpenProfile }: { isOpenProfile: boolean }) => {
     )
 }
 
-export default ChatProfileAbout
+export default MyProfileAbout

@@ -5,53 +5,31 @@ import { GoKebabHorizontal } from 'react-icons/go'
 import { AiOutlineCheck, AiOutlineClose } from 'react-icons/ai'
 import { CgBlock } from 'react-icons/cg'
 import { BASE_AVATAR_URL, acceptFriendRequest, declineFriendRequest, getFriendPending } from '../../../Rest'
-import { AlertUserInfo } from '../../template/Alert'
-import { TokenContext } from '../../../Context'
+import { TokenContext, UserInfoContext } from '../../../Context'
 
 
 const FriendRequest = ({ onClose }: { onClose: () => void }) => {
-    const token = useContext(TokenContext)
+    const TOKEN = useContext(TokenContext)
+    const { onClick } = useContext(UserInfoContext)
     const [friendPending, setFriendPending] = useState([])
-    const [detailUser, setDetailUser] = useState({
-        avatar: '',
-        username: '',
-        email: '',
-        about: '',
-    })
-    const [isAlertUserInfoOpen, setIsAlertUserInfoOpen] = useState<boolean>(false)
     
     const fetchFriendPending = async () => {
-        const response = await getFriendPending(token)
+        const response = await getFriendPending(TOKEN)
         setFriendPending(response.data.received)
     }
 
     const handleAcceptedBtn = async (id: number) => {
-        const response = await acceptFriendRequest(token, id)
+        const response = await acceptFriendRequest(TOKEN, id)
         if (response) {
             fetchFriendPending()
         }
     }
     
     const handleDeclinedBtn = async (id: number) => {
-        const response = await declineFriendRequest(token, id)
+        const response = await declineFriendRequest(TOKEN, id)
         if (response) {
             fetchFriendPending()
         }
-    }
-
-    const handleClickedUser = ({ Avatar, Username, Email, About }: {
-        Avatar: string,
-        Username: string,
-        Email: string,
-        About: string,
-    }) => {
-        setDetailUser({
-            avatar: Avatar,
-            username: Username,
-            email: Email,
-            about: About,
-        })
-        setIsAlertUserInfoOpen(true)
     }
 
     useEffect(() => {
@@ -77,7 +55,7 @@ const FriendRequest = ({ onClose }: { onClose: () => void }) => {
                                 <li className="flex justify-between items-center gap-x-3 px-2 py-3 rounded-md hover:bg-gray-700">
                                     <div 
                                         className="w-9/12 sm:w-8/12 lg:w-9/12 flex gap-x-3 items-center cursor-pointer"
-                                        onClick={() => handleClickedUser(item)}
+                                        onClick={() => onClick(item)}
                                     >
                                         <div className="avatar">
                                             <div className="w-10 h-10 max-h-10 object-cover rounded-full">
@@ -128,9 +106,6 @@ const FriendRequest = ({ onClose }: { onClose: () => void }) => {
                     </ul>
                 }
             </div>
-            { isAlertUserInfoOpen &&
-                <AlertUserInfo item={detailUser} onClose={() => setIsAlertUserInfoOpen(false)} />
-            }
         </>
     )
 }

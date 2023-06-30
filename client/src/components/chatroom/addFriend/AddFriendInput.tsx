@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react"
 import { TokenContext } from "../../../Context"
 import { addFriendRequest, getUserData } from "../../../Rest"
-import { AlertInfo } from "../../template/Alert"
+import { AlertInfo } from "../../alert/Alert"
 
 const AddFriendInput = ({ onSubmit }: { onSubmit: () => void }) => {
     const token = useContext(TokenContext)

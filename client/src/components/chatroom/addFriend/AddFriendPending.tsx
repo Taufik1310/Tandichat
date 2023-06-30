@@ -1,45 +1,23 @@
 import React, { useState, useEffect, useContext } from "react"
 import { BASE_AVATAR_URL, cancelFriendRequest, getFriendPending } from "../../../Rest"
-import { TokenContext } from "../../../Context"
-import { AlertUserInfo } from "../../template/Alert"
+import { TokenContext, UserInfoContext } from "../../../Context"
 
 const AddFriendPending = ({ isSubmitForm, onSubmit }: { 
     isSubmitForm: boolean, 
     onSubmit: () => void 
 }) => {
-    const token = useContext(TokenContext)
+    const TOKEN = useContext(TokenContext)
+    const { onClick } = useContext(UserInfoContext)
     const [friendPending, setFriendPending] = useState([])
-    const [isAlertUserInfoOpen, setIsAlertUserInfoOpen] = useState<boolean>(false)
-    const [detailUser, setDetailUser] = useState({
-        avatar: '',
-        username: '',
-        email: '',
-        about: '',
-    })
 
     const fetchFriendPending = async () => {
-        const response = await getFriendPending(token)
+        const response = await getFriendPending(TOKEN)
         setFriendPending(response.data.sended)
     }
 
     const handleClickedButton = (id: number) => {
-        cancelFriendRequest(token, id)
+        cancelFriendRequest(TOKEN, id)
         fetchFriendPending()
-    }
-
-    const handleClickedUser = ({ Avatar, Username, Email, About }: {
-        Avatar: string,
-        Username: string,
-        Email: string,
-        About: string,
-    }) => {
-        setDetailUser({
-            avatar: Avatar,
-            username: Username,
-            email: Email,
-            about: About,
-        })
-        setIsAlertUserInfoOpen(true)
     }
 
     useEffect(() => {
@@ -64,7 +42,7 @@ const AddFriendPending = ({ isSubmitForm, onSubmit }: {
                                 <li className="flex justify-between items-start gap-x-3 px-2 py-3 rounded-md hover:bg-gray-700 cursor-pointer">
                                     <div 
                                         className="w-9/12 sm:w-8/12 lg:w-9/12 flex gap-x-2 items-center"
-                                        onClick={() => handleClickedUser(item)}
+                                        onClick={() => onClick(item)}
                                     >
                                         <div className="avatar">
                                             <div className="w-8 max-h-8 object-cover rounded-full">
@@ -88,9 +66,6 @@ const AddFriendPending = ({ isSubmitForm, onSubmit }: {
                     </ul>
                 }
             </div>
-            { isAlertUserInfoOpen &&
-                <AlertUserInfo item={detailUser} onClose={() => setIsAlertUserInfoOpen(false)} />
-            }
         </div>
     )
 }

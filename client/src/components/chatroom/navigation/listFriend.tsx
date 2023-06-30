@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react"
 import { BASE_AVATAR_URL, getAllFriend } from "../../../Rest"
 import { ChatClickedContext, TokenContext } from "../../../Context"
 
-const listFriend = () => {
+const ListFriend = () => {
     const TOKEN = useContext(TokenContext)
     const { onClick } = useContext(ChatClickedContext)
     const [listFriend, setListFriend] = useState([])
@@ -54,4 +54,4 @@ const listFriend = () => {
     )
 }
 
-export default listFriend
+export default ListFriend
