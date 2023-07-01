@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { Helmet, HelmetProvider } from "react-helmet-async"
 import Auth from "./Auth"
-import ChatRoom from "./ChatRoom"
+import Home from "./Home"
 import { AuthContext, TokenContext } from "../Context"
 
 const LOGO = './assets/logo2.png'
@@ -37,7 +37,7 @@ const Main = () => {
                 <main>
                     <TokenContext.Provider value={token}>
                         <AuthContext.Provider value={{ onLogin: handleLogin, onLogout: handleLogout }}>
-                            { isLoggedIn ? <ChatRoom /> : <Auth /> }
+                            { isLoggedIn ? <Home /> : <Auth /> }
                         </AuthContext.Provider>
                     </TokenContext.Provider>
                 </main>
