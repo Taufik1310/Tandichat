@@ -16,8 +16,27 @@ const AlertConfirm = ({ onClose, onConfirm, status }: {
                     className={`bg-gray-800 h-full flex flex-col gap-5 rounded-xl border-[1px] border-gray-500 text-blue-50`}
                 >
                     <div className='py-3 px-5 rounded-tl-xl rounded-tr-xl h-3/6'>
-                        <p className='font-bold text-lg'>Konfirmasi Hapus</p>
-                        <p className='text-sm'>Apakah kamu yakin ingin menghapus pertemanan ?</p>
+                        { 
+                            status === "deleteFriend" ?
+                            <>
+                                <p className='font-bold text-lg'>Konfirmasi Hapus</p>
+                                <p className='text-sm'>Apakah kamu yakin ingin menghapus pertemanan ?</p>
+                            </>
+                            :
+                            status === "block" ?
+                            <>
+                                <p className='font-bold text-lg'>Konfirmasi Blokir</p>
+                                <p className='text-sm'>Apakah kamu yakin ingin memblokir pengguna ?</p>
+                            </>
+                            :
+                            status === "logout" ?
+                            <>
+                                <p className='font-bold text-lg'>Konfirmasi Keluar</p>
+                                <p className='text-sm'>Apakah kamu yakin ingin keluar ?</p>
+                            </>
+                            :
+                            null
+                        }
                     </div>
                     <div className='bg-gray-900 py-3 px-5 rounded-br-xl rounded-bl-xl h-3/6 flex items-center justify-evenly'>
                         <button 

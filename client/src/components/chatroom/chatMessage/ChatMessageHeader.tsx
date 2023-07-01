@@ -10,16 +10,34 @@ const ChatMessageHeader = ({ data }: { data: any }) => {
     const TOKEN = useContext(TokenContext)
     const { onClick } = useContext(UserInfoContext)
     const { Id, Avatar, Username } = data
-    const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState<boolean>(false)
+    const [isConfirmOpen, setIsConfirmOpen] = useState({
+        deleteFriend: false,
+        block: false,
+    })
 
     const handleAlertClosed = () => {
-        setIsConfirmDeleteOpen(false)
+        setIsConfirmOpen({
+            deleteFriend: false,
+            block: false
+        })
     }
 
     const handleDeleteConfirmed = async () => {
-        setIsConfirmDeleteOpen(false)
+        setIsConfirmOpen({
+            ...isConfirmOpen,
+            deleteFriend: false
+        })
         const response = await deleteFriend(TOKEN, Id)
         console.log(response)
+    }
+
+    const handleBlockConfirmed = async () => {
+        setIsConfirmOpen({
+            ...isConfirmOpen,
+            block: false
+        })
+        // const response = await deleteFriend(TOKEN, Id)
+        // console.log(response)
     }
 
     return (
@@ -50,13 +68,23 @@ const ChatMessageHeader = ({ data }: { data: any }) => {
                                 <span className='text-xs'>Lihat Profil</span>
                             </div>
                         </li>
-                        <li onClick={() => setIsConfirmDeleteOpen(true)}>
+                        <li 
+                            onClick={() => setIsConfirmOpen({
+                                ...isConfirmOpen,
+                                deleteFriend: true
+                            })}
+                        >
                             <div>
                                 <CgTrashEmpty />
                                 <span className='text-xs'>Hapus Pertemanan</span>
                             </div>
                         </li>
-                        <li>
+                        <li 
+                            onClick={() => setIsConfirmOpen({
+                                ...isConfirmOpen,
+                                block: true
+                            })}
+                        >
                             <div className="text-red-400">
                                 <CgBlock />
                                 <span className='text-xs font-semibold'>Blokir</span>
@@ -65,8 +93,11 @@ const ChatMessageHeader = ({ data }: { data: any }) => {
                     </ul>
                 </details>
             </div>
-            { isConfirmDeleteOpen &&
+            { isConfirmOpen.deleteFriend &&
                 <AlertConfirm onClose={handleAlertClosed} onConfirm={handleDeleteConfirmed} status="deleteFriend" />
+            }
+            { isConfirmOpen.block &&
+                <AlertConfirm onClose={handleAlertClosed} onConfirm={handleBlockConfirmed} status="block" />
             }
         </>
     )

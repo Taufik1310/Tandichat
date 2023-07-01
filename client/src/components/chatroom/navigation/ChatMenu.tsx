@@ -5,6 +5,7 @@ import { logout } from '../../../Rest'
 import { AuthContext, TokenContext } from '../../../Context'
 import FriendRequest from '../friendRequest/FriendRequest'
 import AddFriend from '../addFriend/AddFriend'
+import AlertConfirm from '../../alert/AlertConfirm'
 
 const ChatMenu = () => {
     const { onLogout } = useContext(AuthContext)
@@ -12,6 +13,7 @@ const ChatMenu = () => {
     const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false)
     const [isOpenFriendRequest, setIsOpenFriendRequest] = useState<boolean>(false)
     const [isOpenAddFriend, setIsOpenAddFriend] = useState<boolean>(false)
+    const [isConfirmLogoutOpen, setIsConfirmLogoutOpen] = useState<boolean>(false)
 
     const handleFriendRequest = () => {
         setIsOpenMenu(false)
@@ -26,8 +28,7 @@ const ChatMenu = () => {
     const handleLogout = async () => {
         setIsOpenMenu(false)
         const response = await logout(token)
-        if (response.code === 200) {
-            localStorage.removeItem('token')
+        if (response) {
             onLogout()
         }
     }
@@ -51,7 +52,7 @@ const ChatMenu = () => {
                         </div>
                     </li>
                     <li>
-                        <div onClick={handleLogout}>
+                        <div onClick={() => setIsConfirmLogoutOpen(true)}>
                             <GoSignOut />
                             <span className='text-xs'>Keluar</span>
                         </div>
@@ -61,6 +62,9 @@ const ChatMenu = () => {
             </div>
             {isOpenFriendRequest && <FriendRequest onClose={handleFriendRequest} />}
             {isOpenAddFriend && <AddFriend onClose={handleAddFriend} />}
+            { isConfirmLogoutOpen &&
+                <AlertConfirm onClose={() => setIsConfirmLogoutOpen(false)} onConfirm={handleLogout} status="logout" />
+            }
         </>
     )
 }

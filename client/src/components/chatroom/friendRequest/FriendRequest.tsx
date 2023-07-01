@@ -6,12 +6,14 @@ import { AiOutlineCheck, AiOutlineClose } from 'react-icons/ai'
 import { CgBlock } from 'react-icons/cg'
 import { BASE_AVATAR_URL, acceptFriendRequest, declineFriendRequest, getFriendPending } from '../../../Rest'
 import { TokenContext, UserInfoContext } from '../../../Context'
+import AlertConfirm from '../../alert/AlertConfirm'
 
 
 const FriendRequest = ({ onClose }: { onClose: () => void }) => {
     const TOKEN = useContext(TokenContext)
     const { onClick } = useContext(UserInfoContext)
     const [friendPending, setFriendPending] = useState([])
+    const [isConfirmBlockOpen, setIsConfirmBlockOpen] = useState<boolean>(false)
     
     const fetchFriendPending = async () => {
         const response = await getFriendPending(TOKEN)
@@ -30,6 +32,16 @@ const FriendRequest = ({ onClose }: { onClose: () => void }) => {
         if (response) {
             fetchFriendPending()
         }
+    }
+
+    const handleAlertClosed = () => {
+        setIsConfirmBlockOpen(false)
+    }
+
+    const handleBlockConfirmed = async () => {
+        setIsConfirmBlockOpen(false)
+        // const response = await deleteFriend(TOKEN, Id)
+        // console.log(response)
     }
 
     useEffect(() => {
@@ -92,7 +104,10 @@ const FriendRequest = ({ onClose }: { onClose: () => void }) => {
                                                     Tolak
                                                 </a>
                                             </li>
-                                            <li className='py-2 px-3 flex flex-row items-center gap-3 text-red-400 text-sm font-bold cursor-pointer hover:bg-gray-800'>
+                                            <li 
+                                                className='py-2 px-3 flex flex-row items-center gap-3 text-red-400 text-sm font-bold cursor-pointer hover:bg-gray-800'
+                                                onClick={() => setIsConfirmBlockOpen(true)}
+                                            >
                                                 <CgBlock className='p-0 hover:bg-transparent'/>
                                                 <a className='p-0 hover:bg-transparent'>
                                                     Blokir
@@ -106,6 +121,9 @@ const FriendRequest = ({ onClose }: { onClose: () => void }) => {
                     </ul>
                 }
             </div>
+            { isConfirmBlockOpen &&
+                <AlertConfirm onClose={handleAlertClosed} onConfirm={handleBlockConfirmed} status="block" />
+            }
         </>
     )
 }

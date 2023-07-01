@@ -9,18 +9,36 @@ const UserInfo = ({ data }: { data: any }) => {
     const TOKEN = useContext(TokenContext)
     const { onClose } = useContext(UserInfoContext)
     const { Id, Avatar, Email, Username, About } = data
-    const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState<boolean>(false)
+    const [isConfirmOpen, setIsConfirmOpen] = useState({
+        deleteFriend: false,
+        block: false,
+    })
     const [listFriend, setListFriend] = useState([])
     const [isFriendExist, setIsFriendExist] = useState<boolean>(false)
 
     const handleAlertClosed = () => {
-        setIsConfirmDeleteOpen(false)
+        setIsConfirmOpen({
+            deleteFriend: false,
+            block: false
+        })
     }
 
     const handleDeleteConfirmed = async () => {
-        setIsConfirmDeleteOpen(false)
+        setIsConfirmOpen({
+            ...isConfirmOpen,
+            deleteFriend: false
+        })
         const response = await deleteFriend(TOKEN, Id)
         console.log(response)
+    }
+
+    const handleBlockConfirmed = async () => {
+        setIsConfirmOpen({
+            ...isConfirmOpen,
+            block: false
+        })
+        // const response = await deleteFriend(TOKEN, Id)
+        // console.log(response)
     }
 
     const fetchAllFriend =  async () => {
@@ -76,23 +94,35 @@ const UserInfo = ({ data }: { data: any }) => {
                     </section>
                     <section className="w-full">
                         { isFriendExist &&
-                            <div className="flex items-center gap-2 text-gray-400 cursor-pointer mb-5">
+                            <div 
+                                className="flex items-center gap-2 text-gray-400 cursor-pointer mb-5"
+                                onClick={() => setIsConfirmOpen({
+                                    ...isConfirmOpen,
+                                    deleteFriend: true
+                                })}
+                            >
                                 <CgTrashEmpty size={16} />
-                                <p 
-                                    className="text-xs font-semibold"
-                                    onClick={() => setIsConfirmDeleteOpen(true)}
-                                >Hapus Pertemanan</p>
+                                <p className="text-xs font-semibold">Hapus Pertemanan</p>
                             </div>
                         }
-                        <div className="flex items-center gap-2 text-red-500 cursor-pointer">
+                        <div 
+                            className="flex items-center gap-2 text-red-500 cursor-pointer"
+                            onClick={() => setIsConfirmOpen({
+                                ...isConfirmOpen,
+                                block: true
+                            })}
+                        >
                             <CgBlock size={20} />
                             <p className="text-sm font-semibold">Blokir</p>
                         </div>
                     </section>
                 </div>
             </div>
-            { isConfirmDeleteOpen &&
+            { isConfirmOpen.deleteFriend &&
                 <AlertConfirm onClose={handleAlertClosed} onConfirm={handleDeleteConfirmed} status="deleteFriend" />
+            }
+            { isConfirmOpen.block &&
+                <AlertConfirm onClose={handleAlertClosed} onConfirm={handleBlockConfirmed} status="block" />
             }
         </>
     )
