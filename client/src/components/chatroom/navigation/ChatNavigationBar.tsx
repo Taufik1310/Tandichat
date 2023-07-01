@@ -2,7 +2,6 @@ import React from "react";
 import ChatMenu from "./ChatMenu";
 import MyProfile from "../myProfile/MyProfile";
 
-const LOGO = './assets/logo1.png'
 
 const ChatNavigationBar = () => {
     return (

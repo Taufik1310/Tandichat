@@ -35,9 +35,9 @@ const ChatMenu = () => {
     return (
         <>
             <div className="dropdown dropdown-bottom dropdown-end">
-                <GoKebabVertical tabIndex={0} size={22} className="text-slate-200 cursor-pointer" onClick={() => setIsOpenMenu(true)}/>
+                <GoKebabVertical tabIndex={0} size={22} className="text-blue-50 cursor-pointer" onClick={() => setIsOpenMenu(true)}/>
                 {isOpenMenu &&
-                <ul tabIndex={0} className="dropdown-content menu p-2 shadow-2xl shadow-black bg-gray-700 w-52">
+                <ul tabIndex={0} className="dropdown-content menu p-2 shadow-2xl shadow-black bg-gray-700 w-52 rounded-lg">
                     <li>
                         <div onClick={handleAddFriend} >
                             <BsPersonPlusFill />

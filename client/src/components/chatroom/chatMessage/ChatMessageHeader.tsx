@@ -1,27 +1,74 @@
-import React, { useContext } from "react"
-import { BASE_AVATAR_URL } from "../../../Rest"
-import { UserInfoContext } from "../../../Context"
+import React, { useContext, useState } from "react"
+import { BASE_AVATAR_URL, deleteFriend } from "../../../Rest"
+import { TokenContext, UserInfoContext } from "../../../Context"
+import { GoKebabVertical } from 'react-icons/go'
+import { CgBlock, CgTrashEmpty, CgProfile } from 'react-icons/cg'
+import { BiArrowBack } from 'react-icons/bi'
+import AlertConfirm from "../../alert/AlertConfirm"
 
-
-const ChatMessageHeader = ({ data }: { data: {
-    Avatar?: string,
-    Username?: string
-} }) => {
-    const { Avatar, Username } = data
+const ChatMessageHeader = ({ data }: { data: any }) => {
+    const TOKEN = useContext(TokenContext)
     const { onClick } = useContext(UserInfoContext)
+    const { Id, Avatar, Username } = data
+    const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState<boolean>(false)
+
+    const handleAlertClosed = () => {
+        setIsConfirmDeleteOpen(false)
+    }
+
+    const handleDeleteConfirmed = async () => {
+        setIsConfirmDeleteOpen(false)
+        const response = await deleteFriend(TOKEN, Id)
+        console.log(response)
+    }
 
     return (
-        <div className="bg-gray-700 h-14 max-h-14 px-5 py-2 flex items-center">
-            <div 
-                className="avatar flex items-center w-10/12 cursor-pointer"
-                onClick={() => onClick(data)}
-            >
-                <div className="w-10 max-h-10 object-cover rounded-full">
-                    <img src={`${BASE_AVATAR_URL}/${Avatar}`} alt="Foto Profil"/>
+        <>
+            <div className="bg-gray-700 h-14 max-h-14 px-8 py-2 flex items-center justify-between">
+                <div className="flex items-center gap-5 w-10/12">
+                    <div className="block sm:hidden">
+                        <BiArrowBack size={22} className="cursor-pointer" />
+                    </div>
+                    <div 
+                        className="avatar flex items-center gap-5 w-10/12 sm:w-full cursor-pointer"
+                        onClick={() => onClick(data)}
+                    >
+                        <div className="w-9 h-9 max-h-9 object-cover rounded-full">
+                            <img src={`${BASE_AVATAR_URL}/${Avatar}`} alt="Foto Profil"/>
+                        </div>
+                        <p className="truncate text-md font-bold">{Username}</p>
+                    </div>
                 </div>
-                <p className="truncate text-md font-bold ms-4">{Username}</p>
+                <details className="dropdown dropdown-end">
+                    <summary tabIndex={0} className="btn p-0 bg-transparent hover:bg-gray-600 border-0" >
+                        <GoKebabVertical size={22} className="text-blue-50 cursor-pointer" />
+                    </summary>
+                    <ul tabIndex={0} className="p-2 menu dropdown-content z-[1] shadow-2xl shadow-black bg-gray-700 rounded-lg w-48">
+                        <li onClick={() => onClick(data)}>
+                            <div>
+                                <CgProfile />
+                                <span className='text-xs'>Lihat Profil</span>
+                            </div>
+                        </li>
+                        <li onClick={() => setIsConfirmDeleteOpen(true)}>
+                            <div>
+                                <CgTrashEmpty />
+                                <span className='text-xs'>Hapus Pertemanan</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div className="text-red-400">
+                                <CgBlock />
+                                <span className='text-xs font-semibold'>Blokir</span>
+                            </div>
+                        </li>
+                    </ul>
+                </details>
             </div>
-        </div>
+            { isConfirmDeleteOpen &&
+                <AlertConfirm onClose={handleAlertClosed} onConfirm={handleDeleteConfirmed} status="deleteFriend" />
+            }
+        </>
     )
 }
 

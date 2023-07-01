@@ -1,10 +1,9 @@
 import React, { useContext, useEffect, useState } from "react"
 import { BiArrowBack } from 'react-icons/bi'
 import { TokenContext, UserInfoContext } from "../../../Context"
-import { BASE_AVATAR_URL, getAllFriend } from "../../../Rest"
+import { BASE_AVATAR_URL, deleteFriend, getAllFriend } from "../../../Rest"
 import { CgBlock, CgTrashEmpty } from 'react-icons/cg'
 import AlertConfirm from "../../alert/AlertConfirm"
-getAllFriend
 
 const UserInfo = ({ data }: { data: any }) => {
     const TOKEN = useContext(TokenContext)
@@ -18,8 +17,10 @@ const UserInfo = ({ data }: { data: any }) => {
         setIsConfirmDeleteOpen(false)
     }
 
-    const handleAlertConfirmed = () => {
+    const handleDeleteConfirmed = async () => {
         setIsConfirmDeleteOpen(false)
+        const response = await deleteFriend(TOKEN, Id)
+        console.log(response)
     }
 
     const fetchAllFriend =  async () => {
@@ -29,7 +30,6 @@ const UserInfo = ({ data }: { data: any }) => {
 
     const checkFriendExistence = () => {
         const isFriendExist = listFriend.some((friend) => friend.Id === Id) 
-        console.log(listFriend)
         if (isFriendExist) {
             setIsFriendExist(true)
         } else {
@@ -92,7 +92,7 @@ const UserInfo = ({ data }: { data: any }) => {
                 </div>
             </div>
             { isConfirmDeleteOpen &&
-                <AlertConfirm onClose={handleAlertClosed} onConfirm={handleAlertConfirmed} status="deleteFriend" />
+                <AlertConfirm onClose={handleAlertClosed} onConfirm={handleDeleteConfirmed} status="deleteFriend" />
             }
         </>
     )

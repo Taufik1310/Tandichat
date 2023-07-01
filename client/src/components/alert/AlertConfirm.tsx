@@ -9,9 +9,9 @@ const AlertConfirm = ({ onClose, onConfirm, status }: {
     return (
         <>
             <div 
-                className="bg-gray-900 opacity-80 fixed z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-screen h-screen" 
+                className="bg-gray-900 opacity-80 fixed z-[100] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-screen h-screen" 
             > </div>
-            <div className="fixed z-50 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-1/4 w-8/12 sm:w-7/12 md:w-6/12 lg:w-4/12 ">
+            <div className="fixed z-[100] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-1/4 w-8/12 sm:w-7/12 md:w-6/12 lg:w-4/12 ">
                 <div 
                     className={`bg-gray-800 h-full flex flex-col gap-5 rounded-xl border-[1px] border-gray-500 text-blue-50`}
                 >
