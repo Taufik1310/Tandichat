@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useContext } from "react"
 import { TokenContext } from "../../../Context"
 import { addFriendRequest, getUserData } from "../../../Rest"
-import { AlertInfo } from "../../alert/Alert"
+import AlertInfo from "../../alert/AlertInfo"
 
 const AddFriendInput = ({ onSubmit }: { onSubmit: () => void }) => {
     const token = useContext(TokenContext)
     const [email, setEmail] = useState<string>('')
     const [textareaHeight, setTextareaHeight] = useState<string>('auto')
+    const [isAlertSuccessOpen, setIsAlertSuccessOpen] = useState<boolean>(false)
     const [isAlertDuplicateOpen, setIsAlertDuplicateOpen] = useState<boolean>(false)
     const [isAlertYourselfOpen, setIsAlertYourselfOpen] = useState<boolean>(false)
     const [isAlertNotFoundOpen, setIsAlertNotFoundOpen] = useState<boolean>(false)
-    const [isAlertSuccessOpen, setIsAlertSuccessOpen] = useState<boolean>(false)
 
     const handleSubmitForm = async (e: { preventDefault: () => void }) => {
         e.preventDefault()
@@ -67,13 +67,13 @@ const AddFriendInput = ({ onSubmit }: { onSubmit: () => void }) => {
                 <AlertInfo type="success" status="successFriendRequest" onClose={() => setIsAlertSuccessOpen(false)} />
             }
             { isAlertDuplicateOpen &&    
-                <AlertInfo type="danger" status="duplicateFriendRequest" onClose={() => setIsAlertDuplicateOpen(false)} email={email} />
+                <AlertInfo type="fail" status="duplicateFriendRequest" email={email} onClose={() => setIsAlertDuplicateOpen(false)} />
             }
             { isAlertYourselfOpen &&    
-                <AlertInfo type="danger" status="cannotAddYourself" onClose={() => setIsAlertYourselfOpen(false)} />
+                <AlertInfo type="fail" status="cannotAddYourself" onClose={() => setIsAlertYourselfOpen(false)} />
             }
             { isAlertNotFoundOpen &&    
-                <AlertInfo type="danger" status="userNotFound" onClose={() => setIsAlertNotFoundOpen(false)} email={email}/>
+                <AlertInfo type="fail" status="userNotFound" email={email} onClose={() => setIsAlertNotFoundOpen(false)} />
             }
         </form>
     )

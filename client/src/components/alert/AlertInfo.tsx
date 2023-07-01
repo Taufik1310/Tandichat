@@ -1,10 +1,11 @@
 import React from 'react'
 import { AiFillCloseCircle, AiFillCheckCircle, AiFillInfoCircle } from 'react-icons/ai'
 
-const AlertInfo = ({ onClose, status, type }: {
+const AlertInfo = ({ onClose, status, type, email }: {
     onClose: () => void,
     status: string,
-    type: string
+    type: string,
+    email?: string
 }) => {
 
     return (
@@ -39,7 +40,26 @@ const AlertInfo = ({ onClose, status, type }: {
                                 }
                             </p>
                         </div>
-                        <p className='text-sm'>Ekstensi file tidak valid. Hanya file PNG dan GIF yang diperbolehkan</p>
+                        <p className='text-sm'>
+                            {
+                                status === 'invalidExtensionAvatar' ?
+                                `Ekstensi file tidak valid. Hanya file PNG dan GIF yang diperbolehkan`
+                                :
+                                status === 'successFriendRequest' ?
+                                `Berhasil mengajukan pertemanan`
+                                :
+                                status === 'duplicateFriendRequest' ?
+                                `Kamu sudah mengajukan pertemanan pada ${email}`
+                                :
+                                status === 'cannotAddYourself' ?
+                                `Tidak dapat mengajukan pertemanan pada diri sendiri`
+                                :
+                                status === 'userNotFound' ?
+                                `Tidak ditemukan pengguna dengan email: ${email}`
+                                :
+                                null
+                            }
+                        </p>
                     </div>
                     <div className='bg-gray-900 py-1 px-5 rounded-br-xl rounded-bl-xl h-2/6 flex items-center justify-center'>
                         <button 

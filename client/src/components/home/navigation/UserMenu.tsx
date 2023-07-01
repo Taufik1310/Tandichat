@@ -11,8 +11,8 @@ const UserMenu = () => {
     const { onLogout } = useContext(AuthContext)
     const token = useContext(TokenContext)
     const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false)
-    const [isOpenFriendRequest, setIsOpenFriendRequest] = useState<boolean>(false)
     const [isOpenAddFriend, setIsOpenAddFriend] = useState<boolean>(false)
+    const [isOpenFriendRequest, setIsOpenFriendRequest] = useState<boolean>(false)
     const [isConfirmLogoutOpen, setIsConfirmLogoutOpen] = useState<boolean>(false)
 
     const handleFriendRequest = () => {
