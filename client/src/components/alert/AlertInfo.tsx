@@ -57,6 +57,9 @@ const AlertInfo = ({ onClose, status, type, email }: {
                                 status === 'userNotFound' ?
                                 `Tidak ditemukan pengguna dengan email: ${email}`
                                 :
+                                status === 'cancelFriendRequest' ?
+                                `Berhasil membatalkan pengajuan pertemanan`
+                                :
                                 null
                             }
                         </p>

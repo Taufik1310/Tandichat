@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react"
 import { BASE_AVATAR_URL, cancelFriendRequest, getFriendPending } from "../../../Rest"
 import { TokenContext, UserInfoContext } from "../../../Context"
+import AlertInfo from "../../alert/AlertInfo"
 
 const AddFriendPending = ({ isSubmitForm, onSubmit }: { 
     isSubmitForm: boolean, 
@@ -9,15 +10,19 @@ const AddFriendPending = ({ isSubmitForm, onSubmit }: {
     const TOKEN = useContext(TokenContext)
     const { onClick } = useContext(UserInfoContext)
     const [friendPending, setFriendPending] = useState([])
+    const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false)
 
     const fetchFriendPending = async () => {
         const response = await getFriendPending(TOKEN)
         setFriendPending(response.data.sended)
     }
 
-    const handleClickedButton = (id: number) => {
-        cancelFriendRequest(TOKEN, id)
-        fetchFriendPending()
+    const handleClickedButton = async (id: number) => {
+        const response = await cancelFriendRequest(TOKEN, id)
+        if (response) {
+            setIsAlertOpen(true)
+            fetchFriendPending()
+        }
     }
 
     useEffect(() => {
@@ -30,7 +35,7 @@ const AddFriendPending = ({ isSubmitForm, onSubmit }: {
     }, [isSubmitForm])
 
     return (
-        <div>
+        <>
             <h5 className="font-semibold bg-blue-600 text-center text-light rounded-tl-lg rounded-tr-lg py-1">Tertunda</h5>
             <div className="border-x border-b border-blue-600 rounded-bl-lg rounded-br-lg">
                 { friendPending.length === 0 ?
@@ -66,7 +71,10 @@ const AddFriendPending = ({ isSubmitForm, onSubmit }: {
                     </ul>
                 }
             </div>
-        </div>
+            { isAlertOpen &&    
+                <AlertInfo type="success" status="cancelFriendRequest" onClose={() => setIsAlertOpen(false)} />
+            }
+        </>
     )
 }
 
