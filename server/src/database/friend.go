@@ -151,7 +151,7 @@ func DeleteFriend(userid uint, friendid uint) error {
 			return errors.New("error : Friend request not found")
 		}
 
-		subQuery := DB.Select("room_id").Where("user_id IN ?", []uint{userid, friendid}).Group("room_id").Having("COUNT(DISTINCT user_id) = 2").Table("room_participants")
+		subQuery := DB.Select("A.room_id").Where("A.user_id <> B.user_id AND a.room_id = b.room_id AND a.user_id = ? AND b.user_id = ?", userid, friendid).Table("room_participants A, room_participants B")
 
 		result = tx.Unscoped().Clauses(clause.Returning{}).Where("user_id IN ? AND room_id IN (?)", []uint{userid, friendid}, subQuery).Delete(&room_participants)
 

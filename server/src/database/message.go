@@ -11,8 +11,7 @@ import (
 func getRoom(from uint, to uint) (uint, error) {
 	var room []model.RoomParticipant
 
-	subQuery := DB.Select("room_id").Where("user_id IN ?", []uint{from, to}).Group("room_id").Having("COUNT(DISTINCT user_id) = 2").Table("room_participants")
-
+	subQuery := DB.Select("A.room_id").Where("A.user_id <> B.user_id AND a.room_id = b.room_id AND a.user_id = ? AND b.user_id = ?", from, to).Table("room_participants A, room_participants B")
 	DB.Select("*").Where("user_id IN ? AND room_id IN (?)", []uint{from, to}, subQuery).Find(&room)
 
 	if len(room) == 0 {
