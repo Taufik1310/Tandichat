@@ -1,5 +1,5 @@
 import React from 'react'
-import { AiFillCloseCircle } from 'react-icons/ai'
+import { AiFillCloseCircle, AiFillCheckCircle, AiFillInfoCircle } from 'react-icons/ai'
 
 const AlertInfo = ({ onClose, status, type }: {
     onClose: () => void,
@@ -18,8 +18,26 @@ const AlertInfo = ({ onClose, status, type }: {
                 >
                     <div className='py-3 pb-1 px-5 rounded-tl-xl rounded-tr-xl h-4/6'>
                         <div className='flex items-center gap-3 mb-3'>
-                            <AiFillCloseCircle size={32} className=' text-red-500'/>
-                            <p className='font-bold text-xl'>Gagal</p>
+                            { 
+                                type === "success" ?
+                                <AiFillCheckCircle size={32} className={`${'text-green-600'}`}/>
+                                :
+                                type === "fail" ?
+                                <AiFillCloseCircle size={32} className={`${'text-red-500'}`}/>
+                                :
+                                <AiFillInfoCircle size={32} className={`${'text-blue-600'}`}/>
+                            }
+                            <p className='font-bold text-xl'>
+                                {
+                                    type === "success" ?
+                                    `Berhasil`
+                                    :
+                                    type === "fail" ?
+                                    `Gagal`
+                                    :
+                                    `Info`
+                                }
+                            </p>
                         </div>
                         <p className='text-sm'>Ekstensi file tidak valid. Hanya file PNG dan GIF yang diperbolehkan</p>
                     </div>

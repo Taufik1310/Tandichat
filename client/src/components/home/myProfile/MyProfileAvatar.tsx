@@ -11,7 +11,7 @@ const MyProfileAvatar = ({ avatar, setNewAvatar }: {
 }) => {
     const token = useContext(TokenContext)
     const [isHoverAvatar, setIsHoverAvatar] = useState<boolean>(false)
-    const [isAlertInfoOpen, setIsAlertInfoOpen] = useState<boolean>(true)
+    const [isAlertInfoOpen, setIsAlertInfoOpen] = useState<boolean>(false)
 
     const handleSelectedFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const validExtensions = ['png', 'gif']
@@ -48,7 +48,7 @@ const MyProfileAvatar = ({ avatar, setNewAvatar }: {
                 }
             </div>
             { isAlertInfoOpen &&    
-                <AlertInfo type="failed" status="invalidExtensionAvatar" onClose={() => setIsAlertInfoOpen(false)}/>
+                <AlertInfo type="fail" status="invalidExtensionAvatar" onClose={() => setIsAlertInfoOpen(false)}/>
             }
         </div>
     )
