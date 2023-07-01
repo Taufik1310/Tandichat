@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react"
 import { BiCamera } from 'react-icons/bi'
 import { BASE_AVATAR_URL, changeAvatar } from "../../../Rest"
 import { TokenContext } from "../../../Context"
-import { AlertInfo } from "../../alert/Alert"
+import AlertInfo from "../../alert/AlertInfo"
 
 
 const MyProfileAvatar = ({ avatar, setNewAvatar }: { 
@@ -11,7 +11,7 @@ const MyProfileAvatar = ({ avatar, setNewAvatar }: {
 }) => {
     const token = useContext(TokenContext)
     const [isHoverAvatar, setIsHoverAvatar] = useState<boolean>(false)
-    const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false)
+    const [isAlertInfoOpen, setIsAlertInfoOpen] = useState<boolean>(true)
 
     const handleSelectedFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const validExtensions = ['png', 'gif']
@@ -19,7 +19,7 @@ const MyProfileAvatar = ({ avatar, setNewAvatar }: {
         const fileName = file.name
         const fileExtension = fileName.split('.').pop().toLowerCase()
         if (!validExtensions.includes(fileExtension)) {
-            setIsAlertOpen(true)
+            setIsAlertInfoOpen(true)
             return
         }
 
@@ -47,8 +47,8 @@ const MyProfileAvatar = ({ avatar, setNewAvatar }: {
                 </div>
                 }
             </div>
-            { isAlertOpen &&    
-                <AlertInfo type="danger" status="invalidExtensionAvatar" onClose={() => setIsAlertOpen(false)}/>
+            { isAlertInfoOpen &&    
+                <AlertInfo type="failed" status="invalidExtensionAvatar" onClose={() => setIsAlertInfoOpen(false)}/>
             }
         </div>
     )

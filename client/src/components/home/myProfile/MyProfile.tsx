@@ -8,7 +8,7 @@ import MyProfileAvatar from "./MyProfileAvatar"
 
 const MyProfile = () => {
     const token = useContext(TokenContext)
-    const [isOpenProfile, setIsOpenProfile] = useState<boolean>(false)
+    const [isOpenProfile, setIsOpenProfile] = useState<boolean>(true)
     const [avatar, setAvatar] = useState<string>("")
     
     const fetchAvatar = async () => {
