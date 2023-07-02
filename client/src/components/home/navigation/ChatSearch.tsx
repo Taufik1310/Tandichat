@@ -1,7 +1,7 @@
 import React from "react";
 import { GoSearch } from 'react-icons/go'
 
-const ChatSearchbox = () => {
+const ChatSearch = () => {
     return (
         <div className="form-control w-full py-2">
             <div className="input-group input-group-xs flex flex-row justify-center items-center">
@@ -12,4 +12,4 @@ const ChatSearchbox = () => {
     )
 }
 
-export default ChatSearchbox
+export default ChatSearch

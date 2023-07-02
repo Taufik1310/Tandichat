@@ -3,7 +3,7 @@ import { BiLockAlt } from 'react-icons/bi'
 
 const DEFAULT_BG = './assets/default-bg.png'
 
-const ChatMessageBody = () => {
+const ChatMessage = () => {
     return(
         <div 
             className="bg-gray-800 object-cover h-full max-h-full overflow-auto scrollbar-style px-5 py-5"
@@ -78,4 +78,4 @@ const ChatMessageBody = () => {
     )
 }
 
-export default ChatMessageBody
+export default ChatMessage

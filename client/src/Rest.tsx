@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const BASE_URL = 'http://localhost:5050/api'
-export const BASE_AVATAR_URL = 'http://localhost:5050/static/profile'
+export const BASE_AVATAR_URL = 'http://localhost:5050/static/avatar'
 
 export const register = async (email: string, username: string, password: string) => {
     try {
@@ -179,6 +179,44 @@ export const cancelFriendRequest = async (token: string, friendId: number) => {
     }
 }
 
+export const acceptFriendRequest = async (token: string, friendId: number) => {
+    const headers = {
+        "Content-Type": "application/json",
+        "Authorization": token,
+    }
+
+    try {
+        const response = await axios.post(`${BASE_URL}/friends/accept`, { 
+            friend_id: friendId 
+        }, { headers })
+        return response.data
+    } catch (error) {
+        if (error.response) {
+            return error.response.data
+        }
+        throw error
+    }
+}
+
+export const declineFriendRequest = async (token: string, friendId: number) => {
+    const headers = {
+        "Content-Type": "application/json",
+        "Authorization": token,
+    }
+
+    try {
+        const response = await axios.post(`${BASE_URL}/friends/decline`, { 
+            friend_id: friendId 
+        }, { headers })
+        return response.data
+    } catch (error) {
+        if (error.response) {
+            return error.response.data
+        }
+        throw error
+    }
+}
+
 export const getFriendPending = async (token: string) => {
     const headers = {
         "Content-Type": "application/json",
@@ -196,3 +234,42 @@ export const getFriendPending = async (token: string) => {
     }
 }
 
+
+export const getAllFriend = async (token: string) => {
+    const headers = {
+        "Content-Type": "application/json",
+        "Authorization": token,
+    }
+
+    try {
+        const response = await axios.get(`${BASE_URL}/friends`, { headers })
+        return response.data
+    } catch (error) {
+        if (error.response) {
+            return error.response.status
+        }
+        throw error
+    }
+}
+
+export const deleteFriend = async (token: string, friendId: number) => {
+    const headers = {
+        "Content-Type": "application/json",
+        "Authorization": token,
+    }
+
+    try {
+        const response = await axios.delete(`${BASE_URL}/friends`, {
+            data: {
+                friend_id: friendId
+            },
+            headers: headers
+        })
+        return response.data
+    } catch (error) {
+        if (error.response) {
+            return error.response.data
+        }
+        throw error
+    }
+}

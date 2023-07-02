@@ -5,13 +5,15 @@ import { logout } from '../../../Rest'
 import { AuthContext, TokenContext } from '../../../Context'
 import FriendRequest from '../friendRequest/FriendRequest'
 import AddFriend from '../addFriend/AddFriend'
+import AlertConfirm from '../../alert/AlertConfirm'
 
-const ChatMenu = () => {
+const UserMenu = () => {
     const { onLogout } = useContext(AuthContext)
     const token = useContext(TokenContext)
     const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false)
-    const [isOpenFriendRequest, setIsOpenFriendRequest] = useState<boolean>(true)
+    const [isOpenFriendRequest, setIsOpenFriendRequest] = useState<boolean>(false)
     const [isOpenAddFriend, setIsOpenAddFriend] = useState<boolean>(false)
+    const [isConfirmLogoutOpen, setIsConfirmLogoutOpen] = useState<boolean>(false)
 
     const handleFriendRequest = () => {
         setIsOpenMenu(false)
@@ -26,8 +28,7 @@ const ChatMenu = () => {
     const handleLogout = async () => {
         setIsOpenMenu(false)
         const response = await logout(token)
-        if (response.code === 200) {
-            localStorage.removeItem('token')
+        if (response) {
             onLogout()
         }
     }
@@ -35,9 +36,9 @@ const ChatMenu = () => {
     return (
         <>
             <div className="dropdown dropdown-bottom dropdown-end">
-                <GoKebabVertical tabIndex={0} size={22} className="text-slate-200 cursor-pointer" onClick={() => setIsOpenMenu(true)}/>
+                <GoKebabVertical tabIndex={0} size={22} className="text-blue-50 cursor-pointer" onClick={() => setIsOpenMenu(true)}/>
                 {isOpenMenu &&
-                <ul tabIndex={0} className="dropdown-content menu p-2 shadow-2xl shadow-black bg-gray-700 w-52">
+                <ul tabIndex={0} className="dropdown-content menu p-2 shadow-2xl shadow-black bg-gray-700 w-52 rounded-lg">
                     <li>
                         <div onClick={handleAddFriend} >
                             <BsPersonPlusFill />
@@ -51,7 +52,7 @@ const ChatMenu = () => {
                         </div>
                     </li>
                     <li>
-                        <div onClick={handleLogout}>
+                        <div onClick={() => setIsConfirmLogoutOpen(true)}>
                             <GoSignOut />
                             <span className='text-xs'>Keluar</span>
                         </div>
@@ -61,8 +62,11 @@ const ChatMenu = () => {
             </div>
             {isOpenFriendRequest && <FriendRequest onClose={handleFriendRequest} />}
             {isOpenAddFriend && <AddFriend onClose={handleAddFriend} />}
+            { isConfirmLogoutOpen &&
+                <AlertConfirm onClose={() => setIsConfirmLogoutOpen(false)} onConfirm={handleLogout} status="logout" />
+            }
         </>
     )
 }
 
-export default ChatMenu
+export default UserMenu

@@ -1,15 +1,14 @@
 import React, { useContext, useState } from "react"
 import { BiCamera } from 'react-icons/bi'
-import { changeAvatar } from "../../../Rest"
-import { BaseAvatarURLContext, TokenContext } from "../../../Context"
-import { AlertInfo } from "../../template/Alert"
+import { BASE_AVATAR_URL, changeAvatar } from "../../../Rest"
+import { TokenContext } from "../../../Context"
+import { AlertInfo } from "../../alert/Alert"
 
 
-const ChatProfileAvatar = ({ avatar, setNewAvatar }: { 
+const MyProfileAvatar = ({ avatar, setNewAvatar }: { 
     avatar: string, 
     setNewAvatar: (filename: string) => {} 
 }) => {
-    const BASE_AVATAR_URL = useContext(BaseAvatarURLContext)
     const token = useContext(TokenContext)
     const [isHoverAvatar, setIsHoverAvatar] = useState<boolean>(false)
     const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false)
@@ -55,4 +54,4 @@ const ChatProfileAvatar = ({ avatar, setNewAvatar }: {
     )
 }
 
-export default ChatProfileAvatar
+export default MyProfileAvatar

@@ -3,7 +3,7 @@ import { changeUsername, getUserData } from "../../../Rest"
 import { TokenContext } from "../../../Context"
 import { BiPencil } from 'react-icons/bi'
 
-const ChatProfileUsername = ({ isOpenProfile }: { isOpenProfile: boolean }) => {
+const MyProfileUsername = ({ isOpenProfile }: { isOpenProfile: boolean }) => {
     const token = useContext(TokenContext)
     const defaultUsername = `user`
     const [username, setUsername] = useState<string>('')
@@ -75,4 +75,4 @@ const ChatProfileUsername = ({ isOpenProfile }: { isOpenProfile: boolean }) => {
     )
 }
 
-export default ChatProfileUsername
+export default MyProfileUsername

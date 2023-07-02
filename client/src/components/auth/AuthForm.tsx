@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { FaEyeSlash, FaEye, FaInfoCircle } from 'react-icons/fa'
 import { register, login } from '../../Rest'
-import { AlertLogin, AlertRegister } from '../template/Alert'
+import { AlertLogin, AlertRegister } from '../alert/Alert'
 import { AuthContext } from '../../Context'
 
 interface AuthFormProps {
