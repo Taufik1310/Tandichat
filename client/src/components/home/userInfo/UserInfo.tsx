@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react"
 import { BiArrowBack } from 'react-icons/bi'
-import { TokenContext, UserInfoContext } from "../../../Context"
+import { FriendContext, TokenContext, UserInfoContext } from "../../../Context"
 import { BASE_AVATAR_URL, deleteFriend, getAllFriend } from "../../../Rest"
 import { CgBlock, CgTrashEmpty } from 'react-icons/cg'
 import AlertConfirm from "../../alert/AlertConfirm"
@@ -8,6 +8,7 @@ import AlertConfirm from "../../alert/AlertConfirm"
 const UserInfo = ({ data }: { data: any }) => {
     const TOKEN = useContext(TokenContext)
     const { onClose } = useContext(UserInfoContext)
+    const { onDeleteFriend } = useContext(FriendContext)
     const { Id, Avatar, Email, Username, About } = data
     const [isConfirmOpen, setIsConfirmOpen] = useState({
         deleteFriend: false,
@@ -31,6 +32,7 @@ const UserInfo = ({ data }: { data: any }) => {
         const response = await deleteFriend(TOKEN, Id)
         if (response) {
             onClose()
+            onDeleteFriend()
         }
     }
 

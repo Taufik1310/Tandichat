@@ -1,20 +1,10 @@
-import React, { useState, useEffect, useContext } from "react"
-import { BASE_AVATAR_URL, getAllFriend } from "../../../Rest"
-import { ChatListContext, TokenContext } from "../../../Context"
+import React, { useContext, useEffect } from "react"
+import { BASE_AVATAR_URL } from "../../../Rest"
+import { ChatListContext, FriendContext } from "../../../Context"
 
 const ChatList = () => {
-    const TOKEN = useContext(TokenContext)
     const { onOpen } = useContext(ChatListContext)
-    const [listFriend, setListFriend] = useState([])
-
-    const fetchAllFriend =  async () => {
-        const response  = await getAllFriend(TOKEN)
-        setListFriend(response.data)
-    }
-
-    useEffect(() => {
-        fetchAllFriend()
-    }, [])
+    const { listFriend } = useContext(FriendContext)
 
     return (
         <div className="mt-3">

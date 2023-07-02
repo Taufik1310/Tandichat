@@ -23,3 +23,9 @@ export const UserInfoContext = createContext({
     onClick: (data: any) => {},
     onClose: () => {}
 })
+
+export const FriendContext = createContext({
+    onAcceptFriend: () => {},
+    onDeleteFriend: () => {},
+    listFriend: []
+})

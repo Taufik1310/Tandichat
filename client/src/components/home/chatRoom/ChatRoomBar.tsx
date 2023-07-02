@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react"
 import { BASE_AVATAR_URL, deleteFriend } from "../../../Rest"
-import { ChatListContext, TokenContext, UserInfoContext } from "../../../Context"
+import { ChatListContext, FriendContext, TokenContext, UserInfoContext } from "../../../Context"
 import { GoKebabVertical } from 'react-icons/go'
 import { CgBlock, CgTrashEmpty, CgProfile } from 'react-icons/cg'
 import { BiArrowBack } from 'react-icons/bi'
@@ -10,6 +10,7 @@ const ChatRoomBar = ({ data }: { data: any }) => {
     const TOKEN = useContext(TokenContext)
     const { onClick } = useContext(UserInfoContext)
     const { onClose } = useContext(ChatListContext)
+    const { onDeleteFriend } = useContext(FriendContext)
     const { Id, Avatar, Username } = data
     const [isConfirmOpen, setIsConfirmOpen] = useState({
         deleteFriend: false,
@@ -36,6 +37,7 @@ const ChatRoomBar = ({ data }: { data: any }) => {
         const response = await deleteFriend(TOKEN, Id)
         if (response) {
             onClose()
+            onDeleteFriend()
         }
     }
 

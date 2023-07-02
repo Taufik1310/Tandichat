@@ -5,13 +5,14 @@ import { GoKebabHorizontal } from 'react-icons/go'
 import { AiOutlineCheck, AiOutlineClose } from 'react-icons/ai'
 import { CgBlock } from 'react-icons/cg'
 import { BASE_AVATAR_URL, acceptFriendRequest, declineFriendRequest, getFriendPending } from '../../../Rest'
-import { TokenContext, UserInfoContext } from '../../../Context'
+import { FriendContext, TokenContext, UserInfoContext } from '../../../Context'
 import AlertConfirm from '../../alert/AlertConfirm'
 import AlertInfo from '../../alert/AlertInfo'
 
 const FriendRequest = ({ onClose }: { onClose: () => void }) => {
     const TOKEN = useContext(TokenContext)
     const { onClick } = useContext(UserInfoContext)
+    const { onAcceptFriend } = useContext(FriendContext)
     const [friendPending, setFriendPending] = useState([])
     const [isConfirmBlockOpen, setIsConfirmBlockOpen] = useState<boolean>(false)
     const [isAlertInfoOpen, setIsAlertInfoOpen] = useState({
@@ -32,6 +33,7 @@ const FriendRequest = ({ onClose }: { onClose: () => void }) => {
                 accept: true
             })
             fetchFriendPending()
+            onAcceptFriend()
         }
     }
     

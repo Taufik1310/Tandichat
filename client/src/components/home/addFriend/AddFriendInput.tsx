@@ -4,7 +4,7 @@ import { addFriendRequest, getUserData } from "../../../Rest"
 import AlertInfo from "../../alert/AlertInfo"
 
 const AddFriendInput = ({ onSubmit }: { onSubmit: () => void }) => {
-    const token = useContext(TokenContext)
+    const TOKEN = useContext(TokenContext)
     const [email, setEmail] = useState<string>('')
     const [textareaHeight, setTextareaHeight] = useState<string>('auto')
     const [isAlertSuccessOpen, setIsAlertSuccessOpen] = useState<boolean>(false)
@@ -14,13 +14,13 @@ const AddFriendInput = ({ onSubmit }: { onSubmit: () => void }) => {
 
     const handleSubmitForm = async (e: { preventDefault: () => void }) => {
         e.preventDefault()
-        const userDataResponse = await getUserData(token, email)
+        const userDataResponse = await getUserData(TOKEN, email)
         if (userDataResponse.code === 500) {
             setIsAlertNotFoundOpen(true)
             return
         }
         const { ID } = await userDataResponse.data
-        const friendRequestResponse = await addFriendRequest(token, ID)
+        const friendRequestResponse = await addFriendRequest(TOKEN, ID)
         if (friendRequestResponse.code === 500 && friendRequestResponse.details.includes("Duplicate") ) {
             setIsAlertDuplicateOpen(true)
             return
