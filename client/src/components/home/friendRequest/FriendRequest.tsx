@@ -7,13 +7,17 @@ import { CgBlock } from 'react-icons/cg'
 import { BASE_AVATAR_URL, acceptFriendRequest, declineFriendRequest, getFriendPending } from '../../../Rest'
 import { TokenContext, UserInfoContext } from '../../../Context'
 import AlertConfirm from '../../alert/AlertConfirm'
-
+import AlertInfo from '../../alert/AlertInfo'
 
 const FriendRequest = ({ onClose }: { onClose: () => void }) => {
     const TOKEN = useContext(TokenContext)
     const { onClick } = useContext(UserInfoContext)
     const [friendPending, setFriendPending] = useState([])
     const [isConfirmBlockOpen, setIsConfirmBlockOpen] = useState<boolean>(false)
+    const [isAlertInfoOpen, setIsAlertInfoOpen] = useState({
+        accept: false,
+        decline: false,
+    })
     
     const fetchFriendPending = async () => {
         const response = await getFriendPending(TOKEN)
@@ -23,6 +27,10 @@ const FriendRequest = ({ onClose }: { onClose: () => void }) => {
     const handleAcceptedBtn = async (id: number) => {
         const response = await acceptFriendRequest(TOKEN, id)
         if (response) {
+            setIsAlertInfoOpen({
+                ...isAlertInfoOpen,
+                accept: true
+            })
             fetchFriendPending()
         }
     }
@@ -30,12 +38,20 @@ const FriendRequest = ({ onClose }: { onClose: () => void }) => {
     const handleDeclinedBtn = async (id: number) => {
         const response = await declineFriendRequest(TOKEN, id)
         if (response) {
+            setIsAlertInfoOpen({
+                ...isAlertInfoOpen,
+                decline: true
+            })
             fetchFriendPending()
         }
     }
 
     const handleAlertClosed = () => {
         setIsConfirmBlockOpen(false)
+        setIsAlertInfoOpen({
+            accept: false,
+            decline: false
+        })
     }
 
     const handleBlockConfirmed = async () => {
@@ -123,6 +139,12 @@ const FriendRequest = ({ onClose }: { onClose: () => void }) => {
             </div>
             { isConfirmBlockOpen &&
                 <AlertConfirm onClose={handleAlertClosed} onConfirm={handleBlockConfirmed} status="block" />
+            }
+            { isAlertInfoOpen.accept &&
+                <AlertInfo onClose={handleAlertClosed} status='acceptFriendRequest' type='success' />
+            }
+            { isAlertInfoOpen.decline &&
+                <AlertInfo onClose={handleAlertClosed} status='declineFriendRequest' type='success' />
             }
         </>
     )

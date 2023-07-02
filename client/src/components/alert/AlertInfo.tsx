@@ -49,7 +49,7 @@ const AlertInfo = ({ onClose, status, type, email }: {
                                 `Berhasil mengajukan pertemanan`
                                 :
                                 status === 'duplicateFriendRequest' ?
-                                `Kamu sudah mengajukan pertemanan pada ${email}`
+                                `Kamu sudah mengajukan pertemanan pada ${email}. Cek daftar tertunda`
                                 :
                                 status === 'cannotAddYourself' ?
                                 `Tidak dapat mengajukan pertemanan pada diri sendiri`
@@ -58,7 +58,13 @@ const AlertInfo = ({ onClose, status, type, email }: {
                                 `Tidak ditemukan pengguna dengan email: ${email}`
                                 :
                                 status === 'cancelFriendRequest' ?
-                                `Berhasil membatalkan pengajuan pertemanan`
+                                `Permintaan pertemanan dibatalkan`
+                                :
+                                status === 'acceptFriendRequest' ?
+                                `Permintaan pertemanan diterima`
+                                :
+                                status === 'declineFriendRequest' ?
+                                `Permintaan pertemanan ditolak`
                                 :
                                 null
                             }
