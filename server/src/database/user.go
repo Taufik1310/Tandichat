@@ -20,7 +20,7 @@ func IsUserExist(id string) bool {
 }
 
 type User struct {
-	ID       uint
+	Id       uint
 	Username string
 	Email    string
 	Avatar   string
@@ -83,7 +83,7 @@ func GetUser[T userid](userId uint, id T) (*User, error) {
 	if err := DB.Model(&user).Select("id, username, email, avatar, about").Where("id = ? AND id NOT in (?)", id, innerQuery).Scan(&user).Error; err != nil {
 		return user, err
 	}
-	if user.ID == 0 {
+	if user.Id == 0 {
 		return user, errors.New("error : user not found")
 	}
 	return user, nil
@@ -97,7 +97,7 @@ func GetUserByEmail(email string, id uint) (*User, error) {
 	if err := DB.Model(&user).Select("id, username, email, avatar, about").Where("email = ? AND id NOT in (?)", email, innerQuery).Scan(&user).Error; err != nil {
 		return user, err
 	}
-	if user.ID == 0 {
+	if user.Id == 0 {
 		return user, errors.New("error : user not found")
 	}
 	return user, nil
