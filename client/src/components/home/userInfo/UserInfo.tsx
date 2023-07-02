@@ -29,7 +29,9 @@ const UserInfo = ({ data }: { data: any }) => {
             deleteFriend: false
         })
         const response = await deleteFriend(TOKEN, Id)
-        console.log(response)
+        if (response) {
+            onClose()
+        }
     }
 
     const handleBlockConfirmed = async () => {

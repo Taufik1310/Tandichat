@@ -23,13 +23,20 @@ const ChatRoomBar = ({ data }: { data: any }) => {
         })
     }
 
+    const handleClickedUser = (data: any) => {
+        onClick(data)
+        onClose()
+    }
+
     const handleDeleteConfirmed = async () => {
         setIsConfirmOpen({
             ...isConfirmOpen,
             deleteFriend: false
         })
         const response = await deleteFriend(TOKEN, Id)
-        console.log(response)
+        if (response) {
+            onClose()
+        }
     }
 
     const handleBlockConfirmed = async () => {
@@ -50,7 +57,7 @@ const ChatRoomBar = ({ data }: { data: any }) => {
                     </div>
                     <div 
                         className="avatar flex items-center gap-5 w-10/12 sm:w-full cursor-pointer"
-                        onClick={() => onClick(data)}
+                        onClick={() => handleClickedUser(data)}
                     >
                         <div className="w-9 h-9 max-h-9 object-cover rounded-full">
                             <img src={`${BASE_AVATAR_URL}/${Avatar}`} alt="Foto Profil"/>
