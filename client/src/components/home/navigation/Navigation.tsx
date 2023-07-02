@@ -9,14 +9,14 @@ const Navigation = ({ isUserInfoOpen, userData }: { isUserInfoOpen: boolean, use
 
     return (
         <>
-            { isUserInfoOpen ?
-                <UserInfo data={userData} />
-                :
+            { !isUserInfoOpen ?
                 <>
                     <NavigationBar/>
                     <ChatSearch />
                     <ChatList />
                 </>
+                :
+                <UserInfo data={userData} />
             }
         </>
     )

@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import Navigation from "../components/home/navigation/Navigation"
 import ChatRoom from "../components/home/chatRoom/ChatRoom"
 import Intro from "../components/home/intro/Intro"
-import { ChatClickedContext, UserInfoContext } from "../Context"
+import { ChatListContext, UserInfoContext } from "../Context"
 
 
 const Home = () => {
@@ -16,6 +16,10 @@ const Home = () => {
         setChatData(data)
     }
 
+    const handleClosedChat = () => {
+        setIsChatOpen(false)
+    }
+
     const handleClickedUser = (data: any) => {
         setIsUserInfoOpen(true)
         setUserData(data)
@@ -26,13 +30,13 @@ const Home = () => {
     }
 
     return (
-        <ChatClickedContext.Provider value={{ onClick: handleChatClicked  }}>
+        <ChatListContext.Provider value={{ onOpen: handleChatClicked, onClose: handleClosedChat  }}>
             <UserInfoContext.Provider value={{ onClick: handleClickedUser, onClose: handleClosedUser }}>
                 <div className="max-h-screen w-screen bg-black text-blue-50 overflow-hidden flex">
                     <section className="fixed sm:relative bg-gray-800 h-screen w-screen sm:w-5/12 lg:w-4/12 sm:border-r-[1px] border-r-gray-600 z-50">
                         <Navigation isUserInfoOpen={isUserInfoOpen} userData={userData} />
                     </section>
-                    <section className="fixed bg-gray-800 sm:relative h-screen w-screen sm:w-7/12 lg:w-8/12">
+                    <section className={`fixed bg-gray-800 sm:relative h-screen w-screen sm:w-7/12 lg:w-8/12 ${isChatOpen ? 'z-[80]' : 'z-40'}`}>
                         { isChatOpen ?
                             <ChatRoom data={chatData}/>
                             :
@@ -41,7 +45,7 @@ const Home = () => {
                     </section>
                 </div>
             </UserInfoContext.Provider>
-        </ChatClickedContext.Provider>
+        </ChatListContext.Provider>
     )
 }
 

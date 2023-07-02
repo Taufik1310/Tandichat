@@ -39,7 +39,7 @@ const AddFriendPending = ({ isSubmitForm, onSubmit }: {
             <h5 className="font-semibold bg-blue-600 text-center text-light rounded-tl-lg rounded-tr-lg py-1">Tertunda</h5>
             <div className="border-x border-b border-blue-600 rounded-bl-lg rounded-br-lg">
                 { friendPending.length === 0 ?
-                    <p className="text-sm text-center italic text-gray-400 p-2">Kamu belum mengajukan pertemanan pada siapapun baru-baru ini</p>
+                    <p className="text-sm text-center italic text-gray-400 p-2">Saat ini kamu tidak mengajukan pertemanan pada siapapun</p>
                     :
                     <ul>
                         { friendPending && 

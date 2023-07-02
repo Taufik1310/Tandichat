@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext } from "react"
 import { BASE_AVATAR_URL, getAllFriend } from "../../../Rest"
-import { ChatClickedContext, TokenContext } from "../../../Context"
+import { ChatListContext, TokenContext } from "../../../Context"
 
 const ChatList = () => {
     const TOKEN = useContext(TokenContext)
-    const { onClick } = useContext(ChatClickedContext)
+    const { onOpen } = useContext(ChatListContext)
     const [listFriend, setListFriend] = useState([])
 
     const fetchAllFriend =  async () => {
@@ -18,12 +18,12 @@ const ChatList = () => {
 
     return (
         <div className="mt-3">
-            <ul className="px-2 h-[calc(100vh-8rem)] overflow-y-scroll scrollbar-style">
+            <ul className="px-1 h-[calc(100vh-8rem)] overflow-y-scroll scrollbar-style">
                 { listFriend && 
                     listFriend.map((item) => (
                         <li 
                             className="flex justify-between items-start gap-x-3 px-2 py-3 rounded-md hover:bg-gray-700 cursor-pointer"
-                            onClick={() => onClick(item)}
+                            onClick={() => onOpen(item)}
                         >
                             <div className="w-10/12 sm:w-9/12 lg:w-10/12 flex gap-x-2 items-center">
                                 <div className="avatar">

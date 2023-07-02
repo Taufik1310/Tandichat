@@ -6,7 +6,7 @@ const DEFAULT_BG = './assets/default-bg.png'
 const ChatMessage = () => {
     return(
         <div 
-            className="bg-gray-800 object-cover h-full max-h-full overflow-auto scrollbar-style px-5 py-5"
+            className="bg-gray-800 object-cover h-full max-h-full overflow-auto scrollbar-style px-2 md:px-5 py-5"
             style={{ 
                 backgroundImage: `url(${DEFAULT_BG})`
              }}

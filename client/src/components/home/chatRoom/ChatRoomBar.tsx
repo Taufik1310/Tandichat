@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react"
 import { BASE_AVATAR_URL, deleteFriend } from "../../../Rest"
-import { TokenContext, UserInfoContext } from "../../../Context"
+import { ChatListContext, TokenContext, UserInfoContext } from "../../../Context"
 import { GoKebabVertical } from 'react-icons/go'
 import { CgBlock, CgTrashEmpty, CgProfile } from 'react-icons/cg'
 import { BiArrowBack } from 'react-icons/bi'
@@ -9,6 +9,7 @@ import AlertConfirm from "../../alert/AlertConfirm"
 const ChatRoomBar = ({ data }: { data: any }) => {
     const TOKEN = useContext(TokenContext)
     const { onClick } = useContext(UserInfoContext)
+    const { onClose } = useContext(ChatListContext)
     const { Id, Avatar, Username } = data
     const [isConfirmOpen, setIsConfirmOpen] = useState({
         deleteFriend: false,
@@ -42,9 +43,9 @@ const ChatRoomBar = ({ data }: { data: any }) => {
 
     return (
         <>
-            <div className="bg-gray-700 h-14 max-h-14 px-8 py-2 flex items-center justify-between">
+            <div className="bg-gray-700 h-14 max-h-14 ps-4 pe-5 sm:px-8 py-2 flex items-center justify-between">
                 <div className="flex items-center gap-5 w-10/12">
-                    <div className="block sm:hidden">
+                    <div className="block sm:hidden" onClick={() => onClose()}>
                         <BiArrowBack size={22} className="cursor-pointer" />
                     </div>
                     <div 

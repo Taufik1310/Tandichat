@@ -2,20 +2,21 @@ import { createContext } from 'react'
 
 interface AuthContext {
     onLogin: Function, 
-    onLogout: Function 
+    onLogout: Function ,
 }
 
 export const AuthContext = createContext<AuthContext>({
     onLogin: () => {},
-    onLogout: () => {}
+    onLogout: () => {},
 })
 
 export const TokenContext = createContext<string>('')
 
 // export const BaseAvatarURLContext = createContext<string>('')
 
-export const ChatClickedContext = createContext({
-    onClick: (data: any) => {}
+export const ChatListContext = createContext({
+    onOpen: (data: any) => {},
+    onClose: () => {}
 })
 
 export const UserInfoContext = createContext({
