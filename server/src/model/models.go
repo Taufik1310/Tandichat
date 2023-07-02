@@ -51,7 +51,7 @@ type RoomParticipant struct {
 	gorm.Model
 	UserID uint
 	User   User
-	Room   Room
+	Room   Room `gorm:"constraint:OnDelete:CASCADE;"`
 	RoomID uint
 }
 
@@ -59,7 +59,7 @@ type Message struct {
 	gorm.Model
 	User    User
 	UserID  uint
-	Room    Room
+	Room    Room `gorm:"constraint:OnDelete:CASCADE;"`
 	RoomID  uint
 	Content string
 }

@@ -5,7 +5,6 @@ import (
 	"errors"
 
 	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 )
 
 type friend struct {
@@ -145,45 +144,59 @@ func DeleteFriend(userid uint, friendid uint) error {
 			return result.Error
 		}
 
-		var room_participants []model.RoomParticipant
-
 		if result.RowsAffected == 0 {
-			return errors.New("error : Friend request not found")
+			return errors.New("error : Friend not found")
 		}
 
 		subQuery := DB.Select("A.room_id").Where("A.user_id <> B.user_id AND a.room_id = b.room_id AND a.user_id = ? AND b.user_id = ?", userid, friendid).Table("room_participants A, room_participants B")
 
-		result = tx.Unscoped().Clauses(clause.Returning{}).Where("user_id IN ? AND room_id IN (?)", []uint{userid, friendid}, subQuery).Delete(&room_participants)
+		result = tx.Unscoped().Where("id IN (?)", subQuery).Delete(&model.Room{})
 
 		if result.Error != nil {
 			return result.Error
 		}
 
 		if result.RowsAffected == 0 {
-			return errors.New("error : Room participant not found")
+			return errors.New("error : Room not found")
 		}
 
-		room_id := uint(0)
+		// var room_participants []model.RoomParticipant
 
-		if len(room_participants) > 0 {
-			room_id = room_participants[0].RoomID
-		}
+		// if result.RowsAffected == 0 {
+		// 	return errors.New("error : Friend request not found")
+		// }
 
-		result = tx.Unscoped().Where("room_id = ?", room_id).Delete(&model.Message{})
+		// result = tx.Unscoped().Clauses(clause.Returning{}).Where("user_id IN ? AND room_id IN (?)", []uint{userid, friendid}, subQuery).Delete(&room_participants)
 
-		if result.Error != nil {
-			return result.Error
-		}
+		// if result.Error != nil {
+		// 	return result.Error
+		// }
 
-		result = tx.Unscoped().Where("id = ?", room_id).Delete(&model.Room{})
+		// if result.RowsAffected == 0 {
+		// 	return errors.New("error : Room participant not found")
+		// }
 
-		if result.Error != nil {
-			return result.Error
-		}
+		// room_id := uint(0)
 
-		if result.RowsAffected == 0 {
-			return errors.New("error : Failed to delete room")
-		}
+		// if len(room_participants) > 0 {
+		// 	room_id = room_participants[0].RoomID
+		// }
+
+		// result = tx.Unscoped().Where("room_id = ?", room_id).Delete(&model.Message{})
+
+		// if result.Error != nil {
+		// 	return result.Error
+		// }
+
+		// result = tx.Unscoped().Where("id = ?", room_id).Delete(&model.Room{})
+
+		// if result.Error != nil {
+		// 	return result.Error
+		// }
+
+		// if result.RowsAffected == 0 {
+		// 	return errors.New("error : Failed to delete room")
+		// }
 
 		return nil
 	})
