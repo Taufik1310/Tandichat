@@ -160,49 +160,39 @@ func DeleteFriend(userid uint, friendid uint) error {
 			return errors.New("error : Room not found")
 		}
 
-		// var room_participants []model.RoomParticipant
-
-		// if result.RowsAffected == 0 {
-		// 	return errors.New("error : Friend request not found")
-		// }
-
-		// result = tx.Unscoped().Clauses(clause.Returning{}).Where("user_id IN ? AND room_id IN (?)", []uint{userid, friendid}, subQuery).Delete(&room_participants)
-
-		// if result.Error != nil {
-		// 	return result.Error
-		// }
-
-		// if result.RowsAffected == 0 {
-		// 	return errors.New("error : Room participant not found")
-		// }
-
-		// room_id := uint(0)
-
-		// if len(room_participants) > 0 {
-		// 	room_id = room_participants[0].RoomID
-		// }
-
-		// result = tx.Unscoped().Where("room_id = ?", room_id).Delete(&model.Message{})
-
-		// if result.Error != nil {
-		// 	return result.Error
-		// }
-
-		// result = tx.Unscoped().Where("id = ?", room_id).Delete(&model.Room{})
-
-		// if result.Error != nil {
-		// 	return result.Error
-		// }
-
-		// if result.RowsAffected == 0 {
-		// 	return errors.New("error : Failed to delete room")
-		// }
-
 		return nil
 	})
 
 	if err != nil {
 		return err
+	}
+
+	return nil
+
+}
+
+func DeleteFriendOptional(userid uint, friendid uint) error {
+
+	result := DB.Unscoped().Where("(user_id = ? AND friend_id = ?) OR (user_id = ? AND friend_id = ?)", userid, friendid, friendid, userid).Delete(&model.Friend{})
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return errors.New("error : Friend not found")
+	}
+
+	subQuery := DB.Select("A.room_id").Where("A.user_id <> B.user_id AND a.room_id = b.room_id AND a.user_id = ? AND b.user_id = ?", userid, friendid).Table("room_participants A, room_participants B")
+
+	result = DB.Unscoped().Where("id IN (?)", subQuery).Delete(&model.Room{})
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return errors.New("error : Room not found")
 	}
 
 	return nil

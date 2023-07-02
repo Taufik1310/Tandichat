@@ -65,8 +65,8 @@ func BlockUser(UserId uint, blockedUserID uint) error {
 			return err
 		}
 
-		if err := DeleteFriend(UserId, blockedUserID); err != nil {
-			log.Println("INFO: This user ", blockedUserID, " is not friend with", UserId)
+		if err := DeleteFriendOptional(UserId, blockedUserID); err != nil {
+			log.Println("INFO: Cannot block user because ", err.Error())
 		}
 
 		return nil
