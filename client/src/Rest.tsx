@@ -273,3 +273,22 @@ export const deleteFriend = async (token: string, friendId: number) => {
         throw error
     }
 }
+
+export const blockUser = async (token: string, blockedUserId: number) => {
+    const headers = {
+        "Content-Type": "application/json",
+        "Authorization": token,
+    }
+
+    try {
+        const response = await axios.post(`${BASE_URL}/user/block`, { 
+            blocked_user_id: blockedUserId 
+        }, { headers })
+        return response.data
+    } catch (error) {
+        if (error.response) {
+            return error.response.data
+        }
+        throw error
+    }
+}

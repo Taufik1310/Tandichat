@@ -49,7 +49,7 @@ const AlertInfo = ({ onClose, status, type, email }: {
                                 `Berhasil mengajukan pertemanan`
                                 :
                                 status === 'duplicateFriendRequest' ?
-                                `Kamu sudah mengajukan pertemanan pada ${email}. Cek daftar tertunda`
+                                `Kamu sudah mengajukan pertemanan pada ${email}`
                                 :
                                 status === 'cannotAddYourself' ?
                                 `Tidak dapat mengajukan pertemanan pada diri sendiri`

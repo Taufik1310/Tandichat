@@ -46,6 +46,7 @@ const Home = () => {
                 <FriendContext.Provider value={{ 
                     onAcceptFriend: fetchAllFriend, 
                     onDeleteFriend: fetchAllFriend, 
+                    onBlockedUser: fetchAllFriend,
                     listFriend: listFriend 
                 }}>
                     <div className="max-h-screen w-screen bg-black text-blue-50 overflow-hidden flex">

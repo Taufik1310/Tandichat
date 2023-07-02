@@ -27,5 +27,6 @@ export const UserInfoContext = createContext({
 export const FriendContext = createContext({
     onAcceptFriend: () => {},
     onDeleteFriend: () => {},
+    onBlockedUser: () => {},
     listFriend: []
 })

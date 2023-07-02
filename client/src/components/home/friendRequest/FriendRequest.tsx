@@ -4,7 +4,7 @@ import { BsPersonFillExclamation } from 'react-icons/bs'
 import { GoKebabHorizontal } from 'react-icons/go'
 import { AiOutlineCheck, AiOutlineClose } from 'react-icons/ai'
 import { CgBlock } from 'react-icons/cg'
-import { BASE_AVATAR_URL, acceptFriendRequest, declineFriendRequest, getFriendPending } from '../../../Rest'
+import { BASE_AVATAR_URL, acceptFriendRequest, blockUser, declineFriendRequest, getFriendPending } from '../../../Rest'
 import { FriendContext, TokenContext, UserInfoContext } from '../../../Context'
 import AlertConfirm from '../../alert/AlertConfirm'
 import AlertInfo from '../../alert/AlertInfo'
@@ -19,6 +19,7 @@ const FriendRequest = ({ onClose }: { onClose: () => void }) => {
         accept: false,
         decline: false,
     })
+    const [userId, setUserId] = useState<number>(0)
     
     const fetchFriendPending = async () => {
         const response = await getFriendPending(TOKEN)
@@ -56,10 +57,17 @@ const FriendRequest = ({ onClose }: { onClose: () => void }) => {
         })
     }
 
+    const handleBlockedUser = (id: number) => {
+        setUserId(id)
+        setIsConfirmBlockOpen(true)
+    }
+
     const handleBlockConfirmed = async () => {
         setIsConfirmBlockOpen(false)
-        // const response = await deleteFriend(TOKEN, Id)
-        // console.log(response)
+        const response = await blockUser(TOKEN, userId)
+        if (response) {
+            fetchFriendPending()
+        }
     }
 
     useEffect(() => {
@@ -79,7 +87,7 @@ const FriendRequest = ({ onClose }: { onClose: () => void }) => {
                         <p className="font-semibold text-center text-lg">Tidak ada pengajuan pertemanan padamu baru baru ini</p>
                     </div>
                     :
-                    <ul className="h-screen px-4 py-6 overflow-y-scroll scrollbar-style">
+                    <ul className="h-screen px-2 py-6 overflow-y-scroll scrollbar-style">
                         { friendPending && 
                             friendPending.map((item) => (
                                 <li className="flex justify-between items-center gap-x-3 px-2 py-3 rounded-md hover:bg-gray-700">
@@ -124,7 +132,7 @@ const FriendRequest = ({ onClose }: { onClose: () => void }) => {
                                             </li>
                                             <li 
                                                 className='py-2 px-3 flex flex-row items-center gap-3 text-red-400 text-sm font-bold cursor-pointer hover:bg-gray-800'
-                                                onClick={() => setIsConfirmBlockOpen(true)}
+                                                onClick={() => handleBlockedUser(item.Id)}
                                             >
                                                 <CgBlock className='p-0 hover:bg-transparent'/>
                                                 <a className='p-0 hover:bg-transparent'>

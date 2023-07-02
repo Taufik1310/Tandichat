@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react"
-import { BASE_AVATAR_URL, deleteFriend } from "../../../Rest"
+import { BASE_AVATAR_URL, blockUser, deleteFriend } from "../../../Rest"
 import { ChatListContext, FriendContext, TokenContext, UserInfoContext } from "../../../Context"
 import { GoKebabVertical } from 'react-icons/go'
 import { CgBlock, CgTrashEmpty, CgProfile } from 'react-icons/cg'
@@ -10,7 +10,7 @@ const ChatRoomBar = ({ data }: { data: any }) => {
     const TOKEN = useContext(TokenContext)
     const { onClick } = useContext(UserInfoContext)
     const { onClose } = useContext(ChatListContext)
-    const { onDeleteFriend } = useContext(FriendContext)
+    const { onDeleteFriend, onBlockedUser } = useContext(FriendContext)
     const { Id, Avatar, Username } = data
     const [isConfirmOpen, setIsConfirmOpen] = useState({
         deleteFriend: false,
@@ -46,8 +46,11 @@ const ChatRoomBar = ({ data }: { data: any }) => {
             ...isConfirmOpen,
             block: false
         })
-        // const response = await deleteFriend(TOKEN, Id)
-        // console.log(response)
+        const response = await blockUser(TOKEN, Id)
+        if (response) {
+            onClose()
+            onBlockedUser()
+        }
     }
 
     return (

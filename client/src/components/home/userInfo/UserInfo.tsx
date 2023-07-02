@@ -1,14 +1,14 @@
 import React, { useContext, useEffect, useState } from "react"
 import { BiArrowBack } from 'react-icons/bi'
 import { FriendContext, TokenContext, UserInfoContext } from "../../../Context"
-import { BASE_AVATAR_URL, deleteFriend, getAllFriend } from "../../../Rest"
+import { BASE_AVATAR_URL, blockUser, deleteFriend, getAllFriend } from "../../../Rest"
 import { CgBlock, CgTrashEmpty } from 'react-icons/cg'
 import AlertConfirm from "../../alert/AlertConfirm"
 
 const UserInfo = ({ data }: { data: any }) => {
     const TOKEN = useContext(TokenContext)
     const { onClose } = useContext(UserInfoContext)
-    const { onDeleteFriend } = useContext(FriendContext)
+    const { onDeleteFriend, onBlockedUser } = useContext(FriendContext)
     const { Id, Avatar, Email, Username, About } = data
     const [isConfirmOpen, setIsConfirmOpen] = useState({
         deleteFriend: false,
@@ -41,8 +41,13 @@ const UserInfo = ({ data }: { data: any }) => {
             ...isConfirmOpen,
             block: false
         })
-        // const response = await deleteFriend(TOKEN, Id)
-        // console.log(response)
+        const response = await blockUser(TOKEN, Id)
+        if (response) {
+            onClose()
+            if (isFriendExist) {
+                onBlockedUser()
+            }
+        }
     }
 
     const fetchAllFriend =  async () => {

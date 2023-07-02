@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react"
+import React, { useContext } from "react"
 import { BASE_AVATAR_URL } from "../../../Rest"
 import { ChatListContext, FriendContext } from "../../../Context"
 
