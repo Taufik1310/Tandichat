@@ -29,6 +29,12 @@ const AlertConfirm = ({ onClose, onConfirm, status }: {
                                 <p className='text-sm'>Apakah kamu yakin ingin memblokir pengguna ?</p>
                             </>
                             :
+                            status === "unblock" ?
+                            <>
+                                <p className='font-bold text-lg'>Konfirmasi Buka Blokir</p>
+                                <p className='text-sm'>Apakah kamu yakin ingin membuka blokiran pengguna ?</p>
+                            </>
+                            :
                             status === "logout" ?
                             <>
                                 <p className='font-bold text-lg'>Konfirmasi Keluar</p>

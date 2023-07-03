@@ -26,7 +26,6 @@ const ChatRoomBar = ({ data }: { data: any }) => {
 
     const handleClickedUser = (data: any) => {
         onClick(data)
-        onClose()
     }
 
     const handleDeleteConfirmed = async () => {

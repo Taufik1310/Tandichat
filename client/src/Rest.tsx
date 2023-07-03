@@ -292,3 +292,42 @@ export const blockUser = async (token: string, blockedUserId: number) => {
         throw error
     }
 }
+
+export const unblockUser = async (token: string, blockedUserId: number) => {
+    const headers = {
+        "Content-Type": "application/json",
+        "Authorization": token,
+    }
+
+    try {
+        const response = await axios.delete(`${BASE_URL}/user/block`, {
+            data: {
+                blocked_user_id: blockedUserId
+            },
+            headers: headers
+        })
+        return response.data
+    } catch (error) {
+        if (error.response) {
+            return error.response.data
+        }
+        throw error
+    }
+}
+
+export const getAllBlockedUser = async (token: string) => {
+    const headers = {
+        "Content-Type": "application/json",
+        "Authorization": token,
+    }
+
+    try {
+        const response = await axios.get(`${BASE_URL}/user/block`, { headers })
+        return response.data
+    } catch (error) {
+        if (error.response) {
+            return error.response.data
+        }
+        throw error
+    }
+}

@@ -19,8 +19,8 @@ const AddFriendInput = ({ onSubmit }: { onSubmit: () => void }) => {
             setIsAlertNotFoundOpen(true)
             return
         }
-        const { ID } = await userDataResponse.data
-        const friendRequestResponse = await addFriendRequest(TOKEN, ID)
+        const { Id } = await userDataResponse.data
+        const friendRequestResponse = await addFriendRequest(TOKEN, Id)
         if (friendRequestResponse.code === 500 && friendRequestResponse.details.includes("Duplicate") ) {
             setIsAlertDuplicateOpen(true)
             return

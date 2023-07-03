@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from "react"
 import { BiArrowBack } from 'react-icons/bi'
 import { FriendContext, TokenContext, UserInfoContext } from "../../../Context"
-import { BASE_AVATAR_URL, blockUser, deleteFriend, getAllFriend } from "../../../Rest"
-import { CgBlock, CgTrashEmpty } from 'react-icons/cg'
+import { BASE_AVATAR_URL, blockUser, deleteFriend, getAllBlockedUser, getAllFriend, unblockUser } from "../../../Rest"
+import { CgBlock, CgTrashEmpty, CgUnblock } from 'react-icons/cg'
 import AlertConfirm from "../../alert/AlertConfirm"
 
 const UserInfo = ({ data }: { data: any }) => {
@@ -13,14 +13,18 @@ const UserInfo = ({ data }: { data: any }) => {
     const [isConfirmOpen, setIsConfirmOpen] = useState({
         deleteFriend: false,
         block: false,
+        unblock: false
     })
     const [listFriend, setListFriend] = useState([])
     const [isFriendExist, setIsFriendExist] = useState<boolean>(false)
+    const [blockedUser, setBlockedUser] = useState<any[]>([])
+    const [isBlockedUserExist, setIsBlockedUserExist] = useState<boolean>(false)
 
     const handleAlertClosed = () => {
         setIsConfirmOpen({
             deleteFriend: false,
-            block: false
+            block: false,
+            unblock: false
         })
     }
 
@@ -50,27 +54,61 @@ const UserInfo = ({ data }: { data: any }) => {
         }
     }
 
+    const handleUnblockConfirmed = async () => {
+        setIsConfirmOpen({
+            ...isConfirmOpen,
+            unblock: false
+        })
+        const response = await unblockUser(TOKEN, Id)
+        if (response) {
+            onClose()
+        }
+    }
+    
     const fetchAllFriend =  async () => {
         const response  = await getAllFriend(TOKEN)
         setListFriend(response.data)
     }
 
     const checkFriendExistence = () => {
-        const isFriendExist = listFriend.some((friend) => friend.Id === Id) 
-        if (isFriendExist) {
-            setIsFriendExist(true)
-        } else {
-            setIsFriendExist(false)
+        if (listFriend) {
+            const isFriendExist = listFriend.some((friend) => friend.Id === Id) 
+            if (isFriendExist) {
+                setIsFriendExist(true)
+            } else {
+                setIsFriendExist(false)
+            }
+        }
+    }
+
+    const fetchAllBlockedUser =  async () => {
+        const response  = await getAllBlockedUser(TOKEN)
+        setBlockedUser(response.data)
+    }
+
+    const checkBlockedUserExist = () => {
+        if (blockedUser) {
+            const isBlockedUserExist = blockedUser.some((user) => user.Id === Id) 
+            if (isBlockedUserExist) {
+                setIsBlockedUserExist(true)
+            } else {
+                setIsBlockedUserExist(false)
+            }
         }
     }
 
     useEffect(() => {
         fetchAllFriend()
+        fetchAllBlockedUser()
     }, [])
 
     useEffect(() => {
         checkFriendExistence()
     }, [listFriend])
+
+    useEffect(() => {
+        checkBlockedUserExist()
+    }, [blockedUser])
 
     return (
         <>
@@ -114,16 +152,29 @@ const UserInfo = ({ data }: { data: any }) => {
                                 <p className="text-xs font-semibold">Hapus Pertemanan</p>
                             </div>
                         }
-                        <div 
-                            className="flex items-center gap-2 text-red-500 cursor-pointer"
-                            onClick={() => setIsConfirmOpen({
-                                ...isConfirmOpen,
-                                block: true
-                            })}
-                        >
-                            <CgBlock size={20} />
-                            <p className="text-sm font-semibold">Blokir</p>
-                        </div>
+                        { isBlockedUserExist ?
+                            <div 
+                                className="flex items-center gap-2 text-red-500 cursor-pointer"
+                                onClick={() => setIsConfirmOpen({
+                                    ...isConfirmOpen,
+                                    unblock: true
+                                })}
+                            >
+                                <CgUnblock size={20} />
+                                <p className="text-sm font-semibold">Buka Blokir</p>
+                            </div>
+                            :
+                            <div 
+                                className="flex items-center gap-2 text-red-500 cursor-pointer"
+                                onClick={() => setIsConfirmOpen({
+                                    ...isConfirmOpen,
+                                    block: true
+                                })}
+                            >
+                                <CgBlock size={20} />
+                                <p className="text-sm font-semibold">Blokir</p>
+                            </div>
+                        }
                     </section>
                 </div>
             </div>
@@ -132,6 +183,9 @@ const UserInfo = ({ data }: { data: any }) => {
             }
             { isConfirmOpen.block &&
                 <AlertConfirm onClose={handleAlertClosed} onConfirm={handleBlockConfirmed} status="block" />
+            }
+            { isConfirmOpen.unblock &&
+                <AlertConfirm onClose={handleAlertClosed} onConfirm={handleUnblockConfirmed} status="unblock" />
             }
         </>
     )

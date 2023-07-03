@@ -81,7 +81,7 @@ const FriendRequest = ({ onClose }: { onClose: () => void }) => {
                     <BiArrowBack size={22} className="cursor-pointer" onClick={onClose}/>
                     <p>Permintaan Pertemanan</p>
                 </div>
-                { friendPending.length < 1 ?
+                { !friendPending || friendPending.length < 1 ?
                     <div className='w-full flex flex-col justify-center items-center gap-4 opacity-50 text-blue-50 px-10 py-20'>
                         <BsPersonFillExclamation size={160} />
                         <p className="font-semibold text-center text-lg">Tidak ada pengajuan pertemanan padamu baru baru ini</p>
