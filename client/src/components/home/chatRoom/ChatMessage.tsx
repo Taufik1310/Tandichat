@@ -53,7 +53,7 @@ const ChatMessage = ({ Id }: { Id: number }) => {
                                     }
                                 </time>
                             </div>
-                            <div className={`chat-bubble ${ Id !== message.data.to ? 'bg-gray-700' : 'bg-blue-600'} text-blue-50`}>{message.data.message}</div>
+                            <div className={`chat-bubble ${ Id !== message.data.to ? 'bg-gray-600' : 'bg-blue-600'} text-blue-50`}>{message.data.message}</div>
                         </li>
                     ))
                 }

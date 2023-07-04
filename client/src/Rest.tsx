@@ -82,8 +82,8 @@ export const getUserData = async (token: string, email?: string) => {
 //         const imageUrl = URL.createObjectURL(imageBlob)
 //         return imageUrl
 //     } catch (error) {
-//         console.error(`Error fetching profile picture:`, error.message);
-//         return undefined;
+//         console.error(`Error fetching profile picture:`, error.message)
+//         return undefined
 //     }
 // }
 
@@ -324,6 +324,36 @@ export const getAllBlockedUser = async (token: string) => {
 
     try {
         const response = await axios.get(`${BASE_API_URL}/user/block`, { headers })
+        return response.data
+    } catch (error) {
+        if (error.response) {
+            return error.response.data
+        }
+        throw error
+    }
+}
+
+export const getMessages = async (token: string, limit?: number, to?: number, cursor?: number) => {
+    let queryParams = []
+
+    if (to) {
+        queryParams.push(`to=${to}`)
+    }
+
+    if (cursor) {
+        queryParams.push(`cursor=${cursor}`)
+    }
+
+    const queryString = queryParams.length > 0 ? `?${queryParams.join('&')}` : ''
+    const url = `${BASE_API_URL}/user${queryString}`
+
+    const headers = {
+        "Content-Type": "application/json",
+        "Authorization": token,
+    }
+
+    try {
+        const response = await axios.get(url, { headers })
         return response.data
     } catch (error) {
         if (error.response) {
