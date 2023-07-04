@@ -33,7 +33,7 @@ func sendMessage(from uint, message *MessageData, m *melody.Melody) ([]byte, boo
 	m.BroadcastFilter(buff, func(q *melody.Session) bool {
 		id, ok := q.Get("id")
 		if ok {
-			return id.(uint) == message.To || id.(uint) == from
+			return id.(uint) == message.To
 		}
 		return false
 	})
