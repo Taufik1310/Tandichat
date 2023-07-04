@@ -12,7 +12,10 @@ export const AuthContext = createContext<AuthContext>({
 
 export const TokenContext = createContext<string>('')
 
-// export const BaseAvatarURLContext = createContext<string>('')
+export const WebSocketContext = createContext({
+    onSend: (to: number, message: any) => {},
+    messages: []
+})
 
 export const ChatListContext = createContext({
     onOpen: (data: any) => {},

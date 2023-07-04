@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from "react"
+import React from "react"
 import ChatRoomBar from "./ChatRoomBar"
 import ChatMessageInput from "./ChatMessageInput"
 import ChatMessage from "./ChatMessage"
 
-const ChatRoom = ({ data }: { data: object}) => {
+const ChatRoom = ({ data }: { data: any}) => {
+    const { Id } = data
 
     return (
         <div className={`flex flex-col justify-between w-full h-full`}>
-            <ChatRoomBar data={data}/>
-            <ChatMessage />
-            <ChatMessageInput />
+            <ChatRoomBar data={data} />
+            <ChatMessage Id={Id} />
+            <ChatMessageInput Id={Id} />
         </div>
     )
 }

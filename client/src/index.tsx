@@ -4,9 +4,9 @@ import "./index.css";
 import App from "./App";
 
 const StrictApp = () => (
-  <React.StrictMode>
+  // <React.StrictMode>
     <App />
-  </React.StrictMode>
+  // </React.StrictMode>
 );
 
 const rootElement = document.getElementById("root");
