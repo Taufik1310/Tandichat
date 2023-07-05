@@ -14,6 +14,13 @@ const ChatMessageInput = ({ Id }: { Id: number  }) => {
         setMessage('')
     }
 
+    const handleKeyDown = (event: any) => {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault()
+            handleSubmitedForm(event)
+        }
+    }
+
     return (
         <div className="bg-gray-700 h-12 max-h-12 px-3 flex items-center justify-center">
             <div className="flex">
@@ -29,6 +36,7 @@ const ChatMessageInput = ({ Id }: { Id: number  }) => {
                         autoFocus
                         onChange={(e) => setMessage(e.target.value)}
                         value={message}
+                        onKeyDown={handleKeyDown}
                     />
                     <button 
                         className="btn btn-sm text-lg bg-gray-700 border-none hover:bg-gray-700"

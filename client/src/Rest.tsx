@@ -333,7 +333,7 @@ export const getAllBlockedUser = async (token: string) => {
     }
 }
 
-export const getMessages = async (token: string, limit?: number, to?: number, cursor?: number) => {
+export const getMessages = async (token: string, to?: number, cursor?: number) => {
     let queryParams = []
 
     if (to) {
@@ -345,7 +345,7 @@ export const getMessages = async (token: string, limit?: number, to?: number, cu
     }
 
     const queryString = queryParams.length > 0 ? `?${queryParams.join('&')}` : ''
-    const url = `${BASE_API_URL}/user${queryString}`
+    const url = `${BASE_API_URL}/message?to=${to}`
 
     const headers = {
         "Content-Type": "application/json",

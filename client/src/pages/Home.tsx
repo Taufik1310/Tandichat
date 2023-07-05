@@ -3,7 +3,7 @@ import Navigation from "../components/home/navigation/Navigation"
 import ChatRoom from "../components/home/chatRoom/ChatRoom"
 import Intro from "../components/home/intro/Intro"
 import { ChatListContext, FriendContext, TokenContext, UserInfoContext, WebSocketContext } from "../Context"
-import { getAllFriend } from "../Rest"
+import { getAllFriend, getMessages } from "../Rest"
 
 const Home = () => {
     const TOKEN = useContext(TokenContext)
@@ -12,7 +12,7 @@ const Home = () => {
     const [chatUserData, setChatUserData] = useState({})
     const [userData, setUserData] = useState({})
     const [listFriend, setListFriend] = useState<any[]>([])
-    
+    const [messages, setMessages] = useState<any[]>([])
 
     const fetchAllFriend =  async () => {
         const response  = await getAllFriend(TOKEN)
@@ -24,8 +24,10 @@ const Home = () => {
     }, [])
 
     const handleChatClicked = async (data: any) => {
+        const { Id } = data
         setIsChatOpen(true)
         setChatUserData(data)
+        fetchAllMessage(Id)
     }
 
     const handleClosedChat = () => {
@@ -46,9 +48,21 @@ const Home = () => {
         handleClosedChat()
     }
 
+    const fetchAllMessage = async (to: number) => {
+        const response = await getMessages(TOKEN, to)
+        setMessages(response.data.message)
+    }
+
     return (
-        <ChatListContext.Provider value={{ onOpen: handleChatClicked, onClose: handleClosedChat  }}>
-            <UserInfoContext.Provider value={{ onClick: handleClickedUser, onClose: handleClosedUser }}>
+        <ChatListContext.Provider value={{ 
+            onOpen: handleChatClicked, 
+            onClose: handleClosedChat, 
+            allMessage: messages  
+        }}>
+            <UserInfoContext.Provider value={{ 
+                onClick: handleClickedUser, 
+                onClose: handleClosedUser 
+            }}>
                     <FriendContext.Provider value={{ 
                         onAcceptFriend: fetchAllFriend, 
                         onDeleteFriend: handleActionFriend, 

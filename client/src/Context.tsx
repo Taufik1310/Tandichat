@@ -14,12 +14,14 @@ export const TokenContext = createContext<string>('')
 
 export const WebSocketContext = createContext({
     onSend: (to: number, message: any) => {},
+    onClear: () => {},
     messages: []
 })
 
 export const ChatListContext = createContext({
     onOpen: (data: any) => {},
-    onClose: () => {}
+    onClose: () => {},
+    allMessage: [],
 })
 
 export const UserInfoContext = createContext({

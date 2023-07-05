@@ -57,6 +57,10 @@ const Main = () => {
         }
     }
 
+    const handleClearMessage = () => {
+        setMessages([])
+    }
+
     useEffect(() => {
         if (token) {
             setIsLoggedIn(true)
@@ -89,6 +93,7 @@ const Main = () => {
                         }}>
                             <WebSocketContext.Provider value={{ 
                                 onSend: handleSend,
+                                onClear: handleClearMessage,
                                 messages: messages
                              }}>
                                 { isLoggedIn ? <Home /> : <Auth /> }
