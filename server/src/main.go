@@ -33,7 +33,11 @@ func main() {
 	}
 
 	r := gin.Default()
+
 	m := melody.New()
+
+	m.Config.MaxMessageSize = 1024
+	m.Config.MessageBufferSize = 1024
 
 	config := cors.DefaultConfig()
 
@@ -77,6 +81,19 @@ func main() {
 
 	m.HandleConnect(websocket.HandleConnect)
 	m.HandleMessage(websocket.HandleMessage(m))
+	m.HandleError(func(s *melody.Session, err error) {
+		log.Println("Connection disconnected: ", err.Error())
+	})
+	m.HandleClose(func(s1 *melody.Session, i int, s2 string) error {
+		key, ok := s1.Get('id')
+
+		if !ok {
+			key = "no id found"
+		}
+		
+		log.Println("Connection closed: ",key , "i :", i, "s2 : ", s2)
+		return nil
+	})
 
 	r.Run(":5050")
 }
