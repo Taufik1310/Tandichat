@@ -43,6 +43,7 @@ const Main = () => {
 
     const handleSend = (to: number, message: any) => {
         if (webSocket && webSocket.readyState === WebSocket.OPEN) {
+            console.log(message)
             const messageData = {
                 type: 0,
                 data: {
