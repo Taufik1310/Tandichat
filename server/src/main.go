@@ -33,7 +33,11 @@ func main() {
 	}
 
 	r := gin.Default()
+
 	m := melody.New()
+
+	m.Config.MaxMessageSize = 1024
+	m.Config.MessageBufferSize = 1024
 
 	config := cors.DefaultConfig()
 
@@ -77,6 +81,9 @@ func main() {
 
 	m.HandleConnect(websocket.HandleConnect)
 	m.HandleMessage(websocket.HandleMessage(m))
+	m.HandleError(func(s *melody.Session, err error) {
+		log.Println("Connection disconnected: ", err.Error())
+	})
 
 	r.Run(":5050")
 }
