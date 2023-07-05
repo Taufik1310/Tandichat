@@ -84,6 +84,10 @@ func main() {
 	m.HandleError(func(s *melody.Session, err error) {
 		log.Println("Connection disconnected: ", err.Error())
 	})
+	m.HandleClose(func(s1 *melody.Session, i int, s2 string) error {
+		log.Println("Connection closed: ", err.Error(), "i :", i, "s2 : ", s2)
+		return nil
+	})
 
 	r.Run(":5050")
 }
