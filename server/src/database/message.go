@@ -38,16 +38,17 @@ func GetMessage(from uint, to uint, cursor uint) ([]MessageForUser, uint, error)
 	}
 
 	if cursor == 0 {
-		DB.Table("messages").Where("room_id = ?", room_id).Order(clause.OrderByColumn{Column: clause.Column{Name: "id"}, Desc: true}).Limit(100).Scan(&messages)
-
+		DB.Table("messages").Where("room_id = ?", room_id).Order(clause.OrderByColumn{Column: clause.Column{Name: "id"}, Desc: true}).Limit(101).Scan(&messages)
 	} else {
-		DB.Table("messages").Where("room_id = ? AND id <= ?", room_id, cursor).Order(clause.OrderByColumn{Column: clause.Column{Name: "id"}, Desc: true}).Limit(100).Scan(&messages)
+		DB.Table("messages").Where("room_id = ? AND id <= ?", room_id, cursor).Order(clause.OrderByColumn{Column: clause.Column{Name: "id"}, Desc: true}).Limit(101).Scan(&messages)
 	}
 
-	if len(messages) > 1 {
-		last_message := messages[0]
+	if len(messages) <= 100 {
+		next_cursor = 0
+	} else if len(messages) > 1 {
+		last_message := messages[len(messages)-1]
 		next_cursor = last_message.ID
-		messages = messages[1:]
+		messages = messages[:len(messages)-1]
 	} else if len(messages) == 1 {
 		last_message := messages[0]
 		next_cursor = last_message.ID
