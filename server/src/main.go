@@ -56,7 +56,7 @@ func main() {
 	r.POST("/api/login", routes.Login)
 	r.POST("/api/logout", routes.Logout)
 	r.POST("/api/verifyemail", routes.SendVerificationCode)
-	r.GET("/api/verifyemail/:code", routes.VerifyEmail)
+	r.PATCH("/api/verifyemail/:code", routes.VerifyEmail)
 
 	//* API AVATAR
 	r.PATCH("/api/avatar", routes.ChangeAvatar)

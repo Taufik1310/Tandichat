@@ -23,7 +23,7 @@ DB_URL=user:pass@tcp(127.0.0.1:3306)/namadatabase?charset=utf8mb4&parseTime=True
 lalu saat menjalankan server, berikan argument mysql
 
 ```bash
-go run src/main.go mysql
+go run src/main.go --db mysql
 ```
 
 Install Docker lalu jalankan 
