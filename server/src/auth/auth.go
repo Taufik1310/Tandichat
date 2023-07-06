@@ -44,24 +44,26 @@ func Login(email string, password string) (string, error) {
 	var user model.User
 	database.DB.Where(&model.User{Email: email}).First(&user)
 
+	if config.Config.IS_EMAIL_VERIFICATION {
+		if !user.Verified {
+			return "", errors.New("error: User is not verified")
+		}
+	}
+
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 
 	if err != nil {
 		return "", errors.New("error: Password does not match")
 	}
 
-	session := model.Session{
-		UserID: user.ID,
-	}
+	sessionID, err := database.CreateSession(user.ID)
 
-	result := database.DB.Create(&session)
-
-	if result.Error != nil {
-		return "", errors.Join(errors.New("error: Error inserting session to database"), result.Error)
+	if err != nil {
+		return "", err
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"SessionID": session.ID,
+		"SessionID": sessionID,
 		"userID":    user.ID,
 		"email":     user.Email,
 	})
@@ -87,12 +89,7 @@ func Logout(token string) error {
 
 	if claims, ok := result.Claims.(*JWTStructure); ok && result.Valid {
 
-		result := database.DB.Delete(&model.Session{}, claims.SessionID)
-		if result.RowsAffected == 0 {
-			return errors.New("error: Failed to delete session | Session id not found | Probably already deleted before")
-		}
-
-		return nil
+		return database.DeleteSession(claims.SessionID)
 	} else {
 		return errors.New("error: Failed to parse JWT")
 	}

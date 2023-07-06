@@ -2,15 +2,17 @@ package websocket
 
 import (
 	"encoding/json"
+	"strings"
 
 	"github.com/olahol/melody"
 )
 
-func websocketError(message string) []byte {
+func websocketError(messages ...string) []byte {
+	msg := strings.Join(messages, " ")
 	payload := Message{
 		Type: TYPE_ERROR,
 		Data: ErrorData{
-			Message: message,
+			Message: msg,
 		},
 	}
 
