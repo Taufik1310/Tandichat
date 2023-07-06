@@ -3,8 +3,10 @@ package main
 import (
 	"andiputraw/Tandichat/src/config"
 	"andiputraw/Tandichat/src/database"
+	logger "andiputraw/Tandichat/src/log"
 	"andiputraw/Tandichat/src/routes"
 	"andiputraw/Tandichat/src/websocket"
+	"flag"
 	"log"
 	"net/http"
 
@@ -14,19 +16,22 @@ import (
 	"github.com/olahol/melody"
 )
 
-// * PROTOTYPE>
-type sendedData struct {
-	Data   string
-	Target string
-}
+var address = ""
+var dbms = "postgres"
 
 func main() {
+	logger.Init()
+	flag.StringVar(&address, "address", "127.0.0.1:5050", "Address")
+	flag.StringVar(&dbms, "db", "postgres", "Select database provider. mysql | posgres")
+
+	flag.Parse()
+
 	err := godotenv.Load()
 	config.InitConfig()
 	if err != nil {
 		log.Fatal("error loading .env files")
 	}
-	err = database.Connect()
+	err = database.Connect(dbms)
 
 	if err != nil {
 		log.Fatal(err.Error())
@@ -84,18 +89,19 @@ func main() {
 	m.HandleConnect(websocket.HandleConnect)
 	m.HandleMessage(websocket.HandleMessage(m))
 	m.HandleError(func(s *melody.Session, err error) {
-		log.Println("Connection disconnected: ", err.Error())
+		logger.Warning("Connection disconnected: ", err.Error())
 	})
 	m.HandleClose(func(s1 *melody.Session, i int, s2 string) error {
 		key, ok := s1.Get("id")
 
 		if !ok {
-			key = "no id found"
+			key = "[no id found]"
 		}
 
-		log.Println("Connection closed. ID :", key, "i : ", i, "s2 : ", s2)
+		logger.Info("Connection closed. ID :", key, "i : ", i, "s2 : ", s2)
 		return nil
 	})
 
-	r.Run(":5050")
+	logger.Info("Listening and serving HTTP on : ", address)
+	r.Run(address)
 }

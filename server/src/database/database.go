@@ -1,6 +1,7 @@
 package database
 
 import (
+	"andiputraw/Tandichat/src/config"
 	"andiputraw/Tandichat/src/model"
 	"errors"
 	"fmt"
@@ -13,22 +14,15 @@ import (
 
 var DB *gorm.DB
 
-func Connect() error {
-	dsn := os.Getenv("DB_URL")
-
-	var DBMS string
-	if len(os.Args) < 2 {
-		DBMS = "postgres"
-	} else {
-		DBMS = os.Args[1]
-	}
+func Connect(dbms string) error {
+	dsn := config.Config.DB_URL
 
 	var db *gorm.DB
 	var err error
 
-	if DBMS == "postgres" {
+	if dbms == "postgres" {
 		db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	} else if DBMS == "mysql" {
+	} else if dbms == "mysql" {
 		db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	} else {

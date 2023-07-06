@@ -50,12 +50,6 @@ func ChangeAvatar(c *gin.Context) {
 	c.JSON(200, gin.H{"status": "200", "message": "success", "data": gin.H{"filename": filename + extension}})
 }
 
-func sanitizeFilename(filename string) string {
-	safeFilename := strings.ReplaceAll(filename, "..", "")
-
-	return safeFilename
-}
-
 func isPng(filename string) bool {
 	return strings.HasSuffix(filename, ".png")
 }

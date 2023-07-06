@@ -66,3 +66,7 @@ lebih baik lagi jika menggunakan refresh token untuk tetap menjaga user tetap lo
 Untuk sekarang authentikasi websocket dengan mengirimkan credentials melewati URI, yang mana ini adalah cara yang paling tidak secure https://websockets.readthedocs.io/en/stable/topics/authentication.html. walaupun credential hanya dapat digunakan 1x dan hanya berisi UUID dan UserID.
 
 Dari tulisan diatas. cara yang terbaik adalah dengan mengirimkan credentials langusng melewati webscoket. jika pesan pertama adalah credentials yang tidak valid, server langsung memutus hubungan dengan client
+
+## Email Verification
+
+Email Verification berekerja dengan baik menggunakan mailtrap test. tetapi untuk kasus di dunia nyata menggunakan email yang sebenarnya, Belum kami coba
