@@ -70,10 +70,10 @@ const Home = () => {
                         listFriend: listFriend 
                     }}>
                         <div className="max-h-screen w-screen bg-black text-blue-50 overflow-hidden flex">
-                            <section className={`fixed sm:relative bg-gray-800 h-screen w-screen sm:w-5/12 lg:w-4/12 sm:border-r-[1px] border-r-gray-600 ${isUserInfoOpen ? 'z-[70]' : 'z-50' }`}>
+                            <section className={`fixed sm:relative bg-gray-800 h-screen w-screen sm:w-5/12 lg:w-4/12 sm:border-r-[1px] border-r-gray-600 ${isUserInfoOpen ? 'z-[70]' : 'z-50 sm:z-40' }`}>
                                 <Navigation isUserInfoOpen={isUserInfoOpen} userData={userData} />
                             </section>
-                            <section className={`fixed bg-gray-800 sm:relative h-screen w-screen sm:w-7/12 lg:w-8/12 ${isChatOpen ? 'z-[60] sm:z-[40]' : 'z-40'}`}>
+                            <section className={`fixed bg-gray-800 sm:relative h-screen w-screen sm:w-7/12 lg:w-8/12 ${isChatOpen ? 'z-[60] sm:z-40' : 'z-40'}`}>
                                 { isChatOpen ?
                                     <ChatRoom data={chatUserData}/>
                                     :

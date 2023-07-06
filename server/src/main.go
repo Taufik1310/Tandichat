@@ -85,7 +85,7 @@ func main() {
 		log.Println("Connection disconnected: ", err.Error())
 	})
 	m.HandleClose(func(s1 *melody.Session, i int, s2 string) error {
-		key, ok := s1.Get('id')
+		key, ok := s1.Get("id")
 
 		if !ok {
 			key = "no id found"

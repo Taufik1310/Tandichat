@@ -4,7 +4,7 @@ import { AiFillCloseCircle, AiFillCheckCircle, AiFillInfoCircle } from 'react-ic
 const AlertInfo = ({ onClose, status, type, email }: {
     onClose: () => void,
     status: string,
-    type: string,
+    type?: string,
     email?: string
 }) => {
 
@@ -21,12 +21,12 @@ const AlertInfo = ({ onClose, status, type, email }: {
                         <div className='flex items-center gap-3 mb-3'>
                             { 
                                 type === "success" ?
-                                <AiFillCheckCircle size={32} className={`${'text-green-600'}`}/>
+                                <AiFillCheckCircle size={32} className={`${'text-green-600'}`} />
                                 :
                                 type === "fail" ?
-                                <AiFillCloseCircle size={32} className={`${'text-red-500'}`}/>
+                                <AiFillCloseCircle size={32} className={`${'text-red-500'}`} />
                                 :
-                                <AiFillInfoCircle size={32} className={`${'text-blue-600'}`}/>
+                                <AiFillInfoCircle size={32} className={`${'text-blue-600'}`} />
                             }
                             <p className='font-bold text-xl'>
                                 {
@@ -65,6 +65,9 @@ const AlertInfo = ({ onClose, status, type, email }: {
                                 :
                                 status === 'declineFriendRequest' ?
                                 `Permintaan pertemanan ditolak`
+                                :
+                                status === 'maxLengthLimited' ?
+                                `Maksimal sebanyak 800 karakter`
                                 :
                                 null
                             }

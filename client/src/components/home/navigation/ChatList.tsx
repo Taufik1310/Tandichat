@@ -10,8 +10,9 @@ const ChatList = () => {
         <div className="mt-3">
             <ul className="px-1 h-[calc(100vh-8rem)] overflow-y-scroll scrollbar-style">
                 { listFriend && 
-                    listFriend.map((item) => (
+                    listFriend.map((item, index) => (
                         <li 
+                            key={index}
                             className="flex justify-between items-start gap-x-3 px-2 py-3 rounded-md hover:bg-gray-700 cursor-pointer"
                             onClick={() => onOpen(item)}
                         >
