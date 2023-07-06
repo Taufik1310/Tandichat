@@ -1,13 +1,15 @@
 import React, { useContext, useEffect, useRef } from "react"
-import { BiLockAlt } from 'react-icons/bi'
-import { ChatListContext, WebSocketContext } from "../../../Context"
+import { ChatListContext, TokenContext, WebSocketContext } from "../../../Context"
+import { getMessages } from "../../../Rest"
 
 const DEFAULT_BG = './assets/default-bg.png'
 
 const ChatMessage = ({ Id }: { Id: number }) => {
+    const TOKEN = useContext(TokenContext)
     const { messages, onClear } = useContext(WebSocketContext)
-    const { allMessage } = useContext(ChatListContext)
+    const { allMessage }: any = useContext(ChatListContext)
     const scrollRef = useRef(null)
+    // const allMessages = allMessage.message
 
     useEffect(() => {
         onClear()
@@ -36,17 +38,25 @@ const ChatMessage = ({ Id }: { Id: number }) => {
         return result
     }
 
+    // const handleLoadMessage = async (cursor: number) => {
+    //     const response = await getMessages(TOKEN, Id, cursor)
+    //     allMessages.push(response.data.message)
+    // }
+
     return (
         <div 
             className="bg-gray-800 object-cover h-full max-h-full overflow-x-hidden overflow-y-auto scrollbar-style ps-2 pe-1 md:ps-5 md:pe-3 py-5"
             style={{ backgroundImage: `url(${DEFAULT_BG})` }}
         >
-            {/* <div className="text-blue-50 text-xs flex items-center justify-center m-auto">
-                <p className="bg-gray-900 p-2 px-3 rounded-lg">Hari Ini</p>
-            </div> */}
+            <div className="text-blue-50 text-xs flex items-center justify-center m-auto">
+                <button 
+                    // onClick={() => handleLoadMessage(allMessage.next_cursor)}
+                    className="bg-gray-900 p-2 px-3 rounded-lg border border-gray-600"
+                >Muat Pesan Sebelumnya</button>
+            </div>
             <ul className="mt-5">
-                { allMessage &&
-                    allMessage.sort((a, b) => {
+                { allMessage.message &&
+                    allMessage.message.sort((a: any, b: any) => {
                         const dateA = new Date(a.CreatedAt).getTime()
                         const dateB = new Date(b.CreatedAt).getTime()
                         return dateA - dateB

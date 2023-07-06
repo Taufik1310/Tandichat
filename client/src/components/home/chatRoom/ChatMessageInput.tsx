@@ -39,6 +39,7 @@ const ChatMessageInput = ({ Id }: { Id: number  }) => {
     }, [message])
 
     return (
+        <>
         <div 
             className={`bg-gray-700 h-[calc${textareaHeight}] px-3 pb-2 pt-1 flex items-end justify-center`}
         >
@@ -64,10 +65,11 @@ const ChatMessageInput = ({ Id }: { Id: number  }) => {
                     ><RxPaperPlane /> </button>
                 </div>
             </form>
-            { isAlertOpen &&    
-                <AlertInfo status="maxLengthLimited" onClose={() => setIsAlertOpen(false)} />
-            }
         </div>
+            {/* { isAlertOpen &&    
+                <AlertInfo status="maxLengthLimited" onClose={() => setIsAlertOpen(false)} />
+            } */}
+        </>
     )
 }
 

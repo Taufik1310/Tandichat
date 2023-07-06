@@ -21,7 +21,7 @@ export const WebSocketContext = createContext({
 export const ChatListContext = createContext({
     onOpen: (data: any) => {},
     onClose: () => {},
-    allMessage: [],
+    allMessage: {},
 })
 
 export const UserInfoContext = createContext({
@@ -29,7 +29,14 @@ export const UserInfoContext = createContext({
     onClose: () => {}
 })
 
-export const FriendContext = createContext({
+interface FriendContext {
+    onAcceptFriend: Function,
+    onDeleteFriend: Function,
+    onBlockedUser: Function,
+    listFriend: any[]
+}
+
+export const FriendContext = createContext<FriendContext>({
     onAcceptFriend: () => {},
     onDeleteFriend: () => {},
     onBlockedUser: () => {},

@@ -10,9 +10,14 @@ import AddFriend from "../addFriend/AddFriend"
 const Navigation = ({ isUserInfoOpen, userData }: { isUserInfoOpen: boolean, userData?: any }) => {
     const { listFriend } = useContext(FriendContext)
     const [isOpenAddFriend, setIsOpenAddFriend] = useState<boolean>(false)
+    const [keyword, setKeyword] = useState<string>('')
 
     const handleAddFriend = () => {
         setIsOpenAddFriend(!isOpenAddFriend)
+    }
+
+    const handleSearching = (key: any) => {
+        setKeyword(key)
     }
 
     return (
@@ -20,7 +25,7 @@ const Navigation = ({ isUserInfoOpen, userData }: { isUserInfoOpen: boolean, use
             { !isUserInfoOpen ?
                 <>
                     <NavigationBar/>
-                    <ChatSearch />
+                    <ChatSearch onSearch={handleSearching}/>
                     { !listFriend || listFriend.length < 1 ?
                         <div className='w-full flex flex-col justify-center items-center gap-4  text-blue-50 px-10 py-20'>
                             <BsPersonFillExclamation size={120} className="opacity-50"/>
@@ -34,7 +39,7 @@ const Navigation = ({ isUserInfoOpen, userData }: { isUserInfoOpen: boolean, use
                             </button>
                         </div>
                         :
-                        <ChatList />
+                        <ChatList keyword={keyword} />
                     }
                     { isOpenAddFriend && <AddFriend onClose={handleAddFriend} /> }
                 </>

@@ -1,16 +1,36 @@
-import React, { useContext } from "react"
+import React, { useContext, useState, useEffect } from "react"
 import { BASE_AVATAR_URL } from "../../../Rest"
 import { ChatListContext, FriendContext } from "../../../Context"
 
-const ChatList = () => {
+const ChatList = ({ keyword }: { keyword: string }) => {
     const { onOpen } = useContext(ChatListContext)
     const { listFriend } = useContext(FriendContext)
+    const [filteredFriend, setFilteredFriend] = useState<any[]>([])
+
+    const getCurrentDate = () => {
+        const currentDate = new Date()
+        const year = currentDate.getFullYear()
+        const month = (currentDate.getMonth() + 1).toString().padStart(2, '0')
+        const day = currentDate.getDate().toString().padStart(2, '0')
+        const formattedDate = `${day}/${month}/${year}`
+
+        return formattedDate
+    }
+
+    useEffect(() => {
+        const filterFriend = listFriend.filter((friend) => {
+            const name = friend.Username.toLowerCase()
+            const key = keyword ? keyword.toLowerCase() : ''
+            return name.includes(key)
+        })
+        setFilteredFriend(filterFriend)
+    }, [keyword])
 
     return (
         <div className="mt-3">
             <ul className="px-1 h-[calc(100vh-8rem)] overflow-y-scroll scrollbar-style">
-                { listFriend && 
-                    listFriend.map((item, index) => (
+                { filteredFriend && 
+                    filteredFriend.map((item, index) => (
                         <li 
                             key={index}
                             className="flex justify-between items-start gap-x-3 px-2 py-3 rounded-md hover:bg-gray-700 cursor-pointer"
@@ -23,15 +43,24 @@ const ChatList = () => {
                                     </div>
                                 </div>
                                 <div className="flex-auto overflow-hidden">
-                                    <p className="truncate text-sm font-semibold">{item.Username}</p>
-                                    {/* <p className="truncate text-xs text-gray-400">{item.lastChat}</p> */}
-                                    <p className="truncate text-xs text-gray-400">Lorem ipsum dolor sit amet.</p>
+                                    <p className="truncate text-sm font-semibold">
+                                        {
+                                            Array.from(item.Username).map((char: any, index) => (
+                                                <span className={`${keyword.toLowerCase().includes(char.toLowerCase()) ? 'text-blue-400' : ''}`} key={index}>{char}</span>
+                                            ))
+                                        }
+                                    </p>
+                                    <p className="truncate text-xs text-gray-400">{item.Email}</p>
                                 </div>
                             </div>
                             <div className="text-end">
                                 <div>
                                     {/* <time className={`text-[10px] ${item.unreadChat.length === 0 ? 'text-gray-400' : 'text-blue-600 fw-bold'}`}>{item.lastDate}</time> */}
-                                    <time className={`text-[10px] text-gray-400`}>10/05/2023</time>
+                                    <time className={`text-[10px] text-gray-400`}>
+                                        {
+                                            getCurrentDate()
+                                        }
+                                    </time>
                                 </div>
                                 {/* {item.unreadChat.length !== 0 && 
                                     <span className="badge bg-blue-600 text-slate-50 border-0 text-xs">{item.unreadChat.length}</span>

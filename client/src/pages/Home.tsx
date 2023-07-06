@@ -12,7 +12,7 @@ const Home = () => {
     const [chatUserData, setChatUserData] = useState({})
     const [userData, setUserData] = useState({})
     const [listFriend, setListFriend] = useState<any[]>([])
-    const [messages, setMessages] = useState<any[]>([])
+    const [messages, setMessages] = useState({})
 
     const fetchAllFriend =  async () => {
         const response  = await getAllFriend(TOKEN)
@@ -50,40 +50,42 @@ const Home = () => {
 
     const fetchAllMessage = async (to: number) => {
         const response = await getMessages(TOKEN, to)
-        setMessages(response.data.message)
+        setMessages(response.data)
     }
 
     return (
-        <ChatListContext.Provider value={{ 
-            onOpen: handleChatClicked, 
-            onClose: handleClosedChat, 
-            allMessage: messages  
-        }}>
-            <UserInfoContext.Provider value={{ 
-                onClick: handleClickedUser, 
-                onClose: handleClosedUser 
+        <>
+            <ChatListContext.Provider value={{ 
+                onOpen: handleChatClicked, 
+                onClose: handleClosedChat, 
+                allMessage: messages  
             }}>
-                    <FriendContext.Provider value={{ 
-                        onAcceptFriend: fetchAllFriend, 
-                        onDeleteFriend: handleActionFriend, 
-                        onBlockedUser: handleActionFriend,
-                        listFriend: listFriend 
-                    }}>
-                        <div className="max-h-screen w-screen bg-black text-blue-50 overflow-hidden flex">
-                            <section className={`fixed sm:relative bg-gray-800 h-screen w-screen sm:w-5/12 lg:w-4/12 sm:border-r-[1px] border-r-gray-600 ${isUserInfoOpen ? 'z-[70]' : 'z-50 sm:z-40' }`}>
-                                <Navigation isUserInfoOpen={isUserInfoOpen} userData={userData} />
-                            </section>
-                            <section className={`fixed bg-gray-800 sm:relative h-screen w-screen sm:w-7/12 lg:w-8/12 ${isChatOpen ? 'z-[60] sm:z-40' : 'z-40'}`}>
-                                { isChatOpen ?
-                                    <ChatRoom data={chatUserData}/>
-                                    :
-                                    <Intro />
-                                }
-                            </section>
-                        </div>
-                    </FriendContext.Provider>
-            </UserInfoContext.Provider>
-        </ChatListContext.Provider>
+                <UserInfoContext.Provider value={{ 
+                    onClick: handleClickedUser, 
+                    onClose: handleClosedUser 
+                }}>
+                        <FriendContext.Provider value={{ 
+                            onAcceptFriend: fetchAllFriend, 
+                            onDeleteFriend: handleActionFriend, 
+                            onBlockedUser: handleActionFriend,
+                            listFriend: listFriend 
+                        }}>
+                            <div className="max-h-screen w-screen bg-black text-blue-50 overflow-hidden flex relative">
+                                <section className={`fixed sm:relative bg-gray-800 h-screen w-screen sm:w-5/12 lg:w-4/12 sm:border-r-[1px] border-r-gray-600 ${isUserInfoOpen ? 'z-[70]' : 'z-50 sm:z-50'} `}>
+                                    <Navigation isUserInfoOpen={isUserInfoOpen} userData={userData} />
+                                </section>
+                                <section className={`fixed bg-gray-800 sm:relative h-screen w-screen sm:w-7/12 lg:w-8/12 ${isChatOpen ? 'z-[60] sm:z-40' : 'z-40'}`}>
+                                    { isChatOpen ?
+                                        <ChatRoom data={chatUserData}/>
+                                        :
+                                        <Intro />
+                                    }
+                                </section>
+                            </div>
+                        </FriendContext.Provider>
+                </UserInfoContext.Provider>
+            </ChatListContext.Provider>
+        </>
     )
 }
 
