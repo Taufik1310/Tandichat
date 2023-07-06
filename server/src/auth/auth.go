@@ -5,6 +5,7 @@ import (
 	"andiputraw/Tandichat/src/database"
 	"andiputraw/Tandichat/src/model"
 	"errors"
+	"fmt"
 	"os"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -43,6 +44,13 @@ func Login(email string, password string) (string, error) {
 
 	var user model.User
 	database.DB.Where(&model.User{Email: email}).First(&user)
+
+	if config.Config.IS_EMAIL_VERIFICATION {
+		fmt.Println("Is Verified?", user.Verified)
+		if !user.Verified {
+			return "", errors.New("error: User is not verified")
+		}
+	}
 
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 

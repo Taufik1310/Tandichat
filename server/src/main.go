@@ -36,8 +36,8 @@ func main() {
 
 	m := melody.New()
 
-	m.Config.MaxMessageSize = 1024
-	m.Config.MessageBufferSize = 1024
+	m.Config.MaxMessageSize = 4096
+	m.Config.MessageBufferSize = 4096
 
 	config := cors.DefaultConfig()
 
@@ -50,6 +50,8 @@ func main() {
 	r.POST("/api/register", routes.Register)
 	r.POST("/api/login", routes.Login)
 	r.POST("/api/logout", routes.Logout)
+	r.POST("/api/verifyemail", routes.SendVerificationCode)
+	r.GET("/api/verifyemail/:code", routes.VerifyEmail)
 
 	//* API AVATAR
 	r.PATCH("/api/avatar", routes.ChangeAvatar)
@@ -85,13 +87,13 @@ func main() {
 		log.Println("Connection disconnected: ", err.Error())
 	})
 	m.HandleClose(func(s1 *melody.Session, i int, s2 string) error {
-		key, ok := s1.Get('id')
+		key, ok := s1.Get("id")
 
 		if !ok {
 			key = "no id found"
 		}
-		
-		log.Println("Connection closed: ",key , "i :", i, "s2 : ", s2)
+
+		log.Println("Connection closed. ID :", key, "i : ", i, "s2 : ", s2)
 		return nil
 	})
 

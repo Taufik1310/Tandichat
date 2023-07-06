@@ -4,6 +4,8 @@ import (
 	"andiputraw/Tandichat/src/auth"
 	"bytes"
 	"encoding/json"
+	"log"
+	"time"
 
 	"github.com/olahol/melody"
 )
@@ -39,6 +41,7 @@ func HandleMessage(m *melody.Melody) func(s *melody.Session, msg []byte) {
 		}
 
 		if message.Type == TYPE_MESSAGE {
+			start := time.Now()
 			messageData, ok := parseTypeMessage(s, message.Data)
 
 			if !ok {
@@ -46,11 +49,12 @@ func HandleMessage(m *melody.Melody) func(s *melody.Session, msg []byte) {
 			}
 
 			error_msg, ok := sendMessage(userID, &messageData, m)
-
+			end := time.Since(start)
 			if !ok {
 				s.Write(error_msg)
 				return
 			}
+			log.Println("Succesfully sending message from ", userID, " to ", messageData.To, "in ", end)
 		}
 
 	}
