@@ -3,7 +3,7 @@ import { BASE_AVATAR_URL } from "../../../Rest"
 import { ChatListContext, FriendContext } from "../../../Context"
 
 const ChatList = ({ keyword }: { keyword: string }) => {
-    const { onOpen } = useContext(ChatListContext)
+    const { onOpen, userId } = useContext(ChatListContext)
     const { listFriend } = useContext(FriendContext)
     const [filteredFriend, setFilteredFriend] = useState<any[]>([])
 
@@ -26,6 +26,13 @@ const ChatList = ({ keyword }: { keyword: string }) => {
         setFilteredFriend(filterFriend)
     }, [keyword])
 
+    const handleChatClicked = (data: any) => {
+        if (userId === data.Id) {
+            return
+        }
+        onOpen(data)
+    }
+
     return (
         <div className="mt-3">
             <ul className="px-1 h-[calc(100vh-8rem)] overflow-y-scroll scrollbar-style">
@@ -34,7 +41,7 @@ const ChatList = ({ keyword }: { keyword: string }) => {
                         <li 
                             key={index}
                             className="flex justify-between items-start gap-x-3 px-2 py-3 rounded-md hover:bg-gray-700 cursor-pointer"
-                            onClick={() => onOpen(item)}
+                            onClick={() => handleChatClicked(item)}
                         >
                             <div className="w-10/12 sm:w-9/12 lg:w-10/12 flex gap-x-2 items-center">
                                 <div className="avatar">

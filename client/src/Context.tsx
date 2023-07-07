@@ -21,7 +21,16 @@ export const WebSocketContext = createContext({
 export const ChatListContext = createContext({
     onOpen: (data: any) => {},
     onClose: () => {},
-    allMessage: {},
+    userId: 0,
+    isSwitch: false
+})
+
+export const MessageContext = createContext({
+    onLoad: (to: number, cursor: number) => {},
+    allMessage: {
+        messages: [],
+        next_cursor: 0,
+    }
 })
 
 export const UserInfoContext = createContext({

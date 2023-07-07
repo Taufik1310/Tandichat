@@ -345,7 +345,7 @@ export const getMessages = async (token: string, to?: number, cursor?: number) =
     }
 
     const queryString = queryParams.length > 0 ? `?${queryParams.join('&')}` : ''
-    const url = `${BASE_API_URL}/message?to=${to}`
+    const url = `${BASE_API_URL}/message${queryString}`
 
     const headers = {
         "Content-Type": "application/json",

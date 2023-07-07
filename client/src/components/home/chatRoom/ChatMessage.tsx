@@ -1,23 +1,37 @@
-import React, { useContext, useEffect, useRef } from "react"
-import { ChatListContext, TokenContext, WebSocketContext } from "../../../Context"
-import { getMessages } from "../../../Rest"
+import React, { useContext, useEffect, useRef, useState } from "react"
+import { ChatListContext, MessageContext, TokenContext, WebSocketContext } from "../../../Context"
+import { IoIosArrowUp } from 'react-icons/io'
 
 const DEFAULT_BG = './assets/default-bg.png'
 
 const ChatMessage = ({ Id }: { Id: number }) => {
     const TOKEN = useContext(TokenContext)
     const { messages, onClear } = useContext(WebSocketContext)
-    const { allMessage }: any = useContext(ChatListContext)
-    const scrollRef = useRef(null)
-    // const allMessages = allMessage.message
+    const { allMessage, onLoad }: any = useContext(MessageContext)
+    const { isSwitch } = useContext(ChatListContext)
+    const bottomRef = useRef(null)
+    const topRef = useRef(null)
+    const [isLoad, setIsLoad] = useState<boolean>(false)
+
+    useEffect(() => {
+        setIsLoad(false)
+    }, [isSwitch])
 
     useEffect(() => {
         onClear()
-        scrollRef.current.scrollIntoView({ behavior: 'smooth' })
+        if (isLoad) {
+            topRef.current.scrollIntoView({ behavior: 'smooth' })
+        } else {
+            bottomRef.current.scrollIntoView({ behavior: 'smooth' })
+        }
     }, [allMessage])
 
     useEffect(() => {
-        scrollRef.current.scrollIntoView({ behavior: 'smooth' })
+        if (isLoad) {
+            topRef.current.scrollIntoView({ behavior: 'smooth' })
+        } else {
+            bottomRef.current.scrollIntoView({ behavior: 'smooth' })
+        }
     }, [messages])
 
     const getCurrentTime = () => {
@@ -38,25 +52,29 @@ const ChatMessage = ({ Id }: { Id: number }) => {
         return result
     }
 
-    // const handleLoadMessage = async (cursor: number) => {
-    //     const response = await getMessages(TOKEN, Id, cursor)
-    //     allMessages.push(response.data.message)
-    // }
+    const handleLoadMessage = async (cursor: number) => {
+        onLoad(Id, cursor)
+        setIsLoad(true)
+    }
 
     return (
         <div 
             className="bg-gray-800 object-cover h-full max-h-full overflow-x-hidden overflow-y-auto scrollbar-style ps-2 pe-1 md:ps-5 md:pe-3 py-5"
             style={{ backgroundImage: `url(${DEFAULT_BG})` }}
         >
-            <div className="text-blue-50 text-xs flex items-center justify-center m-auto">
+            <div ref={topRef}></div>
+            <div className={`text-blue-50 text-xs flex flex-col items-center justify-center mx-auto mb-12 ${allMessage.next_cursor === 0 ? 'hidden' : ''}`}>
+                <IoIosArrowUp />
                 <button 
-                    // onClick={() => handleLoadMessage(allMessage.next_cursor)}
-                    className="bg-gray-900 p-2 px-3 rounded-lg border border-gray-600"
-                >Muat Pesan Sebelumnya</button>
+                    onClick={() => handleLoadMessage(allMessage.next_cursor)}
+                    className="text-xs border border-blue-600 rounded-full px-3 p-1 font-semibold hover:bg-blue-600 flex flex-col items-center"
+                >
+                    <span>Muat Pesan Sebelumnya</span>
+                </button>
             </div>
             <ul className="mt-5">
-                { allMessage.message &&
-                    allMessage.message.sort((a: any, b: any) => {
+                { allMessage.messages &&
+                    allMessage.messages.sort((a: any, b: any) => {
                         const dateA = new Date(a.CreatedAt).getTime()
                         const dateB = new Date(b.CreatedAt).getTime()
                         return dateA - dateB
@@ -110,7 +128,7 @@ const ChatMessage = ({ Id }: { Id: number }) => {
                     ))
                 }
             </ul>
-            <div ref={scrollRef}></div>
+            <div ref={bottomRef}></div>
         </div>
     )
 }
