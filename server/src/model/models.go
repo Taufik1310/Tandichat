@@ -11,6 +11,14 @@ type User struct {
 	Password string `gorm:"type:varchar(100);"`
 	Avatar   string `gorm:"default:default.png"`
 	About    string `gorm:"default:Hello im using tandichat"`
+	Verified bool   `gorm:"default:false"`
+}
+
+// TODO Use Redis
+type VerificationCode struct {
+	gorm.Model
+	Email string `gorm:"unique"`
+	Code  string `gorm:"type:varchar(100);"`
 }
 
 // TODO Use Redis
@@ -65,7 +73,7 @@ type Message struct {
 }
 
 func Setup(db *gorm.DB) error {
-	err := db.AutoMigrate(&User{}, &Friend{}, &Room{}, &RoomParticipant{}, &Message{}, &Session{}, &WebsocketSessionCache{}, &BlockedUser{})
+	err := db.AutoMigrate(&User{}, &Friend{}, &Room{}, &RoomParticipant{}, &Message{}, &Session{}, &WebsocketSessionCache{}, &BlockedUser{}, &VerificationCode{})
 
 	if err != nil {
 		return err

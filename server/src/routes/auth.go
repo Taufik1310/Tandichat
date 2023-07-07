@@ -4,24 +4,27 @@ import (
 	"net/http"
 
 	"andiputraw/Tandichat/src/auth"
+	"andiputraw/Tandichat/src/config"
+	"andiputraw/Tandichat/src/database"
+	"andiputraw/Tandichat/src/log"
 
 	"github.com/gin-gonic/gin"
 )
 
 func Register(c *gin.Context) {
-	var requestData struct {
+	type requestData struct {
 		Email    string `json:"email" binding:"required"`
 		Username string `json:"username" binding:"required"`
 		Password string `json:"password" binding:"required"`
 	}
 
-	if err := c.ShouldBindJSON(&requestData); err != nil {
-		response := gin.H{"code": http.StatusBadRequest, "data": nil, "error": "invalid payload", "details": "Invalid request payload"}
-		c.JSON(http.StatusBadRequest, response)
+	body, err := bindJSON[requestData](c)
+
+	if err != nil {
 		return
 	}
 
-	err := auth.Register(requestData.Username, requestData.Email, requestData.Password)
+	err = auth.Register(body.Username, body.Email, body.Password)
 
 	if err != nil {
 		response := gin.H{"error": err.Error()}
@@ -30,21 +33,22 @@ func Register(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, gin.H{"code": 200})
+	log.Info("Created new account with email : ", body.Email)
 }
 
 func Login(c *gin.Context) {
-	var requestData struct {
+	type requestData struct {
 		Email    string `json:"Email" binding:"required"`
 		Password string `json:"Password" binding:"required"`
 	}
 
-	if err := c.ShouldBindJSON(&requestData); err != nil {
-		response := gin.H{"code": http.StatusBadRequest, "data": nil, "error": "Invalid payload", "details": "Invalid request payload"}
-		c.JSON(http.StatusBadRequest, response)
+	body, err := bindJSON[requestData](c)
+
+	if err != nil {
 		return
 	}
 
-	token, err := auth.Login(requestData.Email, requestData.Password)
+	token, err := auth.Login(body.Email, body.Password)
 
 	if err != nil {
 		response := gin.H{"code": http.StatusBadRequest, "data": nil, "error": "Failed to login", "details": err.Error()}
@@ -53,6 +57,8 @@ func Login(c *gin.Context) {
 	}
 	response := gin.H{"code": http.StatusOK, "data": gin.H{"Token": token}}
 	c.JSON(http.StatusOK, response)
+
+	log.Info("User with : ", body.Email, "Logged in")
 }
 
 func Logout(c *gin.Context) {
@@ -72,6 +78,60 @@ func Logout(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"code": 200})
+
+}
+
+func SendVerificationCode(c *gin.Context) {
+	type requestData struct {
+		Email string `json:"email" binding:"required"`
+	}
+
+	body, err := bindJSON[requestData](c)
+	if err != nil {
+		return
+	}
+
+	code, err := database.CreateVerifyAuthCode(body.Email)
+
+	if err != nil {
+		response := NewResponseError(400, "Failed create auth code", err.Error())
+		c.JSON(400, response)
+		return
+	}
+
+	data := EmailData{
+		URL:       config.Config.CLIENT_ORIGIN + "/api/verifyemail/" + code,
+		FirstName: body.Email,
+		Subject:   "Your account verification code",
+	}
+
+	go SendEmail(body.Email, &data)
+
+	c.JSON(200, gin.H{"code": 200, "message": "success"})
+
+	log.Info("User with : ", body.Email, "sended verification email")
+}
+
+func VerifyEmail(c *gin.Context) {
+	code := c.Param("code")
+
+	if code == "" {
+		response := NewResponseError(400, "Failed verify email", "code is not provided")
+		c.JSON(400, response)
+		return
+	}
+
+	err := database.VerifyAuthCode(code)
+
+	if err != nil {
+		response := NewResponseError(400, "Failed verify email", "code invalid")
+		c.JSON(400, response)
+
+		return
+	}
+
+	c.JSON(200, gin.H{"code": 200, "message": "success"})
+
 }
 
 func NewResponseError(statusCode int, whyError string, detail string) gin.H {
