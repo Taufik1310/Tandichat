@@ -70,3 +70,7 @@ Dari tulisan diatas. cara yang terbaik adalah dengan mengirimkan credentials lan
 ## Email Verification
 
 Email Verification berekerja dengan baik menggunakan mailtrap test. tetapi untuk kasus di dunia nyata menggunakan email yang sebenarnya, Belum kami coba
+
+## Unit Testing
+
+Unit testing (dan mungkin intergration testing) sangatlah berguna. sayangnya projek ini tidak melakukan testing. bagi orang yang melihat tulisan ini. TOLONG selalu test projek anda mau kecil ataupun besar
