@@ -9,12 +9,17 @@ const LOGO = './assets/logo2.png'
 
 const Main = () => {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
-    const token = localStorage.getItem('token')
+    const TOKEN = localStorage.getItem('token')
     const [webSocket, setWebSocket] = useState(null)
     const [messages, setMessages] = useState<any[]>([])
 
-    const fetchWebSocketAuth = async () => {
-        const response = await getWebSocketAuth(token)
+    const fetchWebSocketAuth = async (token?: string) => {
+        let response = null
+        if (token) {
+            response = await getWebSocketAuth(token)
+        } else {
+            response = await getWebSocketAuth(TOKEN)
+        }
         const wsAuthCode = response.data.websocketAuthCode
         const ws = new WebSocket(`ws://localhost:5050/ws/connect?auth=${wsAuthCode}`)
         setWebSocket(ws)
@@ -62,7 +67,7 @@ const Main = () => {
     }
 
     useEffect(() => {
-        if (token) {
+        if (TOKEN) {
             setIsLoggedIn(true)
             fetchWebSocketAuth()
         } else {
@@ -87,11 +92,12 @@ const Main = () => {
                     <title>Tandichat Web</title>
                 </Helmet>
                 <main>
-                    <TokenContext.Provider value={token}>
+                    <TokenContext.Provider value={TOKEN}>
                         <AuthContext.Provider value={{ 
                             onLogin: handleLogin, onLogout: handleLogout
                         }}>
                             <WebSocketContext.Provider value={{ 
+                                onConnect: fetchWebSocketAuth,
                                 onSend: handleSend,
                                 onClear: handleClearMessage,
                                 messages: messages

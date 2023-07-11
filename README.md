@@ -24,5 +24,3 @@ Server
   <img src="/img/215px-Go_Logo_Blue.svg.png" alt="React" style=" height: 50px; margin: 5px">
   <img src="/img/Postgresql_elephant.svg.png" alt="Webpack" style="height: 50px;  margin: 5px">
 </div>
-
-

@@ -42,6 +42,18 @@ const AlertInfo = ({ onClose, status, type, email }: {
                         </div>
                         <p className='text-sm'>
                             {
+                                status === 'successRegister' ?
+                                `Verifikasi telah dikirimkan ke alamat email ${email}. Silahkan cek email kamu`
+                                :
+                                status === 'failedRegister' ?
+                                `Alamat email ${email} sudah tersedia`
+                                :
+                                status === 'failedLogin' ?
+                                `Password Salah / Email belum diverifikasi`
+                                :
+                                status === 'successVerify' ?
+                                `Email kamu berhasil diverifikasi`
+                                :
                                 status === 'invalidExtensionAvatar' ?
                                 `Ekstensi file tidak valid. Hanya file PNG dan GIF yang diperbolehkan`
                                 :

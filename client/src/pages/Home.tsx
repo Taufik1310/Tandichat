@@ -2,8 +2,9 @@ import React, { useState, useContext, useEffect } from "react"
 import Navigation from "../components/home/navigation/Navigation"
 import ChatRoom from "../components/home/chatRoom/ChatRoom"
 import Intro from "../components/home/intro/Intro"
-import { ChatListContext, FriendContext, MessageContext, TokenContext, UserInfoContext } from "../Context"
+import { AlertContext, ChatListContext, FriendContext, MessageContext, TokenContext, UserInfoContext } from "../Context"
 import { getAllFriend, getMessages } from "../Rest"
+import AlertInfo from "../components/alert/AlertInfo"
 
 const Home = () => {
     const TOKEN = useContext(TokenContext)
@@ -18,6 +19,7 @@ const Home = () => {
     })
     const [userId, setUserId] = useState<number>(0)
     const [isChatSwitch, setIsChatSwitch] = useState<boolean>(true)
+    const [isAlertOpen, setIsAlertOpen] = useState(false)
 
     const fetchAllFriend =  async () => {
         const response  = await getAllFriend(TOKEN)
@@ -89,22 +91,27 @@ const Home = () => {
                             onBlockedUser: handleActionFriend,
                             listFriend: listFriend 
                         }}>
-                        <MessageContext.Provider value={{ 
-                            onLoad: handleLoadMessage,
-                            allMessage: messages
-                         }}>
-                                <div className="max-h-screen w-screen bg-black text-blue-50 overflow-hidden flex relative">
-                                    <section className={`fixed sm:relative bg-gray-800 h-screen w-screen sm:w-5/12 lg:w-4/12 sm:border-r-[1px] border-r-gray-600 ${isUserInfoOpen ? 'z-[70]' : 'z-50 sm:z-50'} `}>
-                                        <Navigation isUserInfoOpen={isUserInfoOpen} userData={userData} />
-                                    </section>
-                                    <section className={`fixed bg-gray-800 sm:relative h-screen w-screen sm:w-7/12 lg:w-8/12 ${isChatOpen ? 'z-[60] sm:z-40' : 'z-40'}`}>
-                                        { isChatOpen ?
-                                            <ChatRoom data={chatUserData}/>
-                                            :
-                                            <Intro />
-                                        }
-                                    </section>
-                                </div>
+                            <MessageContext.Provider value={{ 
+                                onLoad: handleLoadMessage,
+                                allMessage: messages
+                            }}>
+                                <AlertContext.Provider value={{ onLimitChar: () => setIsAlertOpen(true) }}>
+                                    <div className="max-h-screen w-screen bg-black text-blue-50 overflow-hidden flex relative">
+                                        <section className={`fixed sm:relative bg-gray-800 h-screen w-screen sm:w-5/12 lg:w-4/12 sm:border-r-[1px] border-r-gray-600 ${isUserInfoOpen ? 'z-[70]' : 'z-50 sm:z-50'} `}>
+                                            <Navigation isUserInfoOpen={isUserInfoOpen} userData={userData} />
+                                        </section>
+                                        <section className={`fixed bg-gray-800 sm:relative h-screen w-screen sm:w-7/12 lg:w-8/12 ${isChatOpen ? 'z-[60] sm:z-40' : 'z-40'}`}>
+                                            { isChatOpen ?
+                                                <ChatRoom data={chatUserData}/>
+                                                :
+                                                <Intro />
+                                            }
+                                        </section>
+                                    </div>
+                                    { isAlertOpen &&    
+                                        <AlertInfo status="maxLengthLimited" onClose={() => setIsAlertOpen(false)} />
+                                    }
+                                </AlertContext.Provider>
                             </MessageContext.Provider>
                         </FriendContext.Provider>
                 </UserInfoContext.Provider>

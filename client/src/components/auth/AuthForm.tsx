@@ -1,13 +1,14 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { FaEyeSlash, FaEye, FaInfoCircle } from 'react-icons/fa'
-import { register, login } from '../../Rest'
-import { AlertLogin, AlertRegister } from '../alert/Alert'
-import { AuthContext } from '../../Context'
+import { register, login, sendEmailVerify } from '../../Rest'
+import { AuthContext, WebSocketContext } from '../../Context'
 
 interface AuthFormProps {
     authType: string,
     authText: string,
-    setAuthType: Function,
+    onVerify: (email: string) => void,
+    onFailRegister: (email: string) => void,
+    onFailLogin: () => void,
 }
 
 interface IsValid {
@@ -16,10 +17,9 @@ interface IsValid {
     confirmPassword?: boolean,
 }
 
-const AuthForm = ({ authType, authText, setAuthType }: AuthFormProps) => {
+const AuthForm = ({ authType, authText, onVerify, onFailRegister, onFailLogin }: AuthFormProps) => {
     const { onLogin } = useContext(AuthContext)
-    const [registerCode, setRegisterCode] = useState<number>(0)
-    const [loginCode, setLoginCode] = useState<number>(0)
+    const { onConnect } = useContext(WebSocketContext)
     const [isShowPass, setIsShowPass] = useState<boolean>(false)
     const [email, setEmail] = useState<string>('')
     const [username, setUsername] = useState<string>('')
@@ -32,7 +32,6 @@ const AuthForm = ({ authType, authText, setAuthType }: AuthFormProps) => {
         confirmPassword: true,
     })
     const [isDisabledBtn, setIsDisabledBtn] = useState<boolean>(true)
-    
 
     useEffect(() => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -97,8 +96,6 @@ const AuthForm = ({ authType, authText, setAuthType }: AuthFormProps) => {
 
     useEffect(() => {
         clearForm()
-        setRegisterCode(0)
-        setLoginCode(0)
     }, [authType])
 
     const clearForm = () => {
@@ -110,27 +107,28 @@ const AuthForm = ({ authType, authText, setAuthType }: AuthFormProps) => {
 
     const handleRegister = async () => {
         const response = await register(email, username, password)
-        setRegisterCode(response)
-    
-        if (response === 200) {
-            clearForm()
-        } else {
+        if (response.status === 500) {
+            onFailRegister(email)
             setEmail('')
+            return
         }
+        sendEmailVerify(email)
+        onVerify(email)
+        clearForm()
     }
 
     const handleLogin = async () => {
         const response = await login(email, password)
-        setLoginCode(response.code)
-        
-        if (response.code === 200) {
-            clearForm()
-            const token = response.data.Token
-            localStorage.setItem('token', token)
-            onLogin()
-        } else {
+        if (response.code === 400) {
+            onFailLogin()
             setPassword('')
+            return
         }
+        clearForm()
+        const token = response.data.Token
+        localStorage.setItem('token', token)
+        onLogin()
+        onConnect(token)
     }
 
     const validateForm = (e: React.FormEvent<HTMLFormElement>) => {
@@ -146,8 +144,6 @@ const AuthForm = ({ authType, authText, setAuthType }: AuthFormProps) => {
     
     return (
         <form className="flex flex-col gap-8 mt-10" onSubmit={validateForm}>
-            {registerCode === 200 || registerCode === 500 ? <AlertRegister state={registerCode} /> : null}
-            {loginCode === 200 || loginCode === 400 ? <AlertLogin state={loginCode} /> : null}
             <div className='relative form-control'>
                 <input 
                     type="email" 

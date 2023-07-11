@@ -1,11 +1,10 @@
 import React, { useContext, useEffect, useRef, useState } from "react"
-import { ChatListContext, MessageContext, TokenContext, WebSocketContext } from "../../../Context"
+import { ChatListContext, MessageContext, WebSocketContext } from "../../../Context"
 import { IoIosArrowUp } from 'react-icons/io'
 
 const DEFAULT_BG = './assets/default-bg.png'
 
 const ChatMessage = ({ Id }: { Id: number }) => {
-    const TOKEN = useContext(TokenContext)
     const { messages, onClear } = useContext(WebSocketContext)
     const { allMessage, onLoad }: any = useContext(MessageContext)
     const { isSwitch } = useContext(ChatListContext)
@@ -59,7 +58,7 @@ const ChatMessage = ({ Id }: { Id: number }) => {
 
     return (
         <div 
-            className="bg-gray-800 object-cover h-full max-h-full overflow-x-hidden overflow-y-auto scrollbar-style ps-2 pe-1 md:ps-5 md:pe-3 py-5"
+            className="bg-gray-800 object-cover h-full max-h-full overflow-x-hidden overflow-y-auto scrollbar-style ps-2 pe-1 md:ps-5 md:pe-3 py-5 bg-cover bg-no-repeat"
             style={{ backgroundImage: `url(${DEFAULT_BG})` }}
         >
             <div ref={topRef}></div>

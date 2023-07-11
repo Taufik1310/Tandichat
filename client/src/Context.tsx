@@ -13,6 +13,7 @@ export const AuthContext = createContext<AuthContext>({
 export const TokenContext = createContext<string>('')
 
 export const WebSocketContext = createContext({
+    onConnect: (token: string) => {},
     onSend: (to: number, message: any) => {},
     onClear: () => {},
     messages: []
@@ -50,4 +51,9 @@ export const FriendContext = createContext<FriendContext>({
     onDeleteFriend: () => {},
     onBlockedUser: () => {},
     listFriend: []
+})
+
+
+export const AlertContext = createContext({
+    onLimitChar: () => {}
 })

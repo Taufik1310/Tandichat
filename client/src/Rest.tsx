@@ -11,10 +11,10 @@ export const register = async (email: string, username: string, password: string
             username,
             password
         })
-        return response.data.code
+        return response
     } catch (error) {
         if (error.response) {
-            return error.response.status
+            return error.response
         }
         throw error
     }
@@ -52,6 +52,31 @@ export const logout = async (token: string) => {
     }
 }
 
+export const sendEmailVerify = async (email: string) => {
+    try {
+        const response = await axios.post(`${BASE_API_URL}/verifyemail`, {
+            email: email
+        })
+        return response.data
+    } catch (error) {
+        if (error.response) {
+            return error.response.data
+        }
+        throw error
+    }
+}
+
+export const verifyEmail = async (code: string) => {
+    try {
+        const response = await axios.patch(`${BASE_API_URL}/verifyemail/${code}`)
+        return response.data
+    } catch (error) {
+        if (error.response) {
+            return error.response.data
+        }
+        throw error
+    }
+}
 
 export const getUserData = async (token: string, email?: string) => {
     const queryParams = new URLSearchParams({ email: email }).toString()

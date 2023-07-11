@@ -2,14 +2,13 @@ import React, { useContext, useState, useEffect } from "react"
 import { RxPaperPlane } from 'react-icons/rx'
 import { BiSmile } from 'react-icons/bi'
 import { GiPaperClip } from 'react-icons/gi'
-import { WebSocketContext } from "../../../Context"
-import AlertInfo from "../../alert/AlertInfo"
+import { AlertContext, WebSocketContext } from "../../../Context"
 
 const ChatMessageInput = ({ Id }: { Id: number  }) => {
-    const [message, setMessage] = useState<string>('')
     const { onSend } = useContext(WebSocketContext)
+    const { onLimitChar } = useContext(AlertContext)
+    const [message, setMessage] = useState<string>('')
     const [textareaHeight, setTextareaHeight] = useState('auto')
-    const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false)
 
     const handleSubmitedForm = (e: { preventDefault: () => void }) => {
         e.preventDefault()
@@ -32,7 +31,7 @@ const ChatMessageInput = ({ Id }: { Id: number  }) => {
         textarea.style.height = `${textarea.scrollHeight}px`
         setTextareaHeight(`${textarea.scrollHeight}px`)
         if (message.length > 800) {
-            setIsAlertOpen(true)
+            onLimitChar()
             const slicedMessage = message.slice(0, 800)
             setMessage(slicedMessage)
         }
@@ -66,9 +65,6 @@ const ChatMessageInput = ({ Id }: { Id: number  }) => {
                 </div>
             </form>
         </div>
-            {/* { isAlertOpen &&    
-                <AlertInfo status="maxLengthLimited" onClose={() => setIsAlertOpen(false)} />
-            } */}
         </>
     )
 }
