@@ -80,7 +80,7 @@ const ChatMessage = ({ Id }: { Id: number }) => {
                       }).map((message: any, index: any) => (
                         <li key={index} className={`chat text-sm ${ Id === message.UserID ? 'chat-start' : 'chat-end' }`}>
                             <div className={`chat-bubble ${ Id === message.UserID ? 'bg-gray-600' : 'bg-blue-600'} text-blue-50`}>
-                                { 
+                                { message.Content &&
                                     message.Content.split('\n').map((line: any, index: any) => (
                                         <p key={index} className="break-all">
                                             {line}
@@ -98,14 +98,15 @@ const ChatMessage = ({ Id }: { Id: number }) => {
                         </li>
                     ))
                 }
-                { messages.map((message, index) => (
+                { messages &&
+                    messages.map((message, index) => (
                         <li key={index} className={`chat ${ 
                             message.type === 0 && Id !== message.data.to ? 'hidden' :
                             message.type === 1 && Id !== message.data.from ? 'hidden' :
                             ''
                         } text-sm ${ Id !== message.data.from ? 'chat-end' : 'chat-start' }`}>
                             <div className={`chat-bubble ${ Id !== message.data.to ? 'bg-gray-600' : 'bg-blue-600'} text-blue-50`}>
-                                { 
+                                { message.data.message &&
                                     message.data.message.split('\n').map((line: any, index: any) => (
                                         <p key={index} className="break-all">
                                             {line}

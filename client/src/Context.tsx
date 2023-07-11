@@ -43,14 +43,19 @@ interface FriendContext {
     onAcceptFriend: Function,
     onDeleteFriend: Function,
     onBlockedUser: Function,
-    listFriend: any[]
+    listFriend: any[],
 }
 
 export const FriendContext = createContext<FriendContext>({
     onAcceptFriend: () => {},
     onDeleteFriend: () => {},
     onBlockedUser: () => {},
-    listFriend: []
+    listFriend: [],
+})
+
+export const FriendPendingContext = createContext({
+    friendPending: [],
+    onAction: () => {}
 })
 
 

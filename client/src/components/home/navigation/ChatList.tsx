@@ -24,7 +24,7 @@ const ChatList = ({ keyword }: { keyword: string }) => {
             return name.includes(key)
         })
         setFilteredFriend(filterFriend)
-    }, [keyword])
+    }, [keyword, listFriend])
 
     const handleChatClicked = (data: any) => {
         if (userId === data.Id) {

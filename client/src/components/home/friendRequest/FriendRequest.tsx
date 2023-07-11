@@ -4,8 +4,8 @@ import { BsPersonFillExclamation } from 'react-icons/bs'
 import { GoKebabHorizontal } from 'react-icons/go'
 import { AiOutlineCheck, AiOutlineClose } from 'react-icons/ai'
 import { CgBlock } from 'react-icons/cg'
-import { BASE_AVATAR_URL, acceptFriendRequest, blockUser, declineFriendRequest, getFriendPending } from '../../../Rest'
-import { FriendContext, TokenContext, UserInfoContext } from '../../../Context'
+import { BASE_AVATAR_URL, acceptFriendRequest, blockUser, declineFriendRequest } from '../../../Rest'
+import { FriendContext, FriendPendingContext, TokenContext, UserInfoContext } from '../../../Context'
 import AlertConfirm from '../../alert/AlertConfirm'
 import AlertInfo from '../../alert/AlertInfo'
 
@@ -13,18 +13,13 @@ const FriendRequest = ({ onClose }: { onClose: () => void }) => {
     const TOKEN = useContext(TokenContext)
     const { onClick } = useContext(UserInfoContext)
     const { onAcceptFriend } = useContext(FriendContext)
-    const [friendPending, setFriendPending] = useState([])
+    const { friendPending, onAction } = useContext(FriendPendingContext)
     const [isConfirmBlockOpen, setIsConfirmBlockOpen] = useState<boolean>(false)
     const [isAlertInfoOpen, setIsAlertInfoOpen] = useState({
         accept: false,
         decline: false,
     })
     const [userId, setUserId] = useState<number>(0)
-    
-    const fetchFriendPending = async () => {
-        const response = await getFriendPending(TOKEN)
-        setFriendPending(response.data.received)
-    }
 
     const handleAcceptedBtn = async (id: number) => {
         const response = await acceptFriendRequest(TOKEN, id)
@@ -33,7 +28,7 @@ const FriendRequest = ({ onClose }: { onClose: () => void }) => {
                 ...isAlertInfoOpen,
                 accept: true
             })
-            fetchFriendPending()
+            onAction()
             onAcceptFriend()
         }
     }
@@ -45,7 +40,7 @@ const FriendRequest = ({ onClose }: { onClose: () => void }) => {
                 ...isAlertInfoOpen,
                 decline: true
             })
-            fetchFriendPending()
+            onAction()
         }
     }
 
@@ -66,13 +61,9 @@ const FriendRequest = ({ onClose }: { onClose: () => void }) => {
         setIsConfirmBlockOpen(false)
         const response = await blockUser(TOKEN, userId)
         if (response) {
-            fetchFriendPending()
+            onAction()
         }
     }
-
-    useEffect(() => {
-        fetchFriendPending()
-    }, [])
 
     return (
         <>
