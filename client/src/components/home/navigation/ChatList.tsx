@@ -62,16 +62,12 @@ const ChatList = ({ keyword }: { keyword: string }) => {
                             </div>
                             <div className="text-end">
                                 <div>
-                                    {/* <time className={`text-[10px] ${item.unreadChat.length === 0 ? 'text-gray-400' : 'text-blue-600 fw-bold'}`}>{item.lastDate}</time> */}
                                     <time className={`text-[10px] text-gray-400`}>
                                         {
                                             getCurrentDate()
                                         }
                                     </time>
                                 </div>
-                                {/* {item.unreadChat.length !== 0 && 
-                                    <span className="badge bg-blue-600 text-slate-50 border-0 text-xs">{item.unreadChat.length}</span>
-                                } */}
                             </div>
                         </li>
                     ))

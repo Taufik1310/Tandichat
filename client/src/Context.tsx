@@ -55,5 +55,7 @@ export const FriendContext = createContext<FriendContext>({
 
 
 export const AlertContext = createContext({
-    onLimitChar: () => {}
+    onLimitChar: () => {},
+    onDeleteFriend: () => {},
+    onBlockUser: () => {},
 })

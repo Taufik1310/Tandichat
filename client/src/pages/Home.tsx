@@ -3,8 +3,10 @@ import Navigation from "../components/home/navigation/Navigation"
 import ChatRoom from "../components/home/chatRoom/ChatRoom"
 import Intro from "../components/home/intro/Intro"
 import { AlertContext, ChatListContext, FriendContext, MessageContext, TokenContext, UserInfoContext } from "../Context"
-import { getAllFriend, getMessages } from "../Rest"
+import { blockUser, deleteFriend, getAllFriend, getMessages } from "../Rest"
 import AlertInfo from "../components/alert/AlertInfo"
+import AlertConfirm from "../components/alert/AlertConfirm"
+import { useNavigate } from "react-router-dom"
 
 const Home = () => {
     const TOKEN = useContext(TokenContext)
@@ -19,7 +21,11 @@ const Home = () => {
     })
     const [userId, setUserId] = useState<number>(0)
     const [isChatSwitch, setIsChatSwitch] = useState<boolean>(true)
-    const [isAlertOpen, setIsAlertOpen] = useState(false)
+    const [isAlertOpen, setIsAlertOpen] = useState({
+        limitChar: false,
+        deleteFriend: false,
+        blockUser: false
+    })
 
     const fetchAllFriend =  async () => {
         const response  = await getAllFriend(TOKEN)
@@ -59,8 +65,9 @@ const Home = () => {
 
     const fetchAllMessage = async (to: number) => {
         const response = await getMessages(TOKEN, to)
+        const message = response.data.message
         setMessages({
-            messages: [...response.data.message],
+            messages: message === null ? [] : [...response.data.message],
             next_cursor: response.data.next_cursor
         })
     }
@@ -71,6 +78,60 @@ const Home = () => {
             messages: [...prevState.messages, ...response.data.message],
             next_cursor: response.data.next_cursor
         }))
+    }
+
+    const onLimitChar = () => {
+        setIsAlertOpen((prevState) => ({
+            ...prevState,
+            limitChar: true
+        }))
+    }
+
+    const onDeleteFriend = () => {
+        setIsAlertOpen((prevState) => ({
+            ...prevState,
+            deleteFriend: true
+        }))
+    }
+
+    const onBlockUser = () => {
+        setIsAlertOpen((prevState) => ({
+            ...prevState,
+            blockUser: true
+        }))
+    }
+
+    const handleAlertClosed = () => {
+        setIsAlertOpen({
+            limitChar: false,
+            deleteFriend: false,
+            blockUser: false
+        })
+    }
+
+    const handleDeleteConfirmed = async () => {
+        setIsAlertOpen((prevState) => ({
+            ...prevState,
+            deleteFriend: false
+        }))
+        const response = await deleteFriend(TOKEN, userId)
+        if (response) {
+            handleClosedChat()
+            fetchAllFriend()
+            window.location.reload()
+        }
+    }
+
+    const handleBlockConfirmed = async () => {
+        setIsAlertOpen((prevState) => ({
+            ...prevState,
+            blockUser: false
+        }))
+        const response = await blockUser(TOKEN, userId)
+        if (response) {
+            handleClosedChat()
+            fetchAllFriend()
+        }
     }
 
     return (
@@ -95,7 +156,11 @@ const Home = () => {
                                 onLoad: handleLoadMessage,
                                 allMessage: messages
                             }}>
-                                <AlertContext.Provider value={{ onLimitChar: () => setIsAlertOpen(true) }}>
+                                <AlertContext.Provider value={{ 
+                                    onLimitChar: onLimitChar,
+                                    onDeleteFriend: onDeleteFriend,
+                                    onBlockUser: onBlockUser 
+                                }}>
                                     <div className="max-h-screen w-screen bg-black text-blue-50 overflow-hidden flex relative">
                                         <section className={`fixed sm:relative bg-gray-800 h-screen w-screen sm:w-5/12 lg:w-4/12 sm:border-r-[1px] border-r-gray-600 ${isUserInfoOpen ? 'z-[70]' : 'z-50 sm:z-50'} `}>
                                             <Navigation isUserInfoOpen={isUserInfoOpen} userData={userData} />
@@ -108,8 +173,14 @@ const Home = () => {
                                             }
                                         </section>
                                     </div>
-                                    { isAlertOpen &&    
-                                        <AlertInfo status="maxLengthLimited" onClose={() => setIsAlertOpen(false)} />
+                                    { isAlertOpen.limitChar &&    
+                                        <AlertInfo status="maxLengthLimited" onClose={handleAlertClosed} />
+                                    }
+                                    { isAlertOpen.deleteFriend &&    
+                                        <AlertConfirm status="deleteFriend" onClose={handleAlertClosed} onConfirm={handleDeleteConfirmed} />
+                                    }
+                                    { isAlertOpen.blockUser &&    
+                                        <AlertConfirm status="block" onClose={handleAlertClosed} onConfirm={handleBlockConfirmed} />
                                     }
                                 </AlertContext.Provider>
                             </MessageContext.Provider>

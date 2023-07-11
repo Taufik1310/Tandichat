@@ -1,55 +1,19 @@
-import React, { useContext, useState } from "react"
-import { BASE_AVATAR_URL, blockUser, deleteFriend } from "../../../Rest"
-import { ChatListContext, FriendContext, TokenContext, UserInfoContext } from "../../../Context"
+import React, { useContext } from "react"
+import { BASE_AVATAR_URL } from "../../../Rest"
+import { AlertContext, ChatListContext, TokenContext, UserInfoContext } from "../../../Context"
 import { GoKebabVertical } from 'react-icons/go'
 import { CgBlock, CgTrashEmpty, CgProfile } from 'react-icons/cg'
 import { BiArrowBack } from 'react-icons/bi'
-import AlertConfirm from "../../alert/AlertConfirm"
 
 const ChatRoomBar = ({ data }: { data: any }) => {
     const TOKEN = useContext(TokenContext)
     const { onClick } = useContext(UserInfoContext)
     const { onClose } = useContext(ChatListContext)
-    const { onDeleteFriend, onBlockedUser } = useContext(FriendContext)
-    const { Id, Avatar, Username } = data
-    const [isConfirmOpen, setIsConfirmOpen] = useState({
-        deleteFriend: false,
-        block: false,
-    })
-
-    const handleAlertClosed = () => {
-        setIsConfirmOpen({
-            deleteFriend: false,
-            block: false
-        })
-    }
+    const { onDeleteFriend: onDelete, onBlockUser } = useContext(AlertContext)
+    const { Avatar, Username } = data
 
     const handleClickedUser = (data: any) => {
         onClick(data)
-    }
-
-    const handleDeleteConfirmed = async () => {
-        setIsConfirmOpen({
-            ...isConfirmOpen,
-            deleteFriend: false
-        })
-        const response = await deleteFriend(TOKEN, Id)
-        if (response) {
-            onClose()
-            onDeleteFriend()
-        }
-    }
-
-    const handleBlockConfirmed = async () => {
-        setIsConfirmOpen({
-            ...isConfirmOpen,
-            block: false
-        })
-        const response = await blockUser(TOKEN, Id)
-        if (response) {
-            onClose()
-            onBlockedUser()
-        }
     }
 
     return (
@@ -81,10 +45,7 @@ const ChatRoomBar = ({ data }: { data: any }) => {
                             </div>
                         </li>
                         <li 
-                            onClick={() => setIsConfirmOpen({
-                                ...isConfirmOpen,
-                                deleteFriend: true
-                            })}
+                            onClick={onDelete}
                         >
                             <div>
                                 <CgTrashEmpty />
@@ -92,10 +53,7 @@ const ChatRoomBar = ({ data }: { data: any }) => {
                             </div>
                         </li>
                         <li 
-                            onClick={() => setIsConfirmOpen({
-                                ...isConfirmOpen,
-                                block: true
-                            })}
+                            onClick={onBlockUser}
                         >
                             <div className="text-red-400">
                                 <CgBlock />
@@ -105,12 +63,6 @@ const ChatRoomBar = ({ data }: { data: any }) => {
                     </ul>
                 </details>
             </div>
-            { isConfirmOpen.deleteFriend &&
-                <AlertConfirm onClose={handleAlertClosed} onConfirm={handleDeleteConfirmed} status="deleteFriend" />
-            }
-            { isConfirmOpen.block &&
-                <AlertConfirm onClose={handleAlertClosed} onConfirm={handleBlockConfirmed} status="block" />
-            }
         </>
     )
 }
