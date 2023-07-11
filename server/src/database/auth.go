@@ -45,7 +45,7 @@ func VerifyAuthCode(code string) error {
 	err := DB.Transaction(func(tx *gorm.DB) error {
 		var verificationCode model.VerificationCode
 
-		if err := tx.First(&verificationCode).Where("code = ?", verifyCode).Error; err != nil {
+		if err := tx.Where("code = ?", verifyCode).First(&verificationCode).Error; err != nil {
 			return err
 		}
 

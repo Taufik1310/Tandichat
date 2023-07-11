@@ -9,6 +9,7 @@ import (
 
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
 type JWTStructure struct {
@@ -17,6 +18,16 @@ type JWTStructure struct {
 	Email     string `json:"email"`
 	jwt.RegisteredClaims
 }
+
+var (
+	errUserNotFound      = errors.New("0 error: User Not Found")
+	errPasswordNotMatch  = errors.New("1 error: Password not match")
+	errNotVerified       = errors.New("2 error: User is not verified")
+	errSessionNotFound   = errors.New("3 error: Session Not Found")
+	errAlreadyRegistered = errors.New("4 error: Already Registered ")
+	errSignJWTFail       = errors.New("69 error: Sign JWT Fail")
+	errFailParseJWT      = errors.New("70 error: Failed To Parse JWT")
+)
 
 func Register(username string, email string, password string) error {
 
@@ -33,7 +44,12 @@ func Register(username string, email string, password string) error {
 	}
 
 	if err := database.InsertUser(&user); err != nil {
-		return err
+
+		if errors.Is(err, gorm.ErrDuplicatedKey) {
+			return errAlreadyRegistered
+		} else {
+			return err
+		}
 	}
 
 	return nil
@@ -44,16 +60,20 @@ func Login(email string, password string) (string, error) {
 	var user model.User
 	database.DB.Where(&model.User{Email: email}).First(&user)
 
+	if user.ID == 0 {
+		return "", errUserNotFound
+	}
+
 	if config.Config.IS_EMAIL_VERIFICATION {
 		if !user.Verified {
-			return "", errors.New("error: User is not verified")
+			return "", errNotVerified
 		}
 	}
 
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 
 	if err != nil {
-		return "", errors.New("error: Password does not match")
+		return "", errPasswordNotMatch
 	}
 
 	sessionID, err := database.CreateSession(user.ID)
@@ -71,7 +91,7 @@ func Login(email string, password string) (string, error) {
 	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET_KEY")))
 
 	if err != nil {
-		return "", errors.New("error: Failed to sign JWT")
+		return "", errSignJWTFail
 	}
 
 	return tokenString, nil
@@ -91,7 +111,7 @@ func Logout(token string) error {
 
 		return database.DeleteSession(claims.SessionID)
 	} else {
-		return errors.New("error: Failed to parse JWT")
+		return errFailParseJWT
 	}
 
 }
@@ -109,7 +129,7 @@ func ParseJWT(token string) (*JWTStructure, error) {
 	if claims, ok := result.Claims.(*JWTStructure); ok && result.Valid {
 		return claims, nil
 	} else {
-		return nil, errors.New("error: Failed to parse JWT")
+		return nil, errFailParseJWT
 	}
 
 }
@@ -122,7 +142,7 @@ func IsConnectedUserIsValid(token string) (*JWTStructure, error) {
 	}
 
 	if !database.IsSessionExist(claims.SessionID) {
-		return nil, errors.New("error: Session not found")
+		return nil, errSessionNotFound
 	}
 
 	return claims, nil
