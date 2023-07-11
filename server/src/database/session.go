@@ -10,7 +10,7 @@ func CreateSession(userID uint) (uint, error) {
 		UserID: userID,
 	}
 
-	if err := DB.Create(session).Error; err != nil {
+	if err := DB.Create(&session).Error; err != nil {
 		return 0, err
 	}
 
