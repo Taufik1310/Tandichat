@@ -1,5 +1,5 @@
 #!/bin/bash
 
-cd ~/Public/code/project/Tandichat-docs/docs
+cd ~/project/Tandichat-docs/docs
 
 code .

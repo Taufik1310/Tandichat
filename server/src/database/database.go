@@ -21,9 +21,9 @@ func Connect(dbms string) error {
 	var err error
 
 	if dbms == "postgres" {
-		db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+		db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{TranslateError: true})
 	} else if dbms == "mysql" {
-		db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+		db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{TranslateError: true})
 
 	} else {
 		fmt.Println("Error: Database provider not supported")

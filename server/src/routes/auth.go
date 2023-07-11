@@ -27,7 +27,9 @@ func Register(c *gin.Context) {
 	err = auth.Register(body.Username, body.Email, body.Password)
 
 	if err != nil {
-		response := gin.H{"error": err.Error()}
+
+		response := gin.H{"error": err.Error(), "data": nil, "status": 500}
+
 		c.JSON(http.StatusInternalServerError, response)
 		return
 	}
