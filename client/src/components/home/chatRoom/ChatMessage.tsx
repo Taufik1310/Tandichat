@@ -1,16 +1,18 @@
 import React, { useContext, useEffect, useRef, useState } from "react"
 import { ChatListContext, MessageContext, WebSocketContext } from "../../../Context"
-import { IoIosArrowUp } from 'react-icons/io'
+import { IoIosArrowUp, IoIosArrowRoundDown } from 'react-icons/io'
 
 const DEFAULT_BG = './assets/default-bg.png'
 
 const ChatMessage = ({ Id }: { Id: number }) => {
-    const { messages, onClear } = useContext(WebSocketContext)
+    const { messages, onClear }: any = useContext(WebSocketContext)
     const { allMessage, onLoad }: any = useContext(MessageContext)
     const { isSwitch } = useContext(ChatListContext)
+    const [isLoad, setIsLoad] = useState<boolean>(false)
+    const [showScrollButton, setShowScrollButton] = useState<boolean>(false)
     const bottomRef = useRef(null)
     const topRef = useRef(null)
-    const [isLoad, setIsLoad] = useState<boolean>(false)
+    const clientRef = useRef(null)
 
     useEffect(() => {
         setIsLoad(false)
@@ -19,17 +21,17 @@ const ChatMessage = ({ Id }: { Id: number }) => {
     useEffect(() => {
         onClear()
         if (isLoad) {
-            topRef.current.scrollIntoView({ behavior: 'smooth' })
+            scrollToTop()
         } else {
-            bottomRef.current.scrollIntoView({ behavior: 'smooth' })
+            scrollToDown()
         }
     }, [allMessage])
 
     useEffect(() => {
         if (isLoad) {
-            topRef.current.scrollIntoView({ behavior: 'smooth' })
-        } else {
-            bottomRef.current.scrollIntoView({ behavior: 'smooth' })
+            scrollToTop()
+        } else if (messages.length > 0 && messages[messages.length - 1].type === 0) {
+            scrollToDown()
         }
     }, [messages])
 
@@ -56,9 +58,40 @@ const ChatMessage = ({ Id }: { Id: number }) => {
         setIsLoad(true)
     }
 
+    const scrollToDown = () => {
+        bottomRef.current.scrollIntoView({ behavior: 'smooth' })
+    }
+
+    const scrollToTop = () => {
+        topRef.current.scrollIntoView({ behavior: 'smooth' })
+    }
+
+    const handleScroll = () => {
+        const scrollTop = clientRef.current.scrollTop
+        const scrollHeight = clientRef.current.scrollHeight
+        const clientHeight = clientRef.current.clientHeight
+
+        if (scrollTop + clientHeight >= scrollHeight - 10) {
+            setShowScrollButton(false)
+        } else {
+            setShowScrollButton(true)
+        }
+    }
+
+    useEffect(() => {
+        handleScroll()
+        
+        clientRef.current.addEventListener('scroll', handleScroll)
+        
+        return () => {
+          clientRef.current.removeEventListener('scroll', handleScroll)
+        }
+      }, [])
+
     return (
         <div 
-            className="bg-gray-800 object-cover h-full max-h-full overflow-x-hidden overflow-y-auto scrollbar-style ps-2 pe-1 md:ps-5 md:pe-3 py-5 bg-cover bg-no-repeat"
+            ref={clientRef}
+            className="bg-gray-800 object-cover h-full max-h-full overflow-x-hidden overflow-y-auto scrollbar-style ps-2 pe-1 md:ps-5 md:pe-3 py-5 bg-cover bg-no-repeat relative"
             style={{ backgroundImage: `url(${DEFAULT_BG})` }}
         >
             <div ref={topRef}></div>
@@ -99,7 +132,7 @@ const ChatMessage = ({ Id }: { Id: number }) => {
                     ))
                 }
                 { messages &&
-                    messages.map((message, index) => (
+                    messages.map((message: any, index: any) => (
                         <li key={index} className={`chat ${ 
                             message.type === 0 && Id !== message.data.to ? 'hidden' :
                             message.type === 1 && Id !== message.data.from ? 'hidden' :
@@ -128,6 +161,14 @@ const ChatMessage = ({ Id }: { Id: number }) => {
                     ))
                 }
             </ul>
+            { showScrollButton && (
+                <button 
+                    onClick={scrollToDown}
+                    className={`fixed end-5 bottom-20 bg-gray-700 text-blue-50 rounded-full p-2`}
+                >
+                    <IoIosArrowRoundDown size={26} />
+                </button>
+            )}
             <div ref={bottomRef}></div>
         </div>
     )

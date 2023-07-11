@@ -46,7 +46,7 @@ const AlertInfo = ({ onClose, status, type, email }: {
                                 `Verifikasi telah dikirimkan ke alamat email ${email}. Silahkan cek email kamu`
                                 :
                                 status === 'failedRegister' ?
-                                `Alamat email ${email} sudah tersedia`
+                                `Alamat email ${email} sudah terdaftar`
                                 :
                                 status === 'failedLogin' ?
                                 `Password Salah / Email belum diverifikasi`
