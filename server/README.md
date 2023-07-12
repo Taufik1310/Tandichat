@@ -74,3 +74,7 @@ Email Verification berekerja dengan baik menggunakan mailtrap test. tetapi untuk
 ## Unit Testing
 
 Unit testing (dan mungkin intergration testing) sangatlah berguna. sayangnya projek ini tidak melakukan testing. bagi orang yang melihat tulisan ini. TOLONG selalu test projek anda mau kecil ataupun besar
+
+## HTTP Code
+
+Hasil kembalian HTTP Code tidak sesuai dengan semantic. tidak peduli itu salah user atau server, kembaliannya pasti 500 jika ada error di db misalnya (salah input kah atau sejenisnya). error handling seharusnya diatasi di db lalu di filter di routes
