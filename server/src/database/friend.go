@@ -128,6 +128,23 @@ func RequestAddFriend(userid uint, friendid uint) error {
 		return errors.New("error : User not found")
 	}
 
+	var friend_buff model.Friend
+
+	if err := DB.Where("user_id = ? AND friend_id = ?", friendid, userid).First(&friend_buff).Error; err != nil {
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			return err
+		}
+	}
+
+	if friend_buff.ID != 0 {
+		if friend_buff.Status == "pending" {
+			err := AcceptFriendRequest(userid, friendid)
+			return err
+		} else if friend_buff.Status == "accepted" {
+			return errors.New("error: Already friend")
+		}
+	}
+
 	if err := DB.Create(&friend).Error; err != nil {
 		return err
 	}
