@@ -19,7 +19,9 @@ const Auth = () => {
     const [isAlertOpen, setIsAlertOpen] = useState({
         successRegister: false,
         failedRegister: false,
-        failedLogin: false
+        passwordNotMatch: false,
+        notVerify: false,
+        userNotFound: false
     })
     const [email, setEmail] = useState<string>('')
 
@@ -39,18 +41,36 @@ const Auth = () => {
         setEmail(email)
     }
 
-    const handleFailedLogin = () => {
+    const handlePasswordNotMatch = () => {
         setIsAlertOpen((prevIsAlertOpen) => ({
             ...prevIsAlertOpen,
-            failedLogin: true
+            passwordNotMatch: true
         }))
+    }
+
+    const handleNotVerify = (email: string) => {
+        setIsAlertOpen((prevIsAlertOpen) => ({
+            ...prevIsAlertOpen,
+            notVerify: true
+        }))
+        setEmail(email)
+    }
+
+    const handleUserNotFound = (email: string) => {
+        setIsAlertOpen((prevIsAlertOpen) => ({
+            ...prevIsAlertOpen,
+            userNotFound: true
+        }))
+        setEmail(email)
     }
 
     const handleCloseAlert = () => {
         setIsAlertOpen({
             successRegister: false,
             failedRegister: false,
-            failedLogin: false
+            passwordNotMatch: false,
+            notVerify: false,
+            userNotFound: false
         })
     }
 
@@ -59,7 +79,15 @@ const Auth = () => {
             <div className="flex flex-col items-center">
                 <AuthHeader authText={authType.text} logo={LOGO}/>
                 <SwitchAuthType setAuthType={setAuthType} authType={authType.type} authText={authType.text} />
-                <AuthForm authText={authType.text} authType={authType.type} onVerify={handleVerify} onFailRegister={handleFailedRegister} onFailLogin={handleFailedLogin} />
+                <AuthForm 
+                    authText={authType.text} 
+                    authType={authType.type} 
+                    onVerify={handleVerify} 
+                    onFailRegister={handleFailedRegister} 
+                    onPasswordNotMatch={handlePasswordNotMatch}
+                    onNotVerify={handleNotVerify}
+                    onUserNotFound={handleUserNotFound}
+                />
             </div>
             { isAlertOpen.successRegister &&    
                 <AlertInfo type="success" status="successRegister" email={email} onClose={handleCloseAlert} />
@@ -67,8 +95,14 @@ const Auth = () => {
             { isAlertOpen.failedRegister &&    
                 <AlertInfo type="fail" status="failedRegister" email={email} onClose={handleCloseAlert} />
             }
-            { isAlertOpen.failedLogin &&    
-                <AlertInfo type="fail" status="failedLogin" onClose={handleCloseAlert} />
+            { isAlertOpen.passwordNotMatch &&    
+                <AlertInfo type="fail" status="passwordNotMatch" onClose={handleCloseAlert} />
+            }
+            { isAlertOpen.notVerify &&    
+                <AlertInfo type="fail" status="notVerify" email={email} onClose={handleCloseAlert}  />
+            }
+            { isAlertOpen.userNotFound &&    
+                <AlertInfo type="fail" status="userNotFound" email={email} onClose={handleCloseAlert}  />
             }
         </div> 
     )

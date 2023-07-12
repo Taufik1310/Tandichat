@@ -11,6 +11,7 @@ const AddFriendInput = ({ onSubmit }: { onSubmit: () => void }) => {
     const [isAlertDuplicateOpen, setIsAlertDuplicateOpen] = useState<boolean>(false)
     const [isAlertYourselfOpen, setIsAlertYourselfOpen] = useState<boolean>(false)
     const [isAlertNotFoundOpen, setIsAlertNotFoundOpen] = useState<boolean>(false)
+    const [isAlertAlreadyOpen, setIsAlertAlreadyOpen] = useState<boolean>(false)
 
     const handleSubmitForm = async (e: { preventDefault: () => void }) => {
         e.preventDefault()
@@ -21,7 +22,11 @@ const AddFriendInput = ({ onSubmit }: { onSubmit: () => void }) => {
         }
         const { Id } = await userDataResponse.data
         const friendRequestResponse = await addFriendRequest(TOKEN, Id)
-        if (friendRequestResponse.code === 500 && friendRequestResponse.details.includes("Duplicate") ) {
+        if (friendRequestResponse.code === 500 && friendRequestResponse.details.includes("Already") ) {
+            setIsAlertAlreadyOpen(true)
+            return
+        }
+        if (friendRequestResponse.code === 500 && friendRequestResponse.details.includes("duplicated") ) {
             setIsAlertDuplicateOpen(true)
             return
         }
@@ -74,6 +79,9 @@ const AddFriendInput = ({ onSubmit }: { onSubmit: () => void }) => {
             }
             { isAlertNotFoundOpen &&    
                 <AlertInfo type="fail" status="userNotFound" email={email} onClose={() => setIsAlertNotFoundOpen(false)} />
+            }
+            { isAlertAlreadyOpen &&    
+                <AlertInfo type="fail" status="alreadyFriend" email={email} onClose={() => setIsAlertAlreadyOpen(false)} />
             }
         </form>
     )

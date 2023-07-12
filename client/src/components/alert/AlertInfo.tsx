@@ -48,8 +48,11 @@ const AlertInfo = ({ onClose, status, type, email }: {
                                 status === 'failedRegister' ?
                                 `Alamat email ${email} sudah terdaftar`
                                 :
-                                status === 'failedLogin' ?
-                                `Password Salah / Email belum diverifikasi`
+                                status === 'passwordNotMatch' ?
+                                `Password Salah`
+                                :
+                                status === 'notVerify' ?
+                                `Akun kamu belum diverifikasi. Verifikasi telah dikirimkan ke alamat email ${email}. Silahkan cek email kamu`
                                 :
                                 status === 'successVerify' ?
                                 `Email kamu berhasil diverifikasi`
@@ -60,6 +63,9 @@ const AlertInfo = ({ onClose, status, type, email }: {
                                 status === 'successFriendRequest' ?
                                 `Berhasil mengajukan pertemanan`
                                 :
+                                status === 'alreadyFriend' ?
+                                `Kamu sudah berteman dengan ${email}`
+                                :
                                 status === 'duplicateFriendRequest' ?
                                 `Kamu sudah mengajukan pertemanan pada ${email}`
                                 :
@@ -67,7 +73,7 @@ const AlertInfo = ({ onClose, status, type, email }: {
                                 `Tidak dapat mengajukan pertemanan pada diri sendiri`
                                 :
                                 status === 'userNotFound' ?
-                                `Tidak ditemukan pengguna dengan email: ${email}`
+                                `Tidak ditemukan alamat email: ${email}`
                                 :
                                 status === 'cancelFriendRequest' ?
                                 `Permintaan pertemanan dibatalkan`

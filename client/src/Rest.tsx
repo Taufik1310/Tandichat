@@ -11,10 +11,10 @@ export const register = async (email: string, username: string, password: string
             username,
             password
         })
-        return response
+        return response.data
     } catch (error) {
         if (error.response) {
-            return error.response
+            return error.response.data
         }
         throw error
     }

@@ -43,8 +43,8 @@ const AddFriendPending = ({ isSubmitForm, onSubmit }: {
                     :
                     <ul>
                         { friendPending && 
-                            friendPending.map(item => (
-                                <li className="flex justify-between items-start gap-x-3 px-2 py-3 rounded-md hover:bg-gray-700 cursor-pointer">
+                            friendPending.map((item, index) => (
+                                <li key={index} className="flex justify-between items-start gap-x-3 px-2 py-3 rounded-md hover:bg-gray-700 cursor-pointer">
                                     <div 
                                         className="w-9/12 sm:w-8/12 lg:w-9/12 flex gap-x-2 items-center"
                                         onClick={() => onClick(item)}

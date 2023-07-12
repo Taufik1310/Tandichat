@@ -8,7 +8,9 @@ interface AuthFormProps {
     authText: string,
     onVerify: (email: string) => void,
     onFailRegister: (email: string) => void,
-    onFailLogin: () => void,
+    onPasswordNotMatch: () => void,
+    onNotVerify: (email: string) => void,
+    onUserNotFound: (email: string) => void
 }
 
 interface IsValid {
@@ -17,7 +19,7 @@ interface IsValid {
     confirmPassword?: boolean,
 }
 
-const AuthForm = ({ authType, authText, onVerify, onFailRegister, onFailLogin }: AuthFormProps) => {
+const AuthForm = ({ authType, authText, onVerify, onFailRegister, onPasswordNotMatch, onNotVerify, onUserNotFound }: AuthFormProps) => {
     const { onLogin } = useContext(AuthContext)
     const { onConnect } = useContext(WebSocketContext)
     const [isShowPass, setIsShowPass] = useState<boolean>(false)
@@ -107,7 +109,8 @@ const AuthForm = ({ authType, authText, onVerify, onFailRegister, onFailLogin }:
 
     const handleRegister = async () => {
         const response = await register(email, username, password)
-        if (response.status === 500) {
+        const responseCode = response.status && response.status === 500 ? parseInt(response.error.replace(/\D/g, "")) : response.code
+        if (responseCode === 4) {
             onFailRegister(email)
             setEmail('')
             return
@@ -119,9 +122,20 @@ const AuthForm = ({ authType, authText, onVerify, onFailRegister, onFailLogin }:
 
     const handleLogin = async () => {
         const response = await login(email, password)
-        if (response.code === 400) {
-            onFailLogin()
+        const responseCode = response.code === 400 ? parseInt(response.details.replace(/\D/g, "")) : response.code
+        if (responseCode === 0) {
+            onUserNotFound(email)
+            setEmail('')
+            return
+        }
+        if (responseCode === 1) {
+            onPasswordNotMatch()
             setPassword('')
+            return
+        }
+        if (responseCode === 2) {
+            onNotVerify(email)
+            sendEmailVerify(email)
             return
         }
         clearForm()
@@ -156,12 +170,12 @@ const AuthForm = ({ authType, authText, onVerify, onFailRegister, onFailLogin }:
                 />
                 { !isValid.email &&
                 <div className='label'>
-                    <div className='tooltip absolute end-2 top-3 ' data-tip='contoh: "admin123@gmail.com"'>
+                    <div className='tooltip absolute end-2 top-3 ' data-tip='contoh: "example@gmail.com"'>
                         <span className="text-red-400 cursor-pointer">
                             <FaInfoCircle />
                         </span>
                     </div>
-                    <span className='label-text-alt text-red-400'>contoh: 'admin123@gmail.com'</span>
+                    <span className='label-text-alt text-red-400'>contoh: 'example@gmail.com'</span>
                 </div>
                 }
             </div>
