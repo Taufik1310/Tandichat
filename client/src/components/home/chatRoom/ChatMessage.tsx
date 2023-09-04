@@ -82,10 +82,6 @@ const ChatMessage = ({ Id }: { Id: number }) => {
         handleScroll()
         
         clientRef.current.addEventListener('scroll', handleScroll)
-        
-        return () => {
-          clientRef.current.removeEventListener('scroll', handleScroll)
-        }
       }, [])
 
     return (

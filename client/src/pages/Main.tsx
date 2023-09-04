@@ -27,23 +27,15 @@ const Main = () => {
 
     useEffect(() => {
         if (webSocket) {
-            webSocket.onopen = () => {
-            console.log('WebSocket connection opened')
-        }
+            webSocket.onmessage = (event: any) => {
+                const msg = JSON.parse(event.data)
+                setMessages(prevMessages => [...prevMessages, msg])
+            }
 
-        webSocket.onmessage = (event: any) => {
-            const msg = JSON.parse(event.data)
-            setMessages(prevMessages => [...prevMessages, msg])
+            webSocket.onerror = (event: any) => {
+                console.log('WebSocket error:', event)
+            }
         }
-
-        webSocket.onerror = (event: any) => {
-            console.log('WebSocket error:', event)
-        }
-
-        webSocket.onclose = (event: any) => {
-            console.log('WebSocket connection closed:', event)
-        }
-    }
     }, [webSocket])
 
     const handleSend = (to: number, message: any) => {

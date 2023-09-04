@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { GoSearch } from 'react-icons/go'
 
 const ChatSearch = ({ onSearch }: { onSearch: (key: string) => void }) => {
-    const [keyword, setKeyword] = useState<string>()
+    const [keyword, setKeyword] = useState<string>('')
 
     const handleChangeKeyword = (key: string) => {
         setKeyword(key)

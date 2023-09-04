@@ -6,7 +6,6 @@ import { AlertContext, ChatListContext, FriendContext, MessageContext, TokenCont
 import { blockUser, deleteFriend, getAllFriend, getMessages } from "../Rest"
 import AlertInfo from "../components/alert/AlertInfo"
 import AlertConfirm from "../components/alert/AlertConfirm"
-import { useNavigate } from "react-router-dom"
 
 const Home = () => {
     const TOKEN = useContext(TokenContext)
